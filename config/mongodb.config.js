@@ -4,7 +4,8 @@ const url = 'mongodb://localhost:27017/wingify-project';
 
 const client = mongodb.MongoClient;
 
-const connectMongo = ()=>{
+const connectMongo = (dummy)=>{
+    if(dummy) return Promise.resolve(dummy);
     return new Promise((resolve, reject)=>{
         client.connect(url, (err, db)=>{
             if(err){
