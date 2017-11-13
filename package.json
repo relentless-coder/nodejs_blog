@@ -10,6 +10,9 @@
     "moment-timezone": "^0.5.14",
     "mongodb": "^2.2.33"
   },
+  "scripts": {
+    "build": "node ./node_modules/babel-cli/bin/babel.js ./ --out-dir ./dist/ --ignore node_modules/,package.json,yarn.lock --presets=babel-preset-env --plugins=babel-plugin-transform-class-properties,babel-plugin-transform-runtime"
+  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
