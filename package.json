@@ -1,0 +1,19 @@
+{
+  "name": "wingify",
+  "version": "1.0.0",
+  "description": "This is an API project for wingify interview",
+  "main": "app.js",
+  "author": "Ayush Bahuguna",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "moment-timezone": "^0.5.14",
+    "mongodb": "^2.2.33"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1"
+  }
+}
