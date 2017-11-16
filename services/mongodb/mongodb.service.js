@@ -1,5 +1,5 @@
-import {connectMongo} from "../../config/mongodb.config";
-import {ErrorWithStatusCode} from "../../handlers/error.handler";
+import {connectMongo} from "../../../config/mongodb.config";
+import {ErrorWithStatusCode} from "../../../handlers/error.handler";
 
 function findAll(collection, query, resClass, dummy) {
     let model;
