@@ -7,18 +7,24 @@ function findAll(collection, query, resClass, dummy) {
         model = db;
         let query = query ? query : {};
         let docs = model.collection(collection);
-        return docs.find(query)
+        return new Promise((resolve, reject)=>{
+          docs.find(query).toArray((err, data)=>{
+            if(err){
+              reject(err)
+            } else {
+              resolve(data);
+            }
+          })
+        })
     };
 
     const populateResService = (docs) => {
+      console.log(docs);
         console.log('reached populateResService')
         let data = [];
         docs.forEach((doc) => {
             data.push(new resClass(doc))
         });
-
-        console.log(data);
-
         return data;
     };
 
@@ -38,7 +44,7 @@ function findAll(collection, query, resClass, dummy) {
 }
 
 function findSingle(collection, query, resClass, dummy) {
-    if (!(!collection && !query && !resClass)) {
+    if (!collection || !query || !resClass) {
         throw new ErrorWithStatusCode(422, 'Can\'t process request with incomplete data.', 'You haven\'t passed the required params to this function. Kindly, make sure the function is called with all the params mentioned in the document.')
     }
     let model;
@@ -168,7 +174,7 @@ function insert(collection, doc, reqClass, resClass, dummy) {
     })
 }
 
-function update(collection, query, body, resClass, dummy) {
+function update(collection, query, body,reqClass, resClass, dummy) {
     let model;
 
     if (!body) {
@@ -180,26 +186,47 @@ function update(collection, query, body, resClass, dummy) {
         }
     }
 
-    const updateDocument = (db) => {
-        model = db;
+    const populateReqService = (db)=>{
+      model = db;
+      return new reqClass(body)
+    };
+
+    const updateDocument = (object) => {
 
         let localCollection = model.collection(collection);
 
-        return localCollection.updateOne(query, body).then(data => data)
+        return new Promise((resolve, reject)=>{
+          localCollection.updateOne(query, object, (err, done)=>{
+            if(err){
+              reject(err)
+            } else {
+              resolve(done)
+            }
+          })
+        })
     };
 
     const queryDocument = () => {
         let localCollection = model.collection(collection);
 
-        return localCollection.findOne(query).then(data => data).catch(err => err);
+        return new Promise((resolve, reject)=>{
+          localCollection.findOne(query, (err, doc)=>{
+            if(err){
+              reject(err)
+            } else {
+              resolve(doc);
+            }
+          });
+        })
     };
 
     const populateResService = (doc) => {
-        console.log(doc);
+        console.log("populateResService ", doc);
         return new resClass(doc)
     };
 
     const sendResponse = (data) => {
+      console.log(data);
         model.close();
         return {
             data,
@@ -208,8 +235,10 @@ function update(collection, query, body, resClass, dummy) {
         }
     };
 
-    connectMongo(dummy).then(updateDocument).then(queryDocument).then(populateResService).then(sendResponse).catch((err) => {
-        return {
+    connectMongo(dummy).then(populateReqService).then(updateDocument).then(queryDocument).then(populateResService).then(sendResponse).catch((err) => {
+      model.close();
+      console.log('mongodb service', err);
+      return {
             status: 500,
             message: 'Sorry, we seem to be facing some issue right now. Please try again later.',
             error: err
