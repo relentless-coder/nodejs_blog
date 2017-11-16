@@ -8,9 +8,11 @@ console.log(controller.getAllProducts);
 
 router.get('/products', controller.getAllProducts);
 
+router.post('/products', controller.addOneProduct);
+
 router.get('/products/:productId', controller.getOneProduct);
 
-router.post('/products', controller.addOneProduct);
+router.put('/products/:productId', controller.updateOneProduct)
 
 
 export {router as productRouter}
