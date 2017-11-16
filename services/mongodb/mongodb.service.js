@@ -50,7 +50,6 @@ function findSingle(collection, query, resClass, dummy) {
     let model;
     const queryCollection = (db) => {
         model = db;
-        let query = query ? query : {};
         let docs = model.collection(collection);
         return new Promise((resolve, reject)=>{
             docs.findOne(query, (err, data)=>{
