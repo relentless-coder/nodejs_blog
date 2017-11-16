@@ -2,6 +2,7 @@ import {findAll, findSingle, insert, update} from "../../services/mongodb/mongod
 import {getProduct, addProduct, updateProduct} from "../../services/layers/product.layer";
 import {upload} from "../../config/multerconfig";
 import {ErrorWithStatusCode} from "../../handlers/errorhandler";
+import {ObjectID} from 'mongodb';
 
 const fileUpload = upload.array('gallery')
 
@@ -18,7 +19,7 @@ export function getAllProducts(req, res) {
 
 export function getOneProduct(req, res) {
   let query = {
-    _id: req.params.productId
+    _id: ObjectID(req.params.productId)
   };
   findSingle('productions', query, getProduct).then((data) => {
     res.writeHead(200, {'Content-Type': 'application/json'});
