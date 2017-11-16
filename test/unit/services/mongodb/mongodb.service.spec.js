@@ -1,20 +1,18 @@
 import chai from 'chai';
 import sinon from 'sinon';
-import {findOne, findAll, update, insert} from "../../../../../services/mongodb/mongodb.service";
-import {addProduct} from "../../../../../services/layers/product.layer";
-import {getProduct} from "../../../../../services/layers/product.layer";
-import {ErrorWithStatusCode} from "../../../../../handlers/error.handler";
+import {findSingle, findAll, update, insert} from "../../../../services/mongodb/mongodb.service";
+import {addProduct} from "../../../../services/layers/product.layer";
+import {getProduct} from "../../../../services/layers/product.layer";
+import {ErrorWithStatusCode} from "../../../../handlers/errorhandler";
 
 const expect = chai.expect;
 
 describe('Mongodb insert', ()=>{
-    it('should return 400 when called with empty document', ()=>{
-        let doc = {
-
-        };
+    it('should return 422 when called with empty document', ()=>{
+        let doc = {};
 
         let collection = {
-            insertOne: (doc)=>{
+            insertOne: (doc)=> {
                 doc._id = '123absd';
                 return Promise.resolve({
                     ops: doc
@@ -33,8 +31,7 @@ describe('Mongodb insert', ()=>{
 
         let spy = sinon.spy(collection, 'insertOne');
 
-        expect(()=>{insert(collection, doc, addProduct, getProduct, dummy)}).to.throw('Inserting empty' +
-            ' documents is not allowed.').with.property('code', 400);
+        expect(()=>{insert(collection, doc, addProduct, getProduct, dummy)}).to.throw('Can\'t process request with incomplete data.').with.property('code', 422);
     });
 
     it('should call the right methods on insert and insert a document', (done)=>{
@@ -80,6 +77,6 @@ describe('Mongodb insert', ()=>{
             done()
         });
 
-    })
+    })
 });
 
