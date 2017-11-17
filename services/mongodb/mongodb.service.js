@@ -7,19 +7,19 @@ function findAll(collection, query, resClass, dummy) {
         model = db;
         let query = query ? query : {};
         let docs = model.collection(collection);
-        return new Promise((resolve, reject)=>{
-          docs.find(query).toArray((err, data)=>{
-            if(err){
-              reject(err)
-            } else {
-              resolve(data);
-            }
-          })
+        return new Promise((resolve, reject) => {
+            docs.find(query).toArray((err, data) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(data);
+                }
+            })
         })
     };
 
     const populateResService = (docs) => {
-      console.log(docs);
+        console.log(docs);
         console.log('reached populateResService')
         let data = [];
         docs.forEach((doc) => {
@@ -50,11 +50,10 @@ function findSingle(collection, query, resClass, dummy) {
     let model;
     const queryCollection = (db) => {
         model = db;
-        let query = query ? query : {};
         let docs = model.collection(collection);
-        return new Promise((resolve, reject)=>{
-            docs.findOne(query, (err, data)=>{
-                if(err){
+        return new Promise((resolve, reject) => {
+            docs.findOne(query, (err, data) => {
+                if (err) {
                     console.log(err);
                     reject(err)
                 } else {
@@ -65,14 +64,9 @@ function findSingle(collection, query, resClass, dummy) {
         })
     };
 
-    const populateResService = (docs) => {
-        console.log(docs);
-        let data = [];
-        docs.forEach((doc) => {
-            data.push(new resClass(doc))
-        });
-
-        return data;
+    const populateResService = (doc) => {
+        console.log(doc);
+        return new resClass(doc);
     };
 
     const sendResponse = (data) => {
@@ -86,6 +80,7 @@ function findSingle(collection, query, resClass, dummy) {
 
     return connectMongo(dummy).then(queryCollection).then(populateResService).then(sendResponse).catch((err) => {
         model.close();
+        console.log(err);
         return {
             status: 500,
             message: 'Sorry, we seem to be facing some issue right now. Please try again later.',
@@ -128,9 +123,9 @@ function insert(collection, doc, reqClass, resClass, dummy) {
         console.log(docs);
         let localCollection = model.collection(collection);
 
-        return new Promise((resolve, reject)=>{
-            localCollection.insertOne(docs, (err, done)=>{
-                if(err){
+        return new Promise((resolve, reject) => {
+            localCollection.insertOne(docs, (err, done) => {
+                if (err) {
                     console.log(err);
                     reject(err)
                 } else {
@@ -155,7 +150,6 @@ function insert(collection, doc, reqClass, resClass, dummy) {
     };
 
     const sendResponse = (data) => {
-        console.log("data is ", data);
         model.close();
         return {
             data,
@@ -174,7 +168,7 @@ function insert(collection, doc, reqClass, resClass, dummy) {
     })
 }
 
-function update(collection, query, body,reqClass, resClass, dummy) {
+function update(collection, query, body, reqClass, resClass, dummy) {
     let model;
 
     if (!body) {
@@ -186,47 +180,45 @@ function update(collection, query, body,reqClass, resClass, dummy) {
         }
     }
 
-    const populateReqService = (db)=>{
-      model = db;
-      return new reqClass(body)
+    const populateReqService = (db) => {
+        model = db;
+        return new reqClass(body)
     };
 
     const updateDocument = (object) => {
 
         let localCollection = model.collection(collection);
 
-        return new Promise((resolve, reject)=>{
-          localCollection.updateOne(query, object, (err, done)=>{
-            if(err){
-              reject(err)
-            } else {
-              resolve(done)
-            }
-          })
+        return new Promise((resolve, reject) => {
+            localCollection.updateOne(query, object, (err, done) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(done)
+                }
+            })
         })
     };
 
     const queryDocument = () => {
         let localCollection = model.collection(collection);
 
-        return new Promise((resolve, reject)=>{
-          localCollection.findOne(query, (err, doc)=>{
-            if(err){
-              reject(err)
-            } else {
-              resolve(doc);
-            }
-          });
+        return new Promise((resolve, reject) => {
+            localCollection.findOne(query, (err, doc) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(doc);
+                }
+            });
         })
     };
 
     const populateResService = (doc) => {
-        console.log("populateResService ", doc);
         return new resClass(doc)
     };
 
     const sendResponse = (data) => {
-      console.log(data);
         model.close();
         return {
             data,
@@ -236,9 +228,8 @@ function update(collection, query, body,reqClass, resClass, dummy) {
     };
 
     connectMongo(dummy).then(populateReqService).then(updateDocument).then(queryDocument).then(populateResService).then(sendResponse).catch((err) => {
-      model.close();
-      console.log('mongodb service', err);
-      return {
+        model.close();
+        return {
             status: 500,
             message: 'Sorry, we seem to be facing some issue right now. Please try again later.',
             error: err
@@ -246,4 +237,41 @@ function update(collection, query, body,reqClass, resClass, dummy) {
     })
 }
 
-export {findAll, findSingle, insert, update}
+function removeOne(collection, query, dummy) {
+    let model;
+
+    const removeDocument = (db) => {
+        model = db;
+        let docs = model.collection(collection);
+
+        return new Promise((resolve, reject) => {
+            docs.deleteOne(query, (err, done) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(done);
+                }
+            })
+        })
+    };
+
+    const sendResponse = () => {
+        model.close();
+        return {
+            status: 200,
+            message: 'Product deleted successfully'
+        }
+    };
+
+
+   return connectMongo(dummy).then(removeDocument).then(sendResponse).catch((err) => {
+        model.close();
+        return {
+            status: 500,
+            message: 'Sorry, we seem to be facing some issue right now. Please, try again later.',
+            error: err
+        }
+    })
+}
+
+export {findAll, findSingle, insert, update, removeOne}
