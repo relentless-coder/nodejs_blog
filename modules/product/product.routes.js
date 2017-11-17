@@ -12,8 +12,9 @@ router.post('/products', controller.addOneProduct);
 
 router.get('/products/:productId', controller.getOneProduct);
 
-router.put('/products/:productId', controller.updateOneProduct)
+router.put('/products/:productId', controller.updateOneProduct);
 
+router.delete('/products/:productId', controller.removeOneProduct);
 
 export {router as productRouter}
 
