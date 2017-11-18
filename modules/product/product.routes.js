@@ -1,10 +1,10 @@
 import * as controller from './product.controllers';
 import Router from 'router';
+import {authHandler} from "../../handlers/auth.handler";
 
 const router = new Router();
 
-console.log(typeof  controller.getAllProducts);
-console.log(controller.getAllProducts);
+router.use(authHandler)
 
 router.get('/products', controller.getAllProducts);
 
