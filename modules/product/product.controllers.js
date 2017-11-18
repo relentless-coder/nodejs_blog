@@ -1,6 +1,6 @@
 import {findAll, findSingle, insert, update, removeOne} from "../../services/mongodb/mongodb.service";
 import {getProduct, addProduct, updateProduct} from "../../services/layers/product.layer";
-import {upload} from "../../config/multerconfig";
+import {upload} from "../../config/multer.config";
 import {ObjectID} from 'mongodb';
 import {ErrorWithStatusCode} from "../../handlers/errorhandler";
 
