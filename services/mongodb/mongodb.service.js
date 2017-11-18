@@ -1,4 +1,4 @@
-import {connectMongo} from "../../config/mongoconfig";
+import {connectMongo} from "../../config/mongo.config";
 import {ErrorWithStatusCode} from "../../handlers/errorhandler";
 
 function findAll(collection, query, resClass, dummy) {
@@ -65,13 +65,7 @@ function findSingle(collection, query, resClass, dummy) {
     };
 
     const populateResService = (docs) => {
-        console.log(docs);
-        let data = [];
-        docs.forEach((doc) => {
-            data.push(new resClass(doc))
-        });
-
-        return data;
+        return new resClass(docs);
     };
 
     const sendResponse = (data) => {
@@ -85,11 +79,8 @@ function findSingle(collection, query, resClass, dummy) {
 
     return connectMongo(dummy).then(queryCollection).then(populateResService).then(sendResponse).catch((err) => {
         model.close();
-        return {
-            status: 500,
-            message: 'Sorry, we seem to be facing some issue right now. Please try again later.',
-            error: err
-        }
+        throw new ErrorWithStatusCode(500, 'Sorry, we seem to be facing some issue right now.' +
+          ' Please try again later.', err)
     })
 }
 
@@ -124,16 +115,13 @@ function insert(collection, doc, reqClass, resClass, dummy) {
     };
 
     const insertDocument = (docs) => {
-        console.log(docs);
         let localCollection = model.collection(collection);
 
         return new Promise((resolve, reject)=>{
             localCollection.insertOne(docs, (err, done)=>{
                 if(err){
-                    console.log(err);
                     reject(err)
                 } else {
-                    console.log(done)
                     resolve(done);
                 }
             })
@@ -154,7 +142,6 @@ function insert(collection, doc, reqClass, resClass, dummy) {
     };
 
     const sendResponse = (data) => {
-        console.log("data is ", data);
         model.close();
         return {
             data,
@@ -165,11 +152,9 @@ function insert(collection, doc, reqClass, resClass, dummy) {
 
     return connectMongo(dummy).then(populateReqService).then(insertDocument).then(populateResService).then(sendResponse).catch((err) => {
         model.close();
-        return {
-            status: 500,
-            message: 'Sorry, we seem to be facing some issue right now. Please try again later.',
-            error: err
-        }
+        throw new ErrorWithStatusCode(500, 'Sorry, we seem to be facing some issue right now.' +
+          ' Please try again later.', err)
+
     })
 }
 
@@ -245,4 +230,41 @@ function update(collection, query, body,reqClass, resClass, dummy) {
     })
 }
 
-export {findAll, findSingle, insert, update}
+function removeOne(collection, query, dummy) {
+  let model;
+
+  const removeDocument = (db) => {
+    model = db;
+    let docs = model.collection(collection);
+
+    return new Promise((resolve, reject) => {
+      docs.deleteOne(query, (err, done) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(done);
+        }
+      })
+    })
+  };
+
+  const sendResponse = () => {
+    model.close();
+    return {
+      status: 200,
+      message: 'Product deleted successfully'
+    }
+  };
+
+
+  return connectMongo(dummy).then(removeDocument).then(sendResponse).catch((err) => {
+    model.close();
+    return {
+      status: 500,
+      message: 'Sorry, we seem to be facing some issue right now. Please, try again later.',
+      error: err
+    }
+  })
+}
+
+export {findAll, findSingle, insert, update, removeOne}
