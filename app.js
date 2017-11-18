@@ -1,11 +1,13 @@
 import http from 'http';
 import Router from 'router';
 import {productRouter} from "./modules/product/product.routes";
+import {userRouter} from "./modules/user/user.routes";
 
 const router = new Router();
 
 router.use('/api/v1', productRouter);
 
+router.use('/api/v1', userRouter);
 
 const server = http.createServer((req, res)=>{
     router(req, res, handleError)
