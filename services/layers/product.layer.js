@@ -12,7 +12,6 @@ export class getProduct {
 
 export class addProduct {
   constructor({title, description, category, price, gallery, stock}) {
-    console.log(title, description, category, price, gallery, stock)
     this.title = title;
     this.description = description;
     this.category = category;
