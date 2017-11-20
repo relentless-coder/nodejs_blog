@@ -3,137 +3,118 @@ import {getProduct, addProduct, updateProduct} from "../../services/layers/produ
 import {upload} from "../../config/multer.config";
 import {ObjectID} from 'mongodb';
 import {ErrorWithStatusCode} from "../../handlers/errorhandler";
+import {responseHandler} from '../../handlers/response.handler';
 
 
-const fileUpload = upload.array('gallery')
+const fileUpload = upload.array('gallery');
 
 export function getAllProducts(req, res) {
-    findAll('products', {}, getProduct).then((data) => {
-        console.log(data);
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.end(JSON.stringify({data}))
-    }).catch((err) => {
-        res.writeHead(500, {'Content-Type': 'application/json'});
-        res.end(JSON.stringify({data}))
-    })
+  findAll('products', {}, getProduct).then((data) => {
+    responseHandler(res, data.status, data.message, data.data);
+  }).catch((err) => {
+    responseHandler(res, data.status, data.message, data.error, true);
+  })
 }
 
 export function getOneProduct(req, res) {
-    console.log(req.params.productId)
-    let query = {
-        '_id': ObjectID(req.params.productId)
-    };
-    findSingle('products', query, getProduct).then((data) => {
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.end(JSON.stringify(data))
-    })
+  let query = {
+    '_id': ObjectID(req.params.productId)
+  };
+  return findSingle('products', query, getProduct).then((data) => {
+    return responseHandler(res, data.status, data.message, data.data);
+  })
 }
 
 export function addOneProduct(req, res) {
 
-    const getData = () => {
-        return new Promise((resolve, reject) => {
-            fileUpload(req, res, (err) => {
-                if (err) {
-                    console.log(err);
-                    reject(err)
-                } else {
-                    let files = [];
-                    if (req.files) {
-                        req.files.forEach((file) => {
-                            files.push(file.path);
-                        });
-                        req.body.gallery = files;
-                    }
-
-                    resolve(req)
-
-                }
-            })
-        })
-
-    };
-
-    const addToDatabase = () => {
-        return insert('products', req.body, addProduct, getProduct).then((data) => {
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify(data))
-        }).catch((err) => {
-            throw new ErrorWithStatusCode(500, 'Sorry, we seem to be facing some issue right now. Please try again later.', err);
-        })
-    };
-
-    getData().then(addToDatabase).catch((err) => {
-        if (err.code && err.message) {
-            res.writeHead(err.code, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify({message: err.message, error: err.error}))
+  const getData = () => {
+    return new Promise((resolve, reject) => {
+      fileUpload(req, res, (err) => {
+        if (err) {
+          console.log(err);
+          reject(err)
         } else {
-            res.writeHead(500, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify({
-                message: 'Sorry, we seem to be facing some issue right now. Please, try again later.',
-                error: err
-            }))
+          let files = [];
+          if (req.files) {
+            req.files.forEach((file) => {
+              files.push(file.path);
+            });
+            req.body.gallery = files;
+          }
+
+          resolve(req)
+
         }
+      })
     })
+
+  };
+
+  const addToDatabase = () => {
+    return insert('products', req.body, addProduct, getProduct).then((data) => {
+      responseHandler(res, data.status, data.message, data.data);
+    }).catch((err) => {
+      responseHandler(res, data.staus, data.message, data.error);
+    })
+  };
+
+  getData().then(addToDatabase).catch((err) => {
+    if (err.code && err.message) {
+      responseHandler(res, err.code, err.message, err.error, true);
+    } else {
+      responseHandler(res, 500, 'Sorry, we are facing some issue right now. Please, try again later.', err, true);
+    }
+  })
 }
 
 export function updateOneProduct(req, res) {
 
-    const getData = () => {
-        return new Promise((resolve, reject) => {
-            fileUpload(req, res, (err) => {
-                if (err) {
-                    console.log("upload error ", err);
-                    reject(err)
-                } else {
-                    if (req.files) {
-                        console.log('we have files', req.files);
-                        req.files.forEach((file) => {
-                            req.body.gallery.push(file.path);
-                        });
-                    }
-                    resolve(req)
-                }
-
-            })
-        })
-
-    };
-
-    const addToDatabase = () => {
-        console.log(req.body)
-        return update('products', {_id: req.params.productId}, req.body, updateProduct, getProduct).then((data) => {
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify(data))
-        }).catch((err) => {
-            console.log("Error is in add to database ", err);
-            throw new ErrorWithStatusCode(500, 'Sorry, we seem to be facing some issue right now. Please try again later.', err);
-        })
-    };
-
-    getData().then(addToDatabase).catch((err) => {
-        if (err.code && err.message) {
-            res.writeHead(err.code, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify({message: err.message, error: err.error}))
+  const getData = () => {
+    return new Promise((resolve, reject) => {
+      fileUpload(req, res, (err) => {
+        if (err) {
+          console.log("upload error ", err);
+          reject(err)
         } else {
-            res.writeHead(500, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify({
-                message: 'Sorry, we seem to be facing some issue right now. Please, try again later.',
-                error: err
-            }))
+          if (req.files) {
+            console.log('we have files', req.files);
+            req.files.forEach((file) => {
+              req.body.gallery.push(file.path);
+            });
+          }
+          resolve(req)
         }
+
+      })
     })
+
+  };
+
+  const addToDatabase = () => {
+    return update('products', {_id: req.params.productId}, req.body, updateProduct, getProduct).then((data) => {
+      responseHandler(res, data.status, data.message, data.data);
+    }).catch((err) => {
+      responseHandler(res, 500, 'Sorry, we are facing some issue right now. Please, try again later.', err, true);
+    })
+  };
+
+  getData().then(addToDatabase).catch((err) => {
+    if (err.code && err.message) {
+      responseHandler(res, err.code, err.message, err.error, true);
+    } else {
+      responseHandler(res, 500, 'Sorry, we are facing some issue right now. Please, try again later.', err, true);
+    }
+  })
 }
 
 export function removeOneProduct(req, res) {
-    let query = {
-        _id: ObjectID(req.params.productId)
-    };
+  let query = {
+    _id: ObjectID(req.params.productId)
+  };
 
-    removeOne('products', query).then((data) => {
-        console.log('remove one data is')
-        res.writeHead(data.status, {'Content-Type': 'application/json'});
-        res.end(JSON.stringify(data))
-    }).catch((err) => {
-    })
+  removeOne('products', query).then((data) => {
+    responseHandler(res, data.status, data.message, data.data);
+  }).catch((err) => {
+    responseHandler(res, err.code, err.message, err.error, true);
+  })
 }
