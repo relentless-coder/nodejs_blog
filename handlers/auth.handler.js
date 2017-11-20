@@ -1,42 +1,48 @@
-import crypto from 'crypto';
-import {cryptoConfig} from "../config/crypto.config";
-import {decode} from "../services/jwt/jwt.decode";
-import {findSingle} from "../services/mongodb/mongodb.service";
+import moment from 'moment-timezone';
+import {decode} from '../services/jwt/jwt.decode';
+import {findSingle} from '../services/mongodb/mongodb.service';
 import {ObjectID} from 'mongodb';
 import {parseUser} from "../services/layers/user.layer";
+import {ErrorWithStatusCode} from './errorhandler';
+import {responseHandler} from './response.handler';
 
 function authHandler(req, res, next) {
-  if(!req.headers.authorization){
-    res.writeHead(401, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify({status: 401, message: 'Unauthorized request', error: 'The server' +
-    ' didn\'t find any' +
-    ' jwt token in the request header. The format is: Authorization: Bearer [token]'}))
-    return false
+  if (req.url === '/api/v1/signup' || req.url === '/api/v1/signin') {
+    return next(null, true)
   } else {
-
     let payload = decode(req);
-    let query = {
-      _id: ObjectID(payload._id);
+
+    if (!payload.error) {
+      let expTime = moment.unix(payload.exp).toDate();
+      let currentTIme = moment.tz('GMT').toDate();
+
+      console.log(expTime, currentTIme)
+
+      if (currentTIme > expTime) {
+        return responseHandler(res, 401, 'Unauthorized request', 'The jwt token provided by the client has expired. Kindly, login again.', true)
+      } else {
+        let query = {
+          _id: ObjectID(payload._id)
+        };
+
+        findSingle('users', query, parseUser).then((data) => {
+          if (data) {
+            req.user = data;
+            return next()
+          } else {
+            return responseHandler(res, 401, 'Unauthorized request', 'User doesn\'t exist', true)
+          }
+        }).catch((err) => {
+          return responseHandler(500, 'Sorry, we seem to be facing some issue right now. Please, try again later.', err, true)
+        })
+      }
+
+    } else {
+      return responseHandler(payload.status, payload.message, payload.error, true);
     }
 
-    findSingle('users', query, parseUser).then((data)=>{
-      if(data){
-        req.user = data;
-        next()
-      } else {
-        res.writeHead(401, {'Content-Type': 'application/json'})
-        res.end(JSON.stringify({status: 401, message: 'Unauthorized request', error: 'The user' +
-        ' doesn\'t' +
-        ' exist.'}))
-        return false
-      }
-    }).catch((err)=>{
-      res.writeHead(500, {'Content-Type': 'application/json'});
-      res.end(JSON.stringify({status: 500, message: 'Sorry, we seem to be facing some issue right' +
-      ' now.' +
-      ' Please, try again later.', error: err}))
-    })
   }
+
 }
 
 export {authHandler}
