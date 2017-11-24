@@ -9,10 +9,10 @@ import {responseHandler} from '../../handlers/response.handler';
 const fileUpload = upload.array('gallery');
 
 export function getAllProducts(req, res) {
-  findAll('products', {}, getProduct).then((data) => {
-    responseHandler(res, data.status, data.message, data.data);
+  return findAll('products', {}, getProduct).then((data) => {
+    return responseHandler(res, data.status, data.message, data.data);
   }).catch((err) => {
-    responseHandler(res, data.status, data.message, data.error, true);
+    return responseHandler(res, data.status, data.message, data.error, true);
   })
 }
 
@@ -28,41 +28,46 @@ export function getOneProduct(req, res) {
 export function addOneProduct(req, res) {
 
   const getData = () => {
-    return new Promise((resolve, reject) => {
-      fileUpload(req, res, (err) => {
-        if (err) {
-          console.log(err);
-          reject(err)
-        } else {
-          let files = [];
-          if (req.files) {
-            req.files.forEach((file) => {
-              files.push(file.path);
-            });
-            req.body.gallery = files;
+    if(req.body){
+      return Promise.resolve(req)
+    } else {
+      return new Promise((resolve, reject) => {
+        fileUpload(req, res, (err) => {
+          if (err) {
+            reject(err)
+          } else {
+            let files = [];
+            if (req.files) {
+              req.files.forEach((file) => {
+                files.push(file.path);
+              });
+              req.body.gallery = files;
+            }
+
+            resolve(req)
+
           }
-
-          resolve(req)
-
-        }
+        })
       })
-    })
+    }
 
   };
 
   const addToDatabase = () => {
     return insert('products', req.body, addProduct, getProduct).then((data) => {
-      responseHandler(res, data.status, data.message, data.data);
+     return responseHandler(res, data.status, data.message, data.data);
     }).catch((err) => {
-      responseHandler(res, data.staus, data.message, data.error);
+      if(err.error){
+        throw new ErrorWithStatusCode(err.code, err.message, err.error)
+      }
     })
   };
 
-  getData().then(addToDatabase).catch((err) => {
+  return getData().then(addToDatabase).catch((err) => {
     if (err.code && err.message) {
-      responseHandler(res, err.code, err.message, err.error, true);
+      return responseHandler(res, err.code, err.message, err.error, true);
     } else {
-      responseHandler(res, 500, 'Sorry, we are facing some issue right now. Please, try again later.', err, true);
+      return responseHandler(res, 500, 'Sorry, we are facing some issue right now. Please, try again later.', err, true);
     }
   })
 }
@@ -70,39 +75,41 @@ export function addOneProduct(req, res) {
 export function updateOneProduct(req, res) {
 
   const getData = () => {
-    return new Promise((resolve, reject) => {
-      fileUpload(req, res, (err) => {
-        if (err) {
-          console.log("upload error ", err);
-          reject(err)
-        } else {
-          if (req.files) {
-            console.log('we have files', req.files);
-            req.files.forEach((file) => {
-              req.body.gallery.push(file.path);
-            });
+    if(req.body){
+      return Promise.resolve(req)
+    } else {
+      return new Promise((resolve, reject) => {
+        fileUpload(req, res, (err) => {
+          if (err) {
+            reject(err)
+          } else {
+            if (req.files) {
+              req.files.forEach((file) => {
+                req.body.gallery.push(file.path);
+              });
+            }
+            resolve(req)
           }
-          resolve(req)
-        }
 
+        })
       })
-    })
+    }
 
   };
 
   const addToDatabase = () => {
     return update('products', {_id: req.params.productId}, req.body, updateProduct, getProduct).then((data) => {
-      responseHandler(res, data.status, data.message, data.data);
+      return responseHandler(res, data.status, data.message, data.data);
     }).catch((err) => {
-      responseHandler(res, 500, 'Sorry, we are facing some issue right now. Please, try again later.', err, true);
+      throw new ErrorWithStatusCode(err.code, err.message, err.error)
     })
   };
 
-  getData().then(addToDatabase).catch((err) => {
+  return getData().then(addToDatabase).catch((err) => {
     if (err.code && err.message) {
-      responseHandler(res, err.code, err.message, err.error, true);
+      return responseHandler(res, err.code, err.message, err.error, true);
     } else {
-      responseHandler(res, 500, 'Sorry, we are facing some issue right now. Please, try again later.', err, true);
+      return responseHandler(res, 500, 'Sorry, we are facing some issue right now. Please, try again later.', err, true);
     }
   })
 }
@@ -112,9 +119,9 @@ export function removeOneProduct(req, res) {
     _id: ObjectID(req.params.productId)
   };
 
-  removeOne('products', query).then((data) => {
-    responseHandler(res, data.status, data.message, data.data);
+ return removeOne('products', query).then((data) => {
+    return responseHandler(res, data.status, data.message, data.data);
   }).catch((err) => {
-    responseHandler(res, err.code, err.message, err.error, true);
+    return responseHandler(res, err.code, err.message, err.error, true);
   })
 }
