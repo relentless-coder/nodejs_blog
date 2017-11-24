@@ -9,15 +9,29 @@ import {hashPassword, parseUser, setJwt} from '../../../../services/layers/user.
 const expect = chai.expect;
 
 describe('signup', () => {
-  afterEach((cb)=>{
+
+  before((done)=>{
+    insert('users', {email: 'ayush@test.com', password: '12daur3'}, hashPassword, parseUser).then((data)=>{
+      done();
+    })
+  });
+
+  after((cb)=>{
     removeOne('users', {email: 'test@mail.com'}).then((done)=>{
       cb();
     })
   });
-  it('should throw an error with 422 for incomplete data', () => {
+
+  after((done)=>{
+    removeOne('users', {email: 'ayush@test.com'}).then((data)=>{
+      done()
+    })
+  });
+
+  it('should throw an error with 422 for incomplete data', (done) => {
     let req = {
       body: {
-        email: 'test@mail.com'
+        email: 'random@mail.com'
       }
     };
 
@@ -29,24 +43,45 @@ describe('signup', () => {
       end: (msg) => {
 
       }
-    }
+    };
 
     let spy1 = sinon.spy(res, 'writeHead');
     let spy2 = sinon.spy(res, 'end');
 
-    signup(req, res).then((done) => {
-      console.log(done);
+    signup(req, res).then((data)=>{
       expect(spy1.withArgs(422, {'Content-Type': 'application/json'}).calledOnce).to.be.true;
-
-      expect(spy2.withArgs(JSON.stringify({
-        status: 422,
-        message: 'Email or password not found.',
-        error: 'hashPassword class requires email and password in the object.'
-      })).calledOnce).to.be.true;
-    });
+      done()
+    })
   });
 
-  it('should successfully create a user', () => {
+  it('should return with 422 when the email already exists', (done)=>{
+    let req = {
+      body: {
+        email: '100@test.com',
+        password: '12sdah'
+      }
+    };
+
+    let res = {
+      writeHead: (code, obj) => {
+
+      },
+
+      end: (msg) => {
+
+      }
+    };
+
+    let spy1 = sinon.spy(res, 'writeHead');
+    let spy2 = sinon.spy(res, 'end');
+
+    signup(req, res).then((data)=>{
+      expect(spy1.withArgs(422, {'Content-Type': 'application/json'}).calledOnce).to.be.true;
+      done()
+    })
+  });
+
+  it('should successfully create a user', (done) => {
 
     let req = {
       body: {
@@ -68,9 +103,9 @@ describe('signup', () => {
     let spy1 = sinon.spy(res, 'writeHead');
     let spy2 = sinon.spy(res, 'end');
 
-      signup(req, res).then((done) => {
-        console.log(done);
+      signup(req, res).then((data) => {
         expect(spy1.withArgs(200, {'Content-Type': 'application/json'}).calledOnce).to.be.true;
+        done();
       });
 
   })
@@ -82,16 +117,14 @@ describe('Signin', () => {
 
     insert('users', {email: 'signin@test.com', password: '14325'}, hashPassword, parseUser).then((done)=>{
       cb();
-    }).catch((err)=>{
-      console.log(err);
-    })
+    }).catch(err => err);
 
   });
 
   after((cb)=>{
     removeOne('users', {email: 'signin@test.com'}).then((done)=>{
       cb()
-    })
+    }).catch(err => err)
   });
 
   it('should return with  401 for invalid email/password', () => {
@@ -117,13 +150,12 @@ describe('Signin', () => {
     let spy2 = sinon.spy(res, 'end');
 
     signin(req, res).then((done) => {
-      expect(done).to.be.true;
       expect(spy1.withArgs(401, {'Content-Type': 'application/json'}).calledOnce).to.be.true;
     })
 
   });
 
-  it('should successfully create a jwt token', () => {
+  it('should successfully create a jwt token', (done) => {
     let req = {
       body: {userEmail: 'signin@test.com', userPassword: '14325'}
     };
@@ -140,9 +172,9 @@ describe('Signin', () => {
     let spy1 = sinon.spy(res, 'writeHead');
     let spy2 = sinon.spy(res, 'end');
 
-    signin(req, res).then((done)=>{
-      console.log('done is ', done);
+    signin(req, res).then((data)=>{
       expect(spy1.withArgs(200, {'Content-Type': 'application/json'}));
+      done();
     });
 
   });
