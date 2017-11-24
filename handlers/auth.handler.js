@@ -13,10 +13,8 @@ function authHandler(req, res, next) {
     let payload = decode(req);
 
     if (!payload.error) {
-      let expTime = moment.unix(payload.exp).toDate();
+      let expTime = moment.tz(payload.exp, 'GMT').toDate();
       let currentTIme = moment.tz('GMT').toDate();
-
-      console.log(expTime, currentTIme)
 
       if (currentTIme > expTime) {
         return responseHandler(res, 401, 'Unauthorized request', 'The jwt token provided by the client has expired. Kindly, login again.', true)
