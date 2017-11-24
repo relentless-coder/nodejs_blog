@@ -19,8 +19,6 @@ function findAll(collection, query, resClass, dummy) {
   };
 
   const populateResService = (docs) => {
-    console.log(docs);
-    console.log('reached populateResService')
     let data = [];
     docs.forEach((doc) => {
       data.push(new resClass(doc))
@@ -49,7 +47,6 @@ function findSingle(collection, query, resClass,  body={}, dummy) {
   }
   let model;
   const queryCollection = (db) => {
-    console.log('about to call queryCollection')
     model = db;
     let docs = model.collection(collection);
     return new Promise((resolve, reject) => {
@@ -64,17 +61,19 @@ function findSingle(collection, query, resClass,  body={}, dummy) {
   };
 
   const populateResService = (docs) => {
-    for(let key in body){
-      if(key){
-        docs[key] = body[key]
+    if(docs){
+      if(body.userPassword){
+        docs.userPassword = body.userPassword;
       }
+      return new resClass(docs);
+    } else {
+      return {}
     }
-    return new resClass(docs);
   };
 
-  const sendResponse = (data) => {
-    console.log(data);
+  const sendResponse = (localData) => {
     model.close();
+    let data = localData ? localData : {};
     return {
       data,
       message: 'Document query successful',
@@ -91,16 +90,6 @@ function findSingle(collection, query, resClass,  body={}, dummy) {
 function insert(collection, doc, reqClass, resClass, dummy) {
   let model;
   let isArray = false;
-  console.log("resClass is ", resClass);
-  if (!collection || !doc || !reqClass || !resClass) {
-    throw new ErrorWithStatusCode(422, 'Can\'t process request with incomplete data.', 'You haven\'t passed the required params to this function. Kindly, make sure the function is called with all the params mentioned in the document.')
-  }
-
-  if (Object.keys(doc).length === 0 || (Object.keys(doc).length === 1 && doc._id)) {
-    throw new ErrorWithStatusCode(400, 'Inserting empty documents is not allowed.', 'You tried to pass ' +
-      'empty document to the database. This will pollute your database. Kindly, try again with at least one' +
-      ' value other than _id.')
-  }
 
   const populateReqService = (db) => {
     model = db;
@@ -114,36 +103,32 @@ function insert(collection, doc, reqClass, resClass, dummy) {
       return requestData
 
     } else {
-      return new reqClass(doc)
+
+      let parseData = new reqClass(doc);
+
+      if(parseData.error){
+        throw new ErrorWithStatusCode(parseData.code, parseData.message, parseData.error);
+      } else {
+        return parseData
+      }
     }
   };
 
   const insertDocument = (docs) => {
     let localCollection = model.collection(collection);
-
     return new Promise((resolve, reject) => {
-      localCollection.insertOne(docs, (err, done) => {
+      localCollection.insertOne(docs, (err, data) => {
         if (err) {
           reject(err)
         } else {
-          resolve(done);
+          resolve(data);
         }
       })
     })
   };
 
   const populateResService = (result) => {
-    console.log('resClass is ', resClass)
-    if (Array.isArray(result.ops)) {
-      let data = [];
-      result.ops.forEach((el) => {
-        data.push(new resClass(el))
-      });
-
-      return data;
-    } else {
-      return new resClass(result.ops);
-    }
+    return new resClass(result.ops[0]);
   };
 
   const sendResponse = (data) => {
@@ -155,29 +140,34 @@ function insert(collection, doc, reqClass, resClass, dummy) {
     }
   };
 
-  return connectMongo(dummy).then(populateReqService).then(insertDocument).then(populateResService).then(sendResponse).catch((err) => {
-    model.close();
+  if (!collection || !doc || !reqClass || !resClass) {
+    throw new ErrorWithStatusCode(422, 'Can\'t process request with incomplete data.', 'You haven\'t passed the required params to this function. Kindly, make sure the function is called with all the params mentioned in the document.')
+  } else if (Object.keys(doc).length === 0 || (Object.keys(doc).length === 1 && doc._id)) {
+    throw new ErrorWithStatusCode(400, 'Inserting empty documents is not allowed.', 'You tried to pass ' +
+      'empty document to the database. This will pollute your database. Kindly, try again with at least one' +
+      ' value other than _id.')
+  } else {
+    return connectMongo(dummy).then(populateReqService).then(insertDocument).then(populateResService).then(sendResponse).catch((err) => {
+      model.close();
 
-    if(err.error){
-      throw new ErrorWithStatusCode(err.code, err.message, err.error)
-    } else {
-      throw new ErrorWithStatusCode(500, 'Sorry, we are facing some issue right now. Please try again later.', err);
-    }
+      if(err.error){
+        throw new ErrorWithStatusCode(err.code, err.message, err.error)
+      } else {
+        throw new ErrorWithStatusCode(500, 'Sorry, we are facing some issue right now. Please try again later.', err);
+      }
 
-  })
+    })
+  }
 }
 
 function update(collection, query, body, reqClass, resClass, dummy) {
+
   let model;
 
+
   if (!body) {
-    return {
-      status: 400,
-      message: 'Updating with empty object is not allowed.',
-      err: 'You were trying to update the existing document with an empty object, ' +
-      'it would completely replace your document with empty values.'
+    throw new ErrorWithStatusCode(400, 'Updating with empty object is not allowed.', 'You were trying to update the existing document with an empty object, it would completely replace your document with empty values.');
     }
-  }
 
   const populateReqService = (db) => {
     model = db;
@@ -214,7 +204,6 @@ function update(collection, query, body, reqClass, resClass, dummy) {
   };
 
   const populateResService = (doc) => {
-    console.log("populateResService ", doc);
     return new resClass(doc)
   };
 
@@ -227,10 +216,15 @@ function update(collection, query, body, reqClass, resClass, dummy) {
     }
   };
 
-  connectMongo(dummy).then(populateReqService).then(updateDocument).then(queryDocument).then(populateResService).then(sendResponse).catch((err) => {
+  return connectMongo(dummy).then(populateReqService).then(updateDocument).then(queryDocument).then(populateResService).then(sendResponse).catch((err) => {
     model.close();
-    throw new ErrorWithStatusCode(500, 'Sorry, we seem to be facing some issue right now. Please try again later.', err)
-  })
+    if(err.error){
+      throw new ErrorWithStatusCode(err.code, err.message, err.error)
+
+    } else {
+      throw new ErrorWithStatusCode(500, 'Sorry, we seem to be facing some issue right now. Please try again later.', err);
+    }
+  });
 }
 
 function removeOne(collection, query, dummy) {
@@ -241,7 +235,7 @@ function removeOne(collection, query, dummy) {
     let docs = model.collection(collection);
 
     return new Promise((resolve, reject) => {
-      docs.deleteOne(query, (err, done) => {
+      docs.removeOne(query, (err, done) => {
         if (err) {
           reject(err);
         } else {
