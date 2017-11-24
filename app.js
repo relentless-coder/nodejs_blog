@@ -21,7 +21,6 @@ const server = http.createServer((req, res) => {
 
 
 function handleError(data) {
-  console.log("data is ", data);
 }
 
 server.listen(5000, () => {
