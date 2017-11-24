@@ -34,7 +34,7 @@ describe('generateExp', ()=>{
     expect(data).to.be.a('object');
     expect(data).to.have.property('iat');
     expect(data).to.have.property('exp');
-    expect(Math.ceil(data.exp/1000)).to.equal(Math.ceil(expected/1000));
+    expect(Math.ceil(data.exp/1000)).to.be.within(Math.ceil(expected/1000) - 1, Math.ceil(expected/1000) + 1);
   })
 
 });
