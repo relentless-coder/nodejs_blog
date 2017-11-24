@@ -1,6 +1,7 @@
 import {findSingle, insert} from "../../services/mongodb/mongodb.service";
 import {setJwt, hashPassword, parseUser} from "../../services/layers/user.layer";
 import {responseHandler} from '../../handlers/response.handler';
+import {ErrorWithStatusCode} from '../../handlers/errorhandler';
 
 export function signin(req, res) {
 
@@ -28,13 +29,16 @@ export function signin(req, res) {
     return findSingle('users', query, setJwt, body).then((data) => {
       return responseHandler(res, data.status, data.message, data.data.token);
     }).catch((err) => {
-      console.log('err is ', err);
-      return responseHandler(res, err.code, err.message, err.error, true);
+      if(err.error){
+        throw new ErrorWithStatusCode(err.code, err.message, err.error)
+      } else{
+        throw new ErrorWithStatusCode(500, 'Sorry, we are facing some issue right now. Please, try agaiin later.', err);
+      }
     })
   };
 
  return getReqBody().then(getUserJwt).catch((err) => {
-    console.log("error is ", err);
+    return responseHandler(res, err.code, err.message, err.error, true);
   })
 
 
@@ -59,12 +63,33 @@ export function signup(req, res) {
     })
   };
 
-  const createUser = (body) => {
-    return insert('users', body, hashPassword, parseUser).then((data) => {
-      return responseHandler(res, data.status, data.message, data.data);
-    }).catch(err => responseHandler(res, err.code, err.message, err.error, true));
+  const checkIfUserExists = (body)=>{
+    req.body = body;
+    let query = {
+      email: body.email
+    };
+
+    return findSingle('users', query, parseUser).then((data)=>{
+      if(data.data.email){
+        throw new ErrorWithStatusCode(422, 'Email already exists', 'The email submitted by the client already exists.')
+      } else {
+        return true
+      }
+    }).catch((err)=>{throw new ErrorWithStatusCode(err.code, err.message, err.error)});
   };
 
- return getReqBody().then(createUser).catch((err)=> {console.log(err)})
+  const createUser = (data) => {
+    return insert('users', req.body, hashPassword, parseUser).then((data) => {
+      return responseHandler(res, data.status, data.message, data.data);
+    }).catch((err) => {
+      if (err.error) {
+        throw new ErrorWithStatusCode(err.code, err.message, err.error)
+      } else {
+        throw new ErrorWithStatusCode(500, 'Sorry, we seem to be facing some issue right now. Please, try again later.')
+      }
+    });
+  }
+
+ return getReqBody().then(checkIfUserExists).then(createUser).catch(err => responseHandler(res, err.code, err.message, err.error))
 
 }
