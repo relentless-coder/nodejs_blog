@@ -20,9 +20,10 @@ function responseHandler(res, status, message, data, err) {
       body.data = data;
     }
 
+
     res.writeHead(status, {'Content-Type': 'application/json'});
     res.end(JSON.stringify(body));
-    return true
+    return data
   }
 }
 
