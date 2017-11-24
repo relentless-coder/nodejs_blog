@@ -35,7 +35,6 @@ function generateExp(validity) {
 
     let validUnit = validInput.splice(-1, 1); //extracting out the the letter from the end
 
-    console.log(validUnit);
 
     switch (validUnit[0]) {
       case 'd':
