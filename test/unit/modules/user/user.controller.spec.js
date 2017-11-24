@@ -57,7 +57,7 @@ describe('signup', () => {
   it('should return with 422 when the email already exists', (done)=>{
     let req = {
       body: {
-        email: '100@test.com',
+        email: 'ayush@test.com',
         password: '12sdah'
       }
     };
