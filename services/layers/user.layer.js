@@ -27,7 +27,6 @@ class setJwt {
 
 class parseUser {
   constructor({_id, email}) {
-    console.log(_id, email);
     this._id = _id;
     this.email = email;
   }
@@ -35,12 +34,14 @@ class parseUser {
 
 class hashPassword {
   constructor({email, password}) {
-    if(!email || !password){
-      throw new ErrorWithStatusCode(422, 'Email or password not found.', 'hashPassword class requires email and password in the object.')
+    if(!password){
+        throw new ErrorWithStatusCode(422, 'Email or password not found.', 'hashPassword class requires email and password in the object.');
+    } else {
+
+      this.email = email;
+      this.salt = hashPassword.generateSalt();
+      this.password = hashPassword.generateHash(password, this.salt, cryptoConfig.iterations)
     }
-    this.email = email;
-    this.salt = hashPassword.generateSalt();
-    this.password = hashPassword.generateHash(password, this.salt, cryptoConfig.iterations)
   }
 
   static generateSalt() {
