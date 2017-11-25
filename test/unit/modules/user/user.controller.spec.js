@@ -116,6 +116,7 @@ describe('Signin', () => {
   before((cb)=>{
 
     insert('users', {email: 'signin@test.com', password: '14325'}, hashPassword, parseUser).then((done)=>{
+      console.log(done);
       cb();
     }).catch(err => err);
 
@@ -127,11 +128,11 @@ describe('Signin', () => {
     }).catch(err => err)
   });
 
-  it('should return with  401 for invalid email/password', () => {
+  it('should return with  401 for invalid email/password', (done) => {
     let req = {
       body: {
         userEmail: 'signin@test.com',
-        userPassword: '134'
+        userPassword: '1'
       }
     };
 
@@ -149,8 +150,9 @@ describe('Signin', () => {
 
     let spy2 = sinon.spy(res, 'end');
 
-    signin(req, res).then((done) => {
+    signin(req, res).then((data) => {
       expect(spy1.withArgs(401, {'Content-Type': 'application/json'}).calledOnce).to.be.true;
+      done();
     })
 
   });
