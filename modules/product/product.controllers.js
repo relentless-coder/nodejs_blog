@@ -98,7 +98,8 @@ export function updateOneProduct(req, res) {
   };
 
   const addToDatabase = () => {
-    return update('products', {_id: req.params.productId}, req.body, updateProduct, getProduct).then((data) => {
+    req.body._id = ObjectID(req.params.productId);
+    return update('products', {_id: ObjectID(req.params.productId)}, req.body, updateProduct, getProduct).then((data) => {
       return responseHandler(res, data.status, data.message, data.data);
     }).catch((err) => {
       throw new ErrorWithStatusCode(err.code, err.message, err.error)
