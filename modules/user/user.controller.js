@@ -50,7 +50,7 @@ export function signin(req, res) {
 
   const getUserJwt = (user) => {
     if(!user){
-      throw new ErrorWithStatusCode(404, 'Email isn\'t registered', 'This email isn\'t registered, kindly signup again.')
+      throw new ErrorWithStatusCode(404, 'Email isn\'t registered', 'This email isn\'t registered, kindly signup.')
     } else {
       let query = {
         email: userInput.userEmail
