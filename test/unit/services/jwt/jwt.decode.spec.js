@@ -33,7 +33,7 @@ describe('decode', ()=>{
       }
     };
 
-    expect(()=>{decode(req)}).to.throw('Invalid token').with.property('code', 401);
+    expect(()=>{decode(req)}).to.throw('Unauthorized access').with.property('code', 401);
 
   });
 
