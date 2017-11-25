@@ -14,6 +14,10 @@ router.use('/api/v1', productRouter);
 
 router.use('/api/v1', userRouter);
 
+router.get('/', (req, res)=>{
+  res.writeHead(200, {'Content-Type': 'application/json'});
+  res.end("Hello World")
+});
 
 const server = http.createServer((req, res) => {
   router(req, res, handleError)
