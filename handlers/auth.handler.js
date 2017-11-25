@@ -36,7 +36,7 @@ function authHandler(req, res, next) {
       }
 
     } else {
-      return responseHandler(payload.status, payload.message, payload.error, true);
+      return responseHandler(payload.code, payload.message, payload.error, true);
     }
 
   }
