@@ -4,7 +4,7 @@ import {responseHandler} from '../../handlers/response.handler';
 import {ErrorWithStatusCode} from '../../handlers/errorhandler';
 import {connectMongo} from '../../config/mongo.config';
 
-let userInput;
+let userInput = {};
 
 const checkIfUserExists = (body)=>{
     userInput = body;
@@ -55,6 +55,7 @@ export function signin(req, res) {
       let query = {
         email: userInput.userEmail
       };
+
       return findSingle('users', query, setJwt, userInput).then((data) => {
         return responseHandler(res, data.status, data.message, data.data.token);
       }).catch((err) => {
