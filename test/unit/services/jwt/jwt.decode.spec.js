@@ -12,7 +12,7 @@ describe('decode', ()=>{
       }
     };
 
-    expect(()=>{decode(req)}).to.throw('Unauthorized Error').with.property('code', 401);
+    expect(()=>{decode(req)}).to.throw('Access not allowed').with.property('code', 403);
   });
 
   it('should throw error with 401 for invalid token format', ()=>{
@@ -22,7 +22,7 @@ describe('decode', ()=>{
       }
     };
 
-    expect(()=>{decode(req)}).to.throw('Invalid token format').with.property('code', 401);
+    expect(()=>{decode(req)}).to.throw('Invalid token format').with.property('code', 400);
 
   });
 
