@@ -67,7 +67,7 @@ function findSingle(collection, query, resClass,  body={}, dummy) {
       }
       return new resClass(docs);
     } else {
-      return {}
+      throw new ErrorWithStatusCode(404, `${collection.substr(0, collection.length - 2)} doesn\'t exist`, 'The document that the client is looking for doesn\'t exist in our database');
     }
   };
 
