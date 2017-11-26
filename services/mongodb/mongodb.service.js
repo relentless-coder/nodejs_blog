@@ -21,7 +21,6 @@ function findAll(collection, query, resClass, dummy) {
   let model;
   const queryCollection = (db) => {
     model = db;
-    console.log("query is ", query);
     let docs = model.collection(collection);
     return new Promise((resolve, reject) => {
       docs.find(query).toArray((err, data) => {
