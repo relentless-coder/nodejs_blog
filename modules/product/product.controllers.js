@@ -4,12 +4,17 @@ import {upload} from "../../config/multer.config";
 import {ObjectID} from 'mongodb';
 import {ErrorWithStatusCode} from "../../handlers/errorhandler";
 import {responseHandler} from '../../handlers/response.handler';
-
+import qs from 'querystring';
 
 const fileUpload = upload.array('gallery');
 
 export function getAllProducts(req, res) {
-  return findAll('products', {}, getProduct).then((data) => {
+  let query = {};
+  if(req._parsedUrl.query){
+    let parsedQuery = qs.parse(req._parsedUrl.query);
+    query = {'$text': {'$search': parsedQuery.search}}
+  }
+  return findAll('products', query, getProduct).then((data) => {
     return responseHandler(res, data.status, data.message, data.data);
   }).catch((err) => {
     return responseHandler(res, data.status, data.message, data.error, true);
