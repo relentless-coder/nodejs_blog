@@ -1,11 +1,27 @@
 import {connectMongo} from "../../config/mongo.config";
 import {ErrorWithStatusCode} from "../../handlers/errorhandler";
 
+const createIndex = (db)=>{
+  let products = db.collection('products');
+  return new Promise((resolve, reject)=>{
+    products.createIndex({title: 'text', category: 'text'}, (err, done)=>{
+      if(err){
+        db.close();
+        reject(err)
+      } else {
+        db.close();
+        console.info(done);
+        resolve(done)
+      }
+    })
+  })
+};
+
 function findAll(collection, query, resClass, dummy) {
   let model;
   const queryCollection = (db) => {
     model = db;
-    let query = query ? query : {};
+    console.log("query is ", query);
     let docs = model.collection(collection);
     return new Promise((resolve, reject) => {
       docs.find(query).toArray((err, data) => {
@@ -259,5 +275,9 @@ function removeOne(collection, query, dummy) {
     throw new ErrorWithStatusCode(500, 'Sorry, we are facing some issue right now. Please, try again later.', err);
   })
 }
+
+connectMongo().then(createIndex).catch((err)=>{
+  throw err
+});
 
 export {findAll, findSingle, insert, update, removeOne}
