@@ -1,4 +1,4 @@
-# wingify-sample [![Build Status](https://travis-ci.org/relentless-coder/wingify-sample.svg?branch=master)](https://travis-ci.org/relentless-coder/wingify-sample)
+# nodejs-native-rest-apis [![Build Status](https://travis-ci.org/relentless-coder/wingify-sample.svg?branch=master)](https://travis-ci.org/relentless-coder/wingify-sample)
 
 Tools required:
 
@@ -16,7 +16,5 @@ The code is written in ES6, so you need to transpile the code by running the com
 Test command is: `yarn test`; **Note: You have to transpile the code in order to run the tests.**
 
 To run the application: `yarn start`
-
-The API docs are at: [Wingify-Sample APIs](https://wingifyonline.docs.apiary.io/#)
 
 Contact: contact@ayushbahuguna.com
