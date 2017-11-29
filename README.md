@@ -1,4 +1,4 @@
-# nodejs-native-rest-apis [![Build Status](https://travis-ci.org/relentless-coder/wingify-sample.svg?branch=master)](https://travis-ci.org/relentless-coder/wingify-sample)
+# nodejs-native-rest-apis [![Build Status](https://travis-ci.org/relentless-coder/nodejs-native-rest-apis.svg?branch=master)](https://travis-ci.org/relentless-coder/nodejs-native-rest-apis)
 
 REST APIs written in nodejs
 
