@@ -1,7 +1,7 @@
 {
-  "name": "wingify",
+  "name": "nodejs-native-rest-apis",
   "version": "1.0.0",
-  "description": "This is an API project for wingify interview",
+  "description": "This is an API project to write RESTful CRUD APIs in native node.",
   "main": "app.js",
   "author": "Ayush Bahuguna",
   "license": "MIT",
