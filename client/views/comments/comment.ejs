@@ -1,0 +1,53 @@
+<div class="new_comment_wrapper">
+    <h2 class="new_comment_header">Leave a comment</h2>
+    <div class="comment_form_wrapper">
+        <div class="name_email_wrapper">
+            <input type="text" id="name" class="new_name" name="comment[author][name]" required placeholder="Your name">
+            <input type="text" id="email" class="new_email" name="comment[author][email]" required
+                   placeholder="Your email">
+        </div>
+        <textarea id="comment" class="new_comment" cols="10" rows="5" name="comment[comment]" required
+                  placeholder="Your comment"></textarea>
+        <button onclick="postComment(comment, post.url)" class="comment_post">Submit</button>
+    </div>
+</div>
+
+<% if(post.comments.length > 0){ %>
+
+<div class="comment_wrapper">
+    <h2 class="comment_header">Comments</h2>
+    <% post.comments.forEach((el)=>{ %>
+    <div class="comment">
+        <div class="parent_comment_wrapper">
+            <h3 class="comment_name"><%= el.author.name %></h3>
+            <p class="comment_content"><%= el.comment %></p>
+        </div>
+        <% el.comments.forEach((data)=>{ %>
+        <div class="reply_comment">
+            <h3 class="comment_name"><%= data.author.name %></h3>
+
+            <p class="comment_content"><%= data.comment %></p>
+        </div>
+        <% }) %>
+
+        <div class="reply_comment_wrapper">
+            <div class="comment_form_wrapper reply">
+                <div class="name_email_wrapper reply">
+                    <input type="text" id="reply_name" class="new_name" placeholder="Your name"
+                           name="reply[author][name]" required>
+                    <input type="text" id="reply_email" class="new_email" placeholder="Your email"
+                           name="reply[author][email]" required>
+                </div>
+                <textarea id="comment" cols="10" rows="5" class="new_comment reply" name="reply[comment]"
+                          required></textarea>
+                <div class="reply_buttons_wrapper">
+                    <button onclick="replyComment(reply, el._id)" class="submit_reply">Submit</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <% }) %>
+</div>
+
+<% } %>

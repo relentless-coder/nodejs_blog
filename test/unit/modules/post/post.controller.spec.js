@@ -1,16 +1,16 @@
 import chai from 'chai';
 import sinon from 'sinon';
-import {addOneProduct, updateOneProduct} from '../../../../modules/product/product.controllers';
+import {addOnePost, updateOnePost} from '../../../../modules/post/post.controllers';
 import {removeOne} from '../../../../services/mongodb/mongodb.service';
 
 const expect = chai.expect;
 
 describe('Add Product', ()=>{
 
-  let productId;
+  let postId;
 
   after((done)=>{
-    removeOne('products', {title: 'Test Product'}).then(data => done()).catch((err)=>{
+    removeOne('posts', {title: 'Test Product'}).then(data => done()).catch((err)=>{
       throw err
     });
   });

@@ -5,38 +5,53 @@ import {
   update,
   removeOne
 } from "../../services/mongodb/mongodb.service";
-import {getProduct, addProduct, updateProduct} from "../../services/layers/product.layer";
-import {upload} from "../../config/multer.config";
-import {ObjectID} from 'mongodb';
-import {ErrorWithStatusCode} from "../../handlers/errorhandler";
-import {responseHandler} from '../../handlers/response.handler';
+import {
+  getPost,
+  addPost,
+  updatePost
+} from "../../services/layers/post.layer";
+import {
+  upload
+} from "../../config/multer.config";
+import {
+  ObjectID
+} from 'mongodb';
+import {
+  ErrorWithStatusCode
+} from "../../handlers/errorhandler";
+import {
+  responseHandler
+} from '../../handlers/response.handler';
 import qs from 'querystring';
 
 const fileUpload = upload.array('gallery');
 
-export function getAllProducts(req, res) {
+export function getAllPosts(req, res) {
   let query = {};
   if (req._parsedUrl.query) {
     let parsedQuery = qs.parse(req._parsedUrl.query);
-    query = {'$text': {'$search': parsedQuery.search}}
+    query = {
+      '$text': {
+        '$search': parsedQuery.search
+      }
+    }
   }
-  return findAll('products', query, getProduct).then((data) => {
+  return findAll('posts', query, getPost).then((data) => {
     data.data.forEach((el) => {
       let links = [];
       links.push({
-          href: `https://api.ayushbahuguna.com/api/v1/products/${el._id}`,
-          rel: 'self',
-          method: 'GET'
-        }, {
-          href: `https://api.ayushbahuguna.com/api/v1/products/${el._id}`,
-          rel: 'update',
-          method: 'PUT'
-        },
-        {
-          href: `https://api.ayushbahuguna.com/api/v1/products/${el._id}`,
-          rel: 'remove',
-          method: 'DELETE'
-        });
+        href: `https://api.ayushbahuguna.com/api/v1/posts/${el._id}`,
+        rel: 'self',
+        method: 'GET'
+      }, {
+        href: `https://api.ayushbahuguna.com/api/v1/posts/${el._id}`,
+        rel: 'update',
+        method: 'PUT'
+      }, {
+        href: `https://api.ayushbahuguna.com/api/v1/posts/${el._id}`,
+        rel: 'remove',
+        method: 'DELETE'
+      });
       el.links = links;
     })
     return responseHandler(res, data.status, data.message, data.data);
@@ -45,32 +60,17 @@ export function getAllProducts(req, res) {
   })
 }
 
-export function getOneProduct(req, res) {
+export function getOnePost(req, res) {
   let query = {
-    '_id': ObjectID(req.params.productId)
+    '_id': ObjectID(req.params.postId)
   };
-  return findSingle('products', query, getProduct).then((data) => {
-    let links = [];
-    links.push({
-        href: `https://api.ayushbahuguna.com/api/v1/products`,
-        rel: 'list',
-        method: 'GET'
-      }, {
-        href: `https://api.ayushbahuguna.com/api/v1/products/${el._id}`,
-        rel: 'update',
-        method: 'PUT'
-      },
-      {
-        href: `https://api.ayushbahuguna.com/api/v1/products/${el._id}`,
-        rel: 'remove',
-        method: 'DELETE'
-      });
-    data.data.links = links;
+  return findSingle('posts', query, getPost).then((data) => {
+    
     return responseHandler(res, data.status, data.message, data.data);
   })
 }
 
-export function addOneProduct(req, res) {
+export function addOnePost(req, res) {
 
   const getData = () => {
     if (req.body) {
@@ -99,18 +99,18 @@ export function addOneProduct(req, res) {
   };
 
   const addToDatabase = () => {
-    return insert('products', req.body, addProduct, getProduct).then((data) => {
+    return insert('posts', req.body, addPost, getPost).then((data) => {
       let links = [];
       links.push({
-        href: `https://api.ayushbahuguna.com/api/v1/products/${data.data._id}`,
+        href: `https://api.ayushbahuguna.com/api/v1/posts/${data.data._id}`,
         rel: 'self',
         method: 'GET'
-      },{
-        href: `https://api.ayushbahuguna.com/api/v1/products/${data.data._id}`,
+      }, {
+        href: `https://api.ayushbahuguna.com/api/v1/posts/${data.data._id}`,
         rel: 'update',
         method: 'PUT'
-      },{
-        href: `https://api.ayushbahuguna.com/api/v1/products/${data.data._id}`,
+      }, {
+        href: `https://api.ayushbahuguna.com/api/v1/posts/${data.data._id}`,
         rel: 'remove',
         method: 'DELETE'
       });
@@ -132,7 +132,7 @@ export function addOneProduct(req, res) {
   })
 }
 
-export function updateOneProduct(req, res) {
+export function updateOnePost(req, res) {
 
   const getData = () => {
     if (req.body) {
@@ -158,15 +158,17 @@ export function updateOneProduct(req, res) {
   };
 
   const addToDatabase = () => {
-    req.body._id = ObjectID(req.params.productId);
-    return update('products', {_id: ObjectID(req.params.productId)}, req.body, updateProduct, getProduct).then((data) => {
+    req.body._id = ObjectID(req.params.postId);
+    return update('posts', {
+      _id: ObjectID(req.params.postId)
+    }, req.body, updatePost, getPost).then((data) => {
       let links = [];
       links.push({
-        href: `https://api.ayushbahuguna.com/api/v1/products/${data.data._id}`,
+        href: `https://api.ayushbahuguna.com/api/v1/posts/${data.data._id}`,
         rel: 'self',
         method: 'GET'
-      },{
-        href: `https://api.ayushbahuguna.com/api/v1/products/${data.data._id}`,
+      }, {
+        href: `https://api.ayushbahuguna.com/api/v1/posts/${data.data._id}`,
         rel: 'remove',
         method: 'DELETE'
       });
@@ -175,7 +177,7 @@ export function updateOneProduct(req, res) {
     }).catch((err) => {
       throw new ErrorWithStatusCode(err.code, err.message, err.error)
     })
-  };
+  }
 
   return getData().then(addToDatabase).catch((err) => {
     if (err.code && err.message) {
@@ -186,19 +188,19 @@ export function updateOneProduct(req, res) {
   })
 }
 
-export function removeOneProduct(req, res) {
+export function removeOnePost(req, res) {
   let query = {
-    _id: ObjectID(req.params.productId)
+    _id: ObjectID(req.params.postId)
   };
 
-  return removeOne('products', query).then((data) => {
+  return removeOne('posts', query).then((data) => {
     let links = [];
     links.push({
-      href: `https://api.ayushbahuguna.com/api/v1/products`,
+      href: `https://api.ayushbahuguna.com/api/v1/posts`,
       rel: 'list',
       method: 'GET'
-    },{
-      href: `https://api.ayushbahuguna.com/api/v1/products`,
+    }, {
+      href: `https://api.ayushbahuguna.com/api/v1/posts`,
       rel: 'add',
       method: 'POST'
     });

@@ -1,0 +1,8 @@
+<% include ../../partials/header.ejs%>
+<div class="posts">
+  <div class="post">
+    <%posts.forEach((el)=>{ %>
+      <a href="/posts/<%= el.url %>" class="home-blog-post-title"><%= el.title%></a>
+    <%})%>
+  </div>
+</div>
