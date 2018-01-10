@@ -12,11 +12,11 @@
     </div>
 </div>
 
-<% if(post.comments.length > 0){ %>
+<% if(content.post.comments.length > 0){ %>
 
 <div class="comment_wrapper">
     <h2 class="comment_header">Comments</h2>
-    <% post.comments.forEach((el)=>{ %>
+    <% content.post.comments.forEach((el)=>{ %>
     <div class="comment">
         <div class="parent_comment_wrapper">
             <h3 class="comment_name"><%= el.author.name %></h3>
