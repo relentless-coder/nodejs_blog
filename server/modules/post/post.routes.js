@@ -10,7 +10,7 @@ router.get('/', controller.getAllPosts);
 
 router.post('/', authHandler, controller.addOnePost);
 
-router.get('/:postId', controller.getOnePost);
+router.get('/:url', controller.getOnePost);
 
 router.put('/:postId', authHandler, controller.updateOnePost);
 
