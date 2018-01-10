@@ -1,8 +1,8 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import {findSingle, findAll, update, insert} from "../../../../services/mongodb/mongodb.service";
-import {addProduct} from "../../../../services/layers/product.layer";
-import {getProduct} from "../../../../services/layers/product.layer";
+import {addProduct} from "../../../../server/services/layers/product.layer";
+import {getProduct} from "../../../../server/services/layers/product.layer";
 import {ErrorWithStatusCode} from "../../../../handlers/errorhandler";
 
 const expect = chai.expect;
