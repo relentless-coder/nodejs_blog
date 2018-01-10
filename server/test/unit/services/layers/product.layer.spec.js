@@ -1,6 +1,6 @@
 import chai from 'chai';
-import {getProduct} from "../../../../services/layers/product.layer";
-import {addProduct} from "../../../../services/layers/product.layer";
+import {getProduct} from "../../../../server/services/layers/product.layer";
+import {addProduct} from "../../../../server/services/layers/product.layer";
 
 const should = chai.should();
 
