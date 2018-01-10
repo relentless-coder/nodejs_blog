@@ -1,7 +1,7 @@
 import {ErrorWithStatusCode} from '../../handlers/errorhandler';
 
 export class getPost {
-  constructor({_id, title, description, category, meta, gallery, content, comments}) {
+  constructor({_id, title, description, category, meta, gallery, content, comments, url}) {
     this._id = _id;
     this.title = title;
     this.description = description;
@@ -9,6 +9,7 @@ export class getPost {
     this.meta = meta;
     this.content = content;
     this.comments = comments;
+    this.url = url;
   }
 }
 
