@@ -8,19 +8,21 @@ import {ErrorWithStatusCode} from "../../handlers/errorhandler";
 import {responseHandler} from '../../handlers/response.handler';
 import fileUpload from '../../handlers/upload.handler';
 
+
+
 const renderView = (path, data)=>{
+  const viewDirectory = './client/views/';
   return new Promise((resolve, reject) => {
-    ejs.renderFile(path, data, (err, str)=>{
-      if(err)
-        reject(err)
-      else
+    ejs.renderFile(`${viewDirectory}${path}`, data, (err, str)=>{
+      if(err) {
+        reject(err);
+      } else
         resolve(str)
     })
   })
-}
+};
 
 export function getAllPosts(req, res) {
-  console.log("I am here")
   let query = {};
   if (req._parsedUrl.query) {
     let parsedQuery = qs.parse(req._parsedUrl.query);
@@ -31,36 +33,43 @@ export function getAllPosts(req, res) {
     }
   }
   return mongo.findAll('posts', query, getPost).then((data) => {
-    renderView('./client/views/posts/all_posts/all.post.ejs', {content: {post: data.data, meta: {title: 'Ayush Bahuguna', description: 'Hello, I am Ayush Bahuguna', keywords: 'hello,world'}}}).then((str)=>{
+    renderView('posts/all_posts/all.post.ejs', {content: {post: data.data, meta: {title: 'Ayush Bahuguna', description: 'Hello, I am Ayush Bahuguna', keywords: 'hello,world'}}}).then((str)=>{
       const options = {
         status: data.status,
         message: data.message,
         data: str,
         content: 'text/html'
-      }
+      };
       return responseHandler(res, options);
     })
 
   }).catch((err) => {
-    console.log(err)
     return responseHandler(res, {status: err.status, message: err.message, data: err.error, content: 'application/json'});
   })
 }
 
 export function getOnePost(req, res) {
   let query = {
-    '_id': ObjectID(req.params.postId)
+    'url': req.params.url
   };
   return mongo.findSingle('posts', query, getPost).then((data) => {
-    const html = ejs.render('../../client/views/posts/', {post: data.data});
-    const clientData = fs.readFileSync(html);
-    let options = {
-      status: data.status,
-      message: data.message,
-      data: clientData,
-      content: 'text/html'
-    }
-    return responseHandler(res, options);
+    renderView('posts/single_post/single.post.ejs', {content: {post: data.data, meta: data.data.meta}})
+      .then((clientData)=>{
+        let options = {
+          status: data.status,
+          message: data.message,
+          data: clientData,
+          content: 'text/html'
+        };
+        return responseHandler(res, options);
+      }).catch((err)=>{
+        let options = {
+          status: err.status ? err.status : 500,
+          message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
+          data: err,
+          content: 'application/json'
+        }
+    })
   })
 }
 
@@ -138,7 +147,7 @@ export function updateOnePost(req, res) {
     }).catch((err) => {
       throw new ErrorWithStatusCode(err.code, err.message, err.error)
     })
-  }
+  };
 
   return getData().then(addToDatabase).catch((err) => {
     if (err.code && err.message) {
