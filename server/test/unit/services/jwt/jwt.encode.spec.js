@@ -1,6 +1,6 @@
 import chai from 'chai';
 import moment from 'moment-timezone';
-import {encode, generateExp} from '../../../../services/jwt/jwt.encode';
+import {encode, generateExp} from '../../../../server/services/jwt/jwt.encode';
 
 const expect = chai.expect;
 

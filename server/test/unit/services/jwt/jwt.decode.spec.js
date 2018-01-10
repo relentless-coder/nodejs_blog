@@ -1,6 +1,6 @@
 import chai from 'chai';
-import {decode} from '../../../../services/jwt/jwt.decode';
-import {encode} from '../../../../services/jwt/jwt.encode';
+import {decode} from '../../../../server/services/jwt/jwt.decode';
+import {encode} from '../../../../server/services/jwt/jwt.encode';
 
 const expect = chai.expect;
 
