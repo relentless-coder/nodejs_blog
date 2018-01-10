@@ -1,32 +1,26 @@
-import {
-  findAll,
-  findSingle,
-  insert,
-  update,
-  removeOne
-} from "../../services/mongodb/mongodb.service";
-import {
-  getPost,
-  addPost,
-  updatePost
-} from "../../services/layers/post.layer";
-import {
-  upload
-} from "../../config/multer.config";
-import {
-  ObjectID
-} from 'mongodb';
-import {
-  ErrorWithStatusCode
-} from "../../handlers/errorhandler";
-import {
-  responseHandler
-} from '../../handlers/response.handler';
 import qs from 'querystring';
+import fs from 'fs';
+import ejs from 'ejs';
+import mongo from "../../services/mongodb/mongodb.service";
+import {addPost, getPost, updatePost} from "../../services/layers/post.layer";
+import {ObjectID} from 'mongodb';
+import {ErrorWithStatusCode} from "../../handlers/errorhandler";
+import {responseHandler} from '../../handlers/response.handler';
+import fileUpload from '../../handlers/upload.handler';
 
-const fileUpload = upload.array('gallery');
+const renderView = (path, data)=>{
+  return new Promise((resolve, reject) => {
+    ejs.renderFile(path, data, (err, str)=>{
+      if(err)
+        reject(err)
+      else
+        resolve(str)
+    })
+  })
+}
 
 export function getAllPosts(req, res) {
+  console.log("I am here")
   let query = {};
   if (req._parsedUrl.query) {
     let parsedQuery = qs.parse(req._parsedUrl.query);
@@ -36,27 +30,20 @@ export function getAllPosts(req, res) {
       }
     }
   }
-  return findAll('posts', query, getPost).then((data) => {
-    data.data.forEach((el) => {
-      let links = [];
-      links.push({
-        href: `https://api.ayushbahuguna.com/api/v1/posts/${el._id}`,
-        rel: 'self',
-        method: 'GET'
-      }, {
-        href: `https://api.ayushbahuguna.com/api/v1/posts/${el._id}`,
-        rel: 'update',
-        method: 'PUT'
-      }, {
-        href: `https://api.ayushbahuguna.com/api/v1/posts/${el._id}`,
-        rel: 'remove',
-        method: 'DELETE'
-      });
-      el.links = links;
+  return mongo.findAll('posts', query, getPost).then((data) => {
+    renderView('./client/views/posts/all_posts/all.post.ejs', {content: {post: data.data, meta: {title: 'Ayush Bahuguna', description: 'Hello, I am Ayush Bahuguna', keywords: 'hello,world'}}}).then((str)=>{
+      const options = {
+        status: data.status,
+        message: data.message,
+        data: str,
+        content: 'text/html'
+      }
+      return responseHandler(res, options);
     })
-    return responseHandler(res, data.status, data.message, data.data);
+
   }).catch((err) => {
-    return responseHandler(res, data.status, data.message, data.error, true);
+    console.log(err)
+    return responseHandler(res, {status: err.status, message: err.message, data: err.error, content: 'application/json'});
   })
 }
 
@@ -64,9 +51,16 @@ export function getOnePost(req, res) {
   let query = {
     '_id': ObjectID(req.params.postId)
   };
-  return findSingle('posts', query, getPost).then((data) => {
-    
-    return responseHandler(res, data.status, data.message, data.data);
+  return mongo.findSingle('posts', query, getPost).then((data) => {
+    const html = ejs.render('../../client/views/posts/', {post: data.data});
+    const clientData = fs.readFileSync(html);
+    let options = {
+      status: data.status,
+      message: data.message,
+      data: clientData,
+      content: 'text/html'
+    }
+    return responseHandler(res, options);
   })
 }
 
@@ -76,45 +70,12 @@ export function addOnePost(req, res) {
     if (req.body) {
       return Promise.resolve(req)
     } else {
-      return new Promise((resolve, reject) => {
-        fileUpload(req, res, (err) => {
-          if (err) {
-            reject(err)
-          } else {
-            let files = [];
-            if (req.files) {
-              req.files.forEach((file) => {
-                files.push(file.path);
-              });
-              req.body.gallery = files;
-            }
-
-            resolve(req)
-
-          }
-        })
-      })
+      return fileUpload(req, res, 'image')
     }
-
   };
 
   const addToDatabase = () => {
-    return insert('posts', req.body, addPost, getPost).then((data) => {
-      let links = [];
-      links.push({
-        href: `https://api.ayushbahuguna.com/api/v1/posts/${data.data._id}`,
-        rel: 'self',
-        method: 'GET'
-      }, {
-        href: `https://api.ayushbahuguna.com/api/v1/posts/${data.data._id}`,
-        rel: 'update',
-        method: 'PUT'
-      }, {
-        href: `https://api.ayushbahuguna.com/api/v1/posts/${data.data._id}`,
-        rel: 'remove',
-        method: 'DELETE'
-      });
-      data.data.links = links;
+    return mongo.insert('posts', req.body, addPost, getPost).then((data) => {
       return responseHandler(res, data.status, data.message, data.data);
     }).catch((err) => {
       if (err.error) {
@@ -159,7 +120,7 @@ export function updateOnePost(req, res) {
 
   const addToDatabase = () => {
     req.body._id = ObjectID(req.params.postId);
-    return update('posts', {
+    return mongo.update('posts', {
       _id: ObjectID(req.params.postId)
     }, req.body, updatePost, getPost).then((data) => {
       let links = [];

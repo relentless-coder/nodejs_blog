@@ -1,6 +1,6 @@
 import mongodb from 'mongodb';
 
-const url = 'mongodb://localhost:27017/wingify-project';
+const url = 'mongodb://localhost:27017/blog';
 
 const client = mongodb.MongoClient;
 

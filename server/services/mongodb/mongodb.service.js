@@ -2,9 +2,9 @@ import {connectMongo} from "../../config/mongo.config";
 import {ErrorWithStatusCode} from "../../handlers/errorhandler";
 
 const createIndex = (db)=>{
-  let products = db.collection('products');
+  let posts = db.collection('posts');
   return new Promise((resolve, reject)=>{
-    products.createIndex({title: 'text', category: 'text'}, (err, done)=>{
+    posts.createIndex({title: 'text', category: 'text'}, (err, done)=>{
       if(err){
         db.close();
         reject(err)
@@ -279,4 +279,8 @@ connectMongo().then(createIndex).catch((err)=>{
   throw err
 });
 
-export {findAll, findSingle, insert, update, removeOne}
+function exposeMongoServices() {
+  return {findAll, findSingle, removeOne, update, insert}
+}
+
+export default exposeMongoServices()
