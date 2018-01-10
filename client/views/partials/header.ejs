@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" ng-cloak="" content="width=device-width, initial-scale=1">
-    <% if (meta) {%>
-      <title><%= meta.title %></title>
-      <meta name="keywords" content=<%= meta.keywords %>>
-      <meta name="description" content=<%= meta.description %>>
+    <% if (content.meta) {%>
+      <title><%= content.meta.title %></title>
+      <meta name="keywords" content=<%= content.meta.keywords %>>
+      <meta name="description" content=<%= content.meta.description %>>
     <%}%>
-    <link rel="stylesheet" href="/build/style.css">
+    <link rel="stylesheet" href="../../build/styles.css">
   </head>
   <body>
