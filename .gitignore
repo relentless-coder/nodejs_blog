@@ -3,3 +3,5 @@ node_modules/
 .nyc_output/
 .idea/
 client/build/
+package-lock.json
+yarn-error.log
