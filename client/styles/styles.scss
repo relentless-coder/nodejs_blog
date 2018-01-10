@@ -1,0 +1,397 @@
+@import "base";
+
+.new_comment_wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 55%;
+  margin: 1rem auto;
+  max-width: 100%;
+  align-items: center;
+  & .new_comment_header {
+    font-size: 2rem;
+  }
+  & .comment_form_wrapper {
+    background: $first-color;
+    box-shadow: $box-shadow;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    & .name_email_wrapper {
+      width: 80%;
+      margin: 1.5rem 0rem;
+      display: flex;
+      justify-content: space-between;
+      & .new_name,
+      & .new_email {
+        border: none;
+        color: black;
+        width: 45%;
+        margin: 0.7rem 0;
+        padding: 1rem 0.5rem;
+        background: $fifth-color;
+        font-size: 1.32rem;
+      }
+    }
+    & .new_comment {
+      padding: 0.5rem;
+      resize: none;
+      width: 80%;
+      color: black;
+      border: 2px solid $third-color;
+      margin-bottom: 1.5rem;
+      background: $fifth-color;
+      font: {
+        size: 1.32rem;
+        family: inherit;
+      }
+    }
+  }
+  & .comment_post {
+    width: 30%;
+    border: none;
+    border-radius: 5px;
+    color: $first-color;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem;
+    box-shadow: $box-shadow;
+    background: $third-color;
+    transition: all 1s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    border-radius: 2px;
+    color: $second-color;
+    font: {
+      size: 1.5rem;
+      weight: 900;
+    }
+    &:hover {
+      background: $sixth-color;
+    }
+  }
+}
+
+.comment_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+  & .comment_header {
+    font-size: 2rem;
+    color: black;
+  }
+  & .comment {
+    display: flex;
+    width: 45%;
+    margin: 1rem 0;
+    flex-direction: column;
+    align-items: flex-start;
+    & .parent_comment_wrapper {
+      display: flex;
+      margin: 0.5rem 0;
+      flex-direction: column;
+      justify-content: center;
+      background: white;
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 5px;
+      box-shadow: $box-shadow;
+      align-items: flex-start;
+      & .comment_name {
+        font: {
+          size: 1.48rem;
+          color: black;
+        }
+        margin: 0;
+      }
+      & .comment_email {
+        font: {
+          size: 1rem;
+        }
+        color: $second-color;
+      }
+      & .comment_content {
+        font: {
+          size: 1.28rem;
+          weight: 600;
+        }
+        color: $third-color;
+      }
+    }
+    & .reply_comment_wrapper {
+      width: 100%;
+      max-width: 100%;
+      margin-top: 1.5rem;
+      & .comment_form_wrapper.reply {
+        background: $first-color;
+        box-shadow: $box-shadow;
+        border-radius: 3px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 100%;
+        justify-content: center;
+        & .name_email_wrapper.reply {
+          width: 90%;
+          margin: 1.5rem 0rem;
+          display: flex;
+          justify-content: space-between;
+          & .new_name,
+          & .new_email {
+            border: none;
+            color: $second-color;
+            width: 45%;
+            margin: 0.7rem 0;
+            padding: 1rem 0.5rem;
+            background: $fifth-color;
+            font-size: 1.32rem;
+          }
+        }
+        & .new_comment.reply {
+          padding: 0.5rem;
+          resize: none;
+          width: 90%;
+          color: $second-color;
+          border: 2px solid $third-color;
+          margin-bottom: 1.5rem;
+          background: $fifth-color;
+          font: {
+            size: 1.32rem;
+            family: inherit;
+          }
+        }
+        & .reply_buttons_wrapper {
+          width: 45%;
+          display: flex;
+          margin-bottom: 1.5rem;
+          justify-content: space-between;
+          & .submit_reply, & .cancel_reply {
+            border: none;
+            border-radius: 2px;
+            width: 40%;
+            background: $third-color;
+            color: $second-color;
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 0.5rem;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+    & .reply_comment {
+      display: flex;
+      margin: 0.5rem 0;
+      border-left: 0.6rem solid $third-color;
+      flex-direction: column;
+      justify-content: center;
+      background: $first-color;
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 5px;
+      box-shadow: $box-shadow;
+      align-items: flex-start;
+      & .comment_name {
+        font: {
+          size: 1.48rem;
+          color: black;
+        }
+        margin: 0;
+      }
+      & .comment_email {
+        font: {
+          size: 1rem;
+        }
+        color: $second-color;
+      }
+      & .comment_content {
+        font: {
+          size: 1.28rem;
+          weight: 600;
+        }
+        color: $third-color;
+      }
+    }
+    & .s_reply {
+      border: none;
+      border-radius: 5px;
+      background: $third-color;
+      color: black;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 0.1rem 0.5rem;
+    }
+  }
+}
+
+@media only screen and (max-width: 960px) {
+  .new_comment_wrapper {
+    width: 65%;
+  }
+  .comment_wrapper .comment {
+    width: 55%;
+  }
+}
+
+@media only screen and (max-width: 720px) {
+  .new_comment_wrapper {
+    width: 75%;
+  }
+  .comment_wrapper .comment {
+    width: 65%;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .new_comment_wrapper {
+    width: 95%;
+  }
+  .comment_wrapper .comment {
+    width: 95%;
+  }
+}
+
+
+.posts {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 75%;
+  margin: 0 auto;
+  margin-top: 6rem;
+  margin-bottom: 2rem;
+  background: $first-color;
+  box-shadow: $box-shadow;
+  border-radius: 5px;
+  padding: 1rem;
+  & .post {
+    display: flex;
+    flex-direction: column;
+    margin: 1.5rem auto;
+    border-bottom: 1px solid $third-color;
+    & a {
+      color: $second-color;
+      font-size: 1.57rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    & h1 {
+      color: black;
+    }
+  }
+}
+
+@media only screen and (max-width: 960px) {
+  .posts {
+    width: 85%;
+  }
+}
+
+@media only screen and (max-width: 720px) {
+  .posts {
+    width: 95%;
+  }
+}
+
+
+.single_post_wrapper {
+  & .single_post {
+    display: flex;
+    max-width: 100%;
+    flex-direction: column;
+    align-items: center;
+    & .heading_wrapper {
+      width: 100%;
+      background: $second-color;
+      z-index: 0;
+      position: fixed;
+      padding: 0 10px;
+      height: 540px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      & .single_post_heading {
+        color: $first-color;
+        font-size: 4rem;
+        background: $second-color;
+        padding: 0 5px;
+        margin: 10% 0 0;
+        max-height: 100%;
+        text-align: center;
+      }
+    }
+    & .single_post_content_wrapper {
+      max-width: 100%;
+      position: relative;
+      z-index: 20;
+      margin-top: 800px;
+      background: $fourth-color;
+      & .single_post_content {
+        width: 75%;
+        font-size: 1.32rem;
+        color: $second-color;
+        line-height: 1.73rem;
+        background: $first-color;
+        padding: 1rem;
+        position: relative;
+        border-radius: 3px;
+        box-shadow: $box-shadow;
+        margin: 0 auto;
+        transform: translate3d(0px, -120px, 0);
+        transform-style: preserve-3d;
+        & pre > code {
+          font-size: 1rem;
+        }
+
+        & a {
+          color: $second-color;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 960px){
+  .single_post_wrapper {
+    & .single_post {
+      & .heading_wrapper {
+        & .single_post_content {
+          width: 85%;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 720px){
+  .single_post_wrapper {
+    & .single_post {
+      & .single_post_content_wrapper {
+        & .single_post_content {
+          width: 95%;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 480px){
+  .single_post_wrapper {
+    & .single_post {
+      & .heading_wrapper {
+        height: 500px;
+        & .single_post_heading {
+          font-size: 3rem;
+        }
+      }
+      & .single_post_content_wrapper {
+        margin-top: 650px;
+      }
+    }
+  }
+}
