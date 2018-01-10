@@ -1,21 +1,14 @@
-function commentHandler() {
+import commentFactory from './comment.factory'
+
+function comment() {
     const postComment = (comment, url)=>{
-      const formData = new FormData(comment);
-      axios.post(`/post/${url}/comment`, formData).then((data)=>{
-        return true
-      }).catch((err)=>{
-        console.log(err)
-      })
+      commentFactory.postComment(comment, url)
     }
 
     const replyComment = (comment, id)=>{
-      const formData = new FormData(comment);
-      axios.post(`/post/${url}/comment/${id}`, formData).then((data)=>{
-        return true
-      }).catch((err)=>{
-        console.log(err)
-      })
+      commentFactory.replyComment(comment, id)
     }
+
 }
 
-export {commentHandler}
+export {comment}
