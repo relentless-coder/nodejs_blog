@@ -1,5 +1,11 @@
 @import "base";
 
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 .new_comment_wrapper {
   display: flex;
   flex-direction: column;
@@ -394,4 +400,100 @@
       }
     }
   }
+}
+
+.nav-wrapper {
+  display: flex;
+  max-width: 100%;
+  flex-direction: column;
+  transition: all 1s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  align-items: center;
+  border-bottom: 2px solid $third-color;
+  justify-content: center;
+  height: 60px;
+  background: $first-color;
+  position: fixed;
+  color: $second-color;
+  top: 0;
+  z-index: 30;
+  right: 0;
+  box-shadow: $nav-shadow;
+  left: 0;
+  max-height: 100%;
+  .nav {
+    display: flex;
+    width: 45%;
+    max-width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    justify-content: space-between;
+    & .nav-item {
+      font: {
+        size: 1.28rem;
+        weight: 700;
+        padding-bottom: 0.5rem;
+      }
+      position: relative;
+      display: flex;
+      justify-content: center;
+      height: 60px;
+      width: 90px;
+      margin: 0;
+      padding: 0;
+      & a {
+        color: $second-color;
+        text-decoration: none;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 0 0.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        &:not(.active):hover {
+          background: $third-color;
+        }
+        &:active {
+          transform: scale(0.5);
+        }
+
+        &.active {
+          background: $third-color;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 960px) {
+  .nav-wrapper {
+    .nav {
+      width: 55%;
+    }
+  }
+}
+
+@media only screen and (max-width: 720px) {
+  .nav-wrapper {
+    .nav {
+      width: 65%;
+    }
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .nav-wrapper {
+    .nav {
+      width: 95%;
+    }
+  }
+}
+
+.hide {
+  display: none !important;
 }
