@@ -16,6 +16,8 @@ router.put('/:postId', authHandler, controller.updateOnePost);
 
 router.delete('/:postId', authHandler, controller.removeOnePost);
 
+router.post('/:url/comment', controller.addOneComment)
+
 export {
   router as postRouter
 }
