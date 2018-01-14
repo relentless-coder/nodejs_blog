@@ -2,24 +2,20 @@ const gulp = require('gulp');
 const babel = require('gulp-babel');
 const sass = require('gulp-sass');
 const clean = require('gulp-clean');
+const concat = require('gulp-concat');
 
 
 gulp.task('clean', ()=>{
-  return gulp.src('./client/build/*', {read: false})
+  return gulp.src('./client/build/*.js', {read: false})
     .pipe(clean())
 })
 
-gulp.task('js:babel', ['clean'], ()=>{
-  return gulp.src('./client/**/*.js')
-    .pipe(babel({presets: ['babel-preset-env']}))
-    .pipe(gulp.dest('./client/build'))
-})
 
-gulp.task('sass', ['js:babel'], ()=>{
+gulp.task('sass', ['clean'], ()=>{
   return gulp.src('./client/styles/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest('./client/build'))
 })
 
 
-gulp.task('default', ['clean', 'js:babel', 'sass'])
+gulp.task('default', ['clean', 'sass'])
