@@ -1,14 +1,18 @@
 import qs from 'querystring';
-import fs from 'fs';
 import ejs from 'ejs';
+import sanitize from 'sanitize-html';
 import mongo from "../../services/mongodb/mongodb.service";
 import {addPost, getPost, updatePost} from "../../services/layers/post.layer";
 import {ObjectID} from 'mongodb';
 import {ErrorWithStatusCode} from "../../handlers/errorhandler";
 import {responseHandler} from '../../handlers/response.handler';
 import fileUpload from '../../handlers/upload.handler';
+import {addComment, getComment} from '../../services/layers/comment.layer';
 
-
+const sanitizeOpt = {
+  allowedTags: ['img', 'p', 'pre', 'code'],
+  allowedSchemes: ['data', 'http']
+};
 
 const renderView = (path, data)=>{
   const viewDirectory = './client/views/';
@@ -53,7 +57,8 @@ export function getOnePost(req, res) {
     'url': req.params.url
   };
   return mongo.findSingle('posts', query, getPost).then((data) => {
-    renderView('posts/single_post/single.post.ejs', {content: {post: data.data, meta: data.data.meta}})
+    data.data.meta.keywords = data.data.meta.keywords.join(',')
+;    renderView('posts/single_post/single.post.ejs', {content: {post: data.data, meta: data.data.meta}})
       .then((clientData)=>{
         let options = {
           status: data.status,
@@ -69,6 +74,8 @@ export function getOnePost(req, res) {
           data: err,
           content: 'application/json'
         }
+
+        return responseHandler(res, options)
     })
   })
 }
@@ -84,6 +91,7 @@ export function addOnePost(req, res) {
   };
 
   const addToDatabase = () => {
+    req.body.content = sanitize(req.body.content, sanitizeOpt);
     return mongo.insert('posts', req.body, addPost, getPost).then((data) => {
       return responseHandler(res, data.status, data.message, data.data);
     }).catch((err) => {
@@ -160,10 +168,10 @@ export function updateOnePost(req, res) {
 
 export function removeOnePost(req, res) {
   let query = {
-    _id: ObjectID(req.params.postId)
+    url: req.params.url
   };
 
-  return removeOne('posts', query).then((data) => {
+  return mongo.removeOne('posts', query).then((data) => {
     let links = [];
     links.push({
       href: `https://api.ayushbahuguna.com/api/v1/posts`,
@@ -179,4 +187,72 @@ export function removeOnePost(req, res) {
   }).catch((err) => {
     return responseHandler(res, err.code, err.message, err.error, true);
   })
+}
+
+export function addOneComment(req, res) {
+
+  let foundPost, createdComment;
+
+  const getRequestBody = ()=>{
+    const body = [];
+    return new Promise((resolve, reject) => {
+      req.on('error', err => reject(err)).on('data', (data)=>{
+        body.push(data)
+      }).on('end', ()=>{
+        resolve(JSON.parse(Buffer.concat(body).toString()));
+      })
+    })
+  }
+
+  const findPost = (body)=>{
+    req.body = body;
+    req.body.comment = sanitize(req.body.comment, sanitizeOpt);
+    const query = {
+      url: req.params.url
+    };
+
+    return mongo.findSingle('posts', query, getPost)
+  };
+
+  const createComment = (data)=>{
+    foundPost = data.data;
+
+    return mongo.insert('comments', req.body, addComment, getComment)
+  };
+
+  const updatePostWithComment = (data)=>{
+    createdComment = data.data;
+    foundPost.comments.push(createdComment);
+
+    const query = {
+      url: req.params.url
+    };
+
+    console.log(foundPost, updatePost)
+
+    return mongo.update('posts', query, foundPost, updatePost, getPost)
+  };
+
+  const sendResponse = (data)=>{
+    let options = {
+      status: data.status,
+      message: 'Comment posted successfully',
+      data: createdComment,
+      content: 'application/json'
+    };
+
+    return responseHandler(res, options);
+  };
+
+  return getRequestBody().then(findPost).then(createComment).then(updatePostWithComment).then(sendResponse).catch((err)=>{
+    console.log('error is ', err);
+    let options = {
+      status: err.status || 500,
+      message: err.message || 'Sorry, we are facing some issue right now. Please, try again later',
+      data: err.error,
+      content: 'application/json'
+    };
+    return responseHandler(res, options)
+  })
+
 }
