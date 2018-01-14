@@ -8,7 +8,7 @@ export class getPost {
     this.category = category;
     this.meta = meta;
     this.content = content;
-    this.comments = comments;
+    this.comments = comments || [];
     this.url = url;
   }
 }
@@ -27,9 +27,9 @@ export class addPost {
   }
 }
 
-export class updateProduct {
-  constructor({_id, title, description, category, meta, content, comments}) {
-    if(!_id || !title || !description || !category || !meta || !content){
+export class updatePost {
+  constructor({_id, title, description, category, meta, content, comments, url}) {
+    if(!_id || !title || !meta || !content || !url){
       throw new ErrorWithStatusCode(422, 'Can\'t update document with empty object', 'Send the object with all the properties, as the missing keys would replace the original keys with null values.')
     } else {
       this._id = _id;
@@ -37,6 +37,7 @@ export class updateProduct {
       this.description = description;
       this.category = category;
       this.meta = meta;
+      this.url = url;
       this.content = content;
       this.comments = comments;
     }
