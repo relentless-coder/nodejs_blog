@@ -1,7 +1,7 @@
 class ErrorWithStatusCode extends Error {
-  constructor(code, message, err) {
+  constructor(status, message, err) {
     super(message);
-    this.code = code;
+    this.status = status;
     this.error = err;
   }
 }
