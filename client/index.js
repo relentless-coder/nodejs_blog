@@ -1,4 +1,5 @@
-import {comment} from './views/comments/comment.js'
+import {comment} from './views/comments/comment';
+import {singlePostHandler} from './views/posts/single_post/single.post';
 
-
-comment()
+singlePostHandler()
+window.commentWrapper = comment()
