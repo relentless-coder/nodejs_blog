@@ -1,6 +1,16 @@
 import commentFactory from './comment.factory'
+import {DOMParser} from 'prosemirror-model';
+import {schema} from 'prosemirror-schema-basic';
+import {EditorState} from 'prosemirror-state';
 
 function comment() {
+
+  let content = document.getElementById('new_comment');
+
+  let state = EditorState.create({
+    doc: DOMParser.fromSchema(schema).parse(content)
+  })
+
   const postComment = (url) => {
     console.log(document.getElementById('comment_name').value, document.getElementById('comment_email').value, document.getElementById('author_new_comment').value)
     const data = {

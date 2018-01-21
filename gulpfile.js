@@ -6,7 +6,7 @@ const concat = require('gulp-concat');
 
 
 gulp.task('clean', ()=>{
-  return gulp.src('./client/build/*.js', {read: false})
+  return gulp.src(['./client/blog/build/*.js', './client/blog/admin/*.js'], {read: false})
     .pipe(clean())
 })
 

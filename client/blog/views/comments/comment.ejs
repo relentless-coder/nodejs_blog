@@ -7,10 +7,11 @@
             <input type="text" class="new_email" id="comment_email" name="comment[author][email]" required
                    placeholder="Your email">
         </div>
-        <textarea class="new_comment" cols="10" rows="5" id="author_new_comment" name="comment[comment]" required
-                  placeholder="Your comment"></textarea>
+        <div id="new_comment">
+
+        </div>
         <button onclick="commentWrapper.postComment('<%= content.post.url %>')" class="comment_post">Submit</button>
-        s
+
     </div>
 </div>
 

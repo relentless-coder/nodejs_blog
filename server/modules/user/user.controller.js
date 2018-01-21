@@ -1,8 +1,10 @@
-import {findSingle, insert} from "../../services/mongodb/mongodb.service";
 import {setJwt, hashPassword, parseUser} from "../../services/layers/user.layer";
 import {responseHandler} from '../../handlers/response.handler';
 import {ErrorWithStatusCode} from '../../handlers/errorhandler';
 import {connectMongo} from '../../config/mongo.config';
+import {ObjectID} from 'mongodb';
+import mongodb from '../../services/mongodb/mongodb.service';
+import {getUser} from '../../services/layers/user.layer';
 
 let userInput = {};
 
@@ -56,7 +58,7 @@ export function signin(req, res) {
         email: userInput.userEmail
       };
 
-      return findSingle('users', query, setJwt, userInput).then((data) => {
+      return mongodb.findSingle('users', query, setJwt, userInput).then((data) => {
         return responseHandler(res, data.status, data.message, data.data.token);
       }).catch((err) => {
         if(err.error){
@@ -97,7 +99,7 @@ export function signup(req, res) {
     if(data){
       throw new ErrorWithStatusCode(422, 'Email already exists.', 'The email provided by the client already exists, kindly login with the same.')
     } else {
-      return insert('users', userInput, hashPassword, parseUser).then((data) => {
+      return mongodb.insert('users', userInput, hashPassword, parseUser).then((data) => {
         return responseHandler(res, data.status, data.message, data.data);
       }).catch((err) => {
         if (err.error) {
@@ -111,4 +113,30 @@ export function signup(req, res) {
 
  return getReqBody().then(checkIfUserExists).then(createUser).catch(err => responseHandler(res, err.code, err.message, err.error))
 
+}
+
+export function getAuthor(req, res) {
+  const query = {
+    _id: ObjectID(res.payload)
+  }
+
+  return mongodb.findSingle('users', query, getUser).then((data)=>{
+    let options = {
+      status: data.status,
+      message: data.message,
+      data: data.data,
+      content: 'application/json'
+    }
+    return responseHandler(res, options)
+  }).catch((err)=>{
+
+    const options = {
+      status: err.status ? err.status : 500,
+      message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
+      data: err,
+      content: 'application/json'
+    }
+
+    return responseHandler(res, options)
+  })
 }

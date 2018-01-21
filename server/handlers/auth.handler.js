@@ -1,10 +1,9 @@
 import moment from 'moment-timezone';
-import { decode } from '../services/jwt/jwt.decode';
-import { findSingle } from '../services/mongodb/mongodb.service';
-import { ObjectID } from 'mongodb';
-import { parseUser } from "../services/layers/user.layer";
-import { ErrorWithStatusCode } from './errorhandler';
-import { responseHandler } from './response.handler';
+import {decode} from '../services/jwt/jwt.decode';
+import {findSingle} from '../services/mongodb/mongodb.service';
+import {ObjectID} from 'mongodb';
+import {parseUser} from "../services/layers/user.layer";
+import {responseHandler} from './response.handler';
 
 function authHandler(req, res, next) {
 
@@ -23,7 +22,7 @@ function authHandler(req, res, next) {
 
       findSingle('users', query, parseUser).then((data) => {
         if (data) {
-          req.user = data;
+          res.payload = data._id;
           return next()
         } else {
           return responseHandler(res, 401, 'Unauthorized request', 'User doesn\'t exist', true)

@@ -2,7 +2,6 @@ import {encode} from "../jwt/jwt.encode";
 import crypto from 'crypto';
 import {cryptoConfig} from "../../config/crypto.config";
 import {ErrorWithStatusCode} from '../../handlers/errorhandler';
-import {responseHandler} from '../../handlers/response.handler';
 
 class setJwt {
   constructor({_id, password, salt, userPassword}) {
@@ -53,4 +52,16 @@ class hashPassword {
   }
 }
 
-export {setJwt, hashPassword, parseUser}
+class getUser {
+  constructor({_id, name, email, about, intro, projects, social}){
+    this._id = _id;
+    this.name = name;
+    this.email = email;
+    this.about = about;
+    this.intro = intro;
+    this.projects = projects;
+    this.social = social;
+  }
+}
+
+export {setJwt, hashPassword, parseUser, getUser}
