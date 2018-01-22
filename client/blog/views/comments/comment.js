@@ -12,7 +12,6 @@ function comment() {
   })
 
   const postComment = (url) => {
-    console.log(document.getElementById('comment_name').value, document.getElementById('comment_email').value, document.getElementById('author_new_comment').value)
     const data = {
       author: {
         name: document.getElementById('comment_name').value,

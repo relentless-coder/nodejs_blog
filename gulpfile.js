@@ -11,10 +11,16 @@ gulp.task('clean', ()=>{
 })
 
 
-gulp.task('sass', ['clean'], ()=>{
-  return gulp.src('./client/styles/*.scss')
+gulp.task('blog-sass', ['clean'], ()=>{
+  return gulp.src('./client/blog/styles/*.scss')
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./client/build'))
+    .pipe(gulp.dest('./client/blog/build'))
+})
+
+gulp.task('admin-sass', ['blog-sass'], ()=>{
+  return gulp.src('./client/admin/styles/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('./client/admin/build'))
 })
 
 

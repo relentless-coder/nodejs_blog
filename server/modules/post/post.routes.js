@@ -8,7 +8,6 @@ const router = new Router();
 
 router.get('/', controller.getAllPosts);
 
-router.post('/', authHandler, controller.addOnePost);
 
 router.get('/:url', controller.getOnePost);
 
