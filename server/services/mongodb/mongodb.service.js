@@ -1,286 +1,286 @@
-import {connectMongo} from "../../config/mongo.config";
-import {ErrorWithStatusCode} from "../../handlers/errorhandler";
+import {connectMongo} from '../../config/mongo.config';
+import {ErrorWithStatusCode} from '../../handlers/errorhandler';
 
 const createIndex = (db)=>{
-  let posts = db.collection('posts');
-  return new Promise((resolve, reject)=>{
-    posts.createIndex({title: 'text', category: 'text'}, (err, done)=>{
-      if(err){
-        db.close();
-        reject(err)
-      } else {
-        db.close();
-        console.info(done);
-        resolve(done)
-      }
-    })
-  })
+	let posts = db.collection('posts');
+	return new Promise((resolve, reject)=>{
+		posts.createIndex({title: 'text', category: 'text'}, (err, done)=>{
+			if(err){
+				db.close();
+				reject(err);
+			} else {
+				db.close();
+				console.info(done);
+				resolve(done);
+			}
+		});
+	});
 };
 
 function findAll(collection, query, resClass, dummy) {
-  let model;
-  const queryCollection = (db) => {
-    model = db;
-    let docs = model.collection(collection);
-    return new Promise((resolve, reject) => {
-      docs.find(query).toArray((err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(data);
-        }
-      })
-    })
-  };
+	let model;
+	const queryCollection = (db) => {
+		model = db;
+		let docs = model.collection(collection);
+		return new Promise((resolve, reject) => {
+			docs.find(query).toArray((err, data) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(data);
+				}
+			});
+		});
+	};
 
-  const populateResService = (docs) => {
-    let data = [];
-    docs.forEach((doc) => {
-      data.push(new resClass(doc))
-    });
-    return data;
-  };
+	const populateResService = (docs) => {
+		let data = [];
+		docs.forEach((doc) => {
+			data.push(new resClass(doc));
+		});
+		return data;
+	};
 
-  const sendResponse = (data) => {
-    model.close();
-    return {
-      data,
-      message: 'Documents query successful',
-      status: 200
-    }
-  };
+	const sendResponse = (data) => {
+		model.close();
+		return {
+			data,
+			message: 'Documents query successful',
+			status: 200
+		};
+	};
 
-  return connectMongo(dummy).then(queryCollection).then(populateResService).then(sendResponse).catch((err) => {
-    model.close();
-    throw new ErrorWithStatusCode(500, 'Sorry, we seem to be facing some issue right now. Please, try again later.', err);
-  })
+	return connectMongo(dummy).then(queryCollection).then(populateResService).then(sendResponse).catch((err) => {
+		model.close();
+		throw new ErrorWithStatusCode(500, 'Sorry, we seem to be facing some issue right now. Please, try again later.', err);
+	});
 }
 
 function findSingle(collection, query, resClass,  body={}, dummy) {
-  if (!collection || !query) {
-    throw new ErrorWithStatusCode(422, 'Can\'t process request with incomplete data.', 'You haven\'t passed the required params to this function. Kindly, make sure the function is called with all the params mentioned in the document.')
-  }
-  let model;
-  const queryCollection = (db) => {
-    model = db;
-    let docs = model.collection(collection);
-    return new Promise((resolve, reject) => {
-      docs.findOne(query, (err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(data);
-        }
-      })
-    })
-  };
+	if (!collection || !query) {
+		throw new ErrorWithStatusCode(422, 'Can\'t process request with incomplete data.', 'You haven\'t passed the required params to this function. Kindly, make sure the function is called with all the params mentioned in the document.');
+	}
+	let model;
+	const queryCollection = (db) => {
+		model = db;
+		let docs = model.collection(collection);
+		return new Promise((resolve, reject) => {
+			docs.findOne(query, (err, data) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(data);
+				}
+			});
+		});
+	};
 
-  const populateResService = (docs) => {
-    if(docs){
-      if(body.userPassword){
-        docs.userPassword = body.userPassword;
-      }
-      return new resClass(docs);
-    } else {
-      throw new ErrorWithStatusCode(404, `${collection.substr(0, collection.length - 2)} doesn\'t exist`, 'The document that the client is looking for doesn\'t exist in our database');
-    }
-  };
+	const populateResService = (docs) => {
+		if(docs){
+			if(body.userPassword){
+				docs.userPassword = body.userPassword;
+			}
+			return new resClass(docs);
+		} else {
+			throw new ErrorWithStatusCode(404, `${collection.substr(0, collection.length - 2)} doesn\'t exist`, 'The document that the client is looking for doesn\'t exist in our database');
+		}
+	};
 
-  const sendResponse = (localData) => {
-    model.close();
-    let data = localData ? localData : {};
-    return {
-      data,
-      message: 'Document query successful',
-      status: 200
-    }
-  };
+	const sendResponse = (localData) => {
+		model.close();
+		let data = localData ? localData : {};
+		return {
+			data,
+			message: 'Document query successful',
+			status: 200
+		};
+	};
 
-  return connectMongo(dummy).then(queryCollection).then(populateResService).then(sendResponse).catch((err) => {
-    model.close();
-    throw new ErrorWithStatusCode(err.code, err.message, err.error)
-  })
+	return connectMongo(dummy).then(queryCollection).then(populateResService).then(sendResponse).catch((err) => {
+		model.close();
+		throw new ErrorWithStatusCode(err.code, err.message, err.error);
+	});
 }
 
 function insert(collection, doc, reqClass, resClass, dummy) {
-  let model;
-  let isArray = false;
+	let model;
+	let isArray = false;
 
-  const populateReqService = (db) => {
-    model = db;
-    if (Array.isArray(doc)) {
-      let requestData = [];
-      isArray = true;
-      doc.forEach((el) => {
-        requestData.push(new reqClass(el))
-      });
+	const populateReqService = (db) => {
+		model = db;
+		if (Array.isArray(doc)) {
+			let requestData = [];
+			isArray = true;
+			doc.forEach((el) => {
+				requestData.push(new reqClass(el));
+			});
 
-      return requestData
+			return requestData;
 
-    } else {
+		} else {
 
-      let parseData = new reqClass(doc);
+			let parseData = new reqClass(doc);
 
-      if(parseData.error){
-        throw new ErrorWithStatusCode(parseData.code, parseData.message, parseData.error);
-      } else {
-        return parseData
-      }
-    }
-  };
+			if(parseData.error){
+				throw new ErrorWithStatusCode(parseData.code, parseData.message, parseData.error);
+			} else {
+				return parseData;
+			}
+		}
+	};
 
-  const insertDocument = (docs) => {
-    let localCollection = model.collection(collection);
-    return new Promise((resolve, reject) => {
-      localCollection.insertOne(docs, (err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(data);
-        }
-      })
-    })
-  };
+	const insertDocument = (docs) => {
+		let localCollection = model.collection(collection);
+		return new Promise((resolve, reject) => {
+			localCollection.insertOne(docs, (err, data) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(data);
+				}
+			});
+		});
+	};
 
-  const populateResService = (result) => {
-    return new resClass(result.ops[0]);
-  };
+	const populateResService = (result) => {
+		return new resClass(result.ops[0]);
+	};
 
-  const sendResponse = (data) => {
-    model.close();
-    return {
-      data,
-      message: 'Document inserted successfully',
-      status: 200
-    }
-  };
+	const sendResponse = (data) => {
+		model.close();
+		return {
+			data,
+			message: 'Document inserted successfully',
+			status: 200
+		};
+	};
 
-  if (!collection || !doc || !reqClass || !resClass) {
-    throw new ErrorWithStatusCode(422, 'Can\'t process request with incomplete data.', 'You haven\'t passed the required params to this function. Kindly, make sure the function is called with all the params mentioned in the document.')
-  } else if (Object.keys(doc).length === 0 || (Object.keys(doc).length === 1 && doc._id)) {
-    throw new ErrorWithStatusCode(400, 'Inserting empty documents is not allowed.', 'You tried to pass ' +
+	if (!collection || !doc || !reqClass || !resClass) {
+		throw new ErrorWithStatusCode(422, 'Can\'t process request with incomplete data.', 'You haven\'t passed the required params to this function. Kindly, make sure the function is called with all the params mentioned in the document.');
+	} else if (Object.keys(doc).length === 0 || (Object.keys(doc).length === 1 && doc._id)) {
+		throw new ErrorWithStatusCode(400, 'Inserting empty documents is not allowed.', 'You tried to pass ' +
       'empty document to the database. This will pollute your database. Kindly, try again with at least one' +
-      ' value other than _id.')
-  } else {
-    return connectMongo(dummy).then(populateReqService).then(insertDocument).then(populateResService).then(sendResponse).catch((err) => {
-      model.close();
+      ' value other than _id.');
+	} else {
+		return connectMongo(dummy).then(populateReqService).then(insertDocument).then(populateResService).then(sendResponse).catch((err) => {
+			model.close();
 
-      if(err.error){
-        throw new ErrorWithStatusCode(err.code, err.message, err.error)
-      } else {
-        throw new ErrorWithStatusCode(500, 'Sorry, we are facing some issue right now. Please try again later.', err);
-      }
+			if(err.error){
+				throw new ErrorWithStatusCode(err.code, err.message, err.error);
+			} else {
+				throw new ErrorWithStatusCode(500, 'Sorry, we are facing some issue right now. Please try again later.', err);
+			}
 
-    })
-  }
+		});
+	}
 }
 
 function update(collection, query, body, reqClass, resClass, dummy) {
 
-  let model;
+	let model;
 
 
-  if (!body) {
-    throw new ErrorWithStatusCode(400, 'Updating with empty object is not allowed.', 'You were trying to update the existing document with an empty object, it would completely replace your document with empty values.');
-    }
+	if (!body) {
+		throw new ErrorWithStatusCode(400, 'Updating with empty object is not allowed.', 'You were trying to update the existing document with an empty object, it would completely replace your document with empty values.');
+	}
 
-  const populateReqService = (db) => {
-    model = db;
-    return new reqClass(body)
-  };
+	const populateReqService = (db) => {
+		model = db;
+		return new reqClass(body);
+	};
 
-  const updateDocument = (object) => {
+	const updateDocument = (object) => {
 
-    let localCollection = model.collection(collection);
+		let localCollection = model.collection(collection);
 
-    return new Promise((resolve, reject) => {
-      localCollection.updateOne(query, object, (err, done) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(done)
-        }
-      })
-    })
-  };
+		return new Promise((resolve, reject) => {
+			localCollection.updateOne(query, object, (err, done) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(done);
+				}
+			});
+		});
+	};
 
-  const queryDocument = () => {
-    let localCollection = model.collection(collection);
+	const queryDocument = () => {
+		let localCollection = model.collection(collection);
 
-    return new Promise((resolve, reject) => {
-      localCollection.findOne(query, (err, doc) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(doc);
-        }
-      });
-    })
-  };
+		return new Promise((resolve, reject) => {
+			localCollection.findOne(query, (err, doc) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(doc);
+				}
+			});
+		});
+	};
 
-  const populateResService = (doc) => {
-    return new resClass(doc)
-  };
+	const populateResService = (doc) => {
+		return new resClass(doc);
+	};
 
-  const sendResponse = (data) => {
-    model.close();
-    return {
-      data,
-      message: 'Document updated successfully',
-      status: 200
-    }
-  };
+	const sendResponse = (data) => {
+		model.close();
+		return {
+			data,
+			message: 'Document updated successfully',
+			status: 200
+		};
+	};
 
-  return connectMongo(dummy).then(populateReqService).then(updateDocument).then(queryDocument).then(populateResService).then(sendResponse).catch((err) => {
-    model.close();
-    if(err.error){
-      throw new ErrorWithStatusCode(err.code, err.message, err.error)
+	return connectMongo(dummy).then(populateReqService).then(updateDocument).then(queryDocument).then(populateResService).then(sendResponse).catch((err) => {
+		model.close();
+		if(err.error){
+			throw new ErrorWithStatusCode(err.code, err.message, err.error);
 
-    } else {
-      throw new ErrorWithStatusCode(500, 'Sorry, we seem to be facing some issue right now. Please try again later.', err);
-    }
-  });
+		} else {
+			throw new ErrorWithStatusCode(500, 'Sorry, we seem to be facing some issue right now. Please try again later.', err);
+		}
+	});
 }
 
 function removeOne(collection, query, dummy) {
-  let model;
+	let model;
 
-  const removeDocument = (db) => {
-    model = db;
-    let docs = model.collection(collection);
+	const removeDocument = (db) => {
+		model = db;
+		let docs = model.collection(collection);
 
-    return new Promise((resolve, reject) => {
-      docs.removeOne(query, (err, done) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(done);
-        }
-      })
-    })
-  };
+		return new Promise((resolve, reject) => {
+			docs.removeOne(query, (err, done) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(done);
+				}
+			});
+		});
+	};
 
-  const sendResponse = () => {
-    model.close();
-    return {
-      status: 200,
-      message: 'Product deleted successfully'
-    }
-  };
+	const sendResponse = () => {
+		model.close();
+		return {
+			status: 200,
+			message: 'Product deleted successfully'
+		};
+	};
 
 
-  return connectMongo(dummy).then(removeDocument).then(sendResponse).catch((err) => {
-    model.close();
-    throw new ErrorWithStatusCode(500, 'Sorry, we are facing some issue right now. Please, try again later.', err);
-  })
+	return connectMongo(dummy).then(removeDocument).then(sendResponse).catch((err) => {
+		model.close();
+		throw new ErrorWithStatusCode(500, 'Sorry, we are facing some issue right now. Please, try again later.', err);
+	});
 }
 
 connectMongo().then(createIndex).catch((err)=>{
-  throw err
+	throw err;
 });
 
 function exposeMongoServices() {
-  return {findAll, findSingle, removeOne, update, insert}
+	return {findAll, findSingle, removeOne, update, insert};
 }
 
-export default exposeMongoServices()
+export default exposeMongoServices();

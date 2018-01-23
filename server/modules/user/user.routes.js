@@ -7,6 +7,6 @@ router.post('/signup', controller.signup);
 
 router.post('/signin', controller.signin);
 
-router.get('/', )
+router.get('/', );
 
-export {router as userRouter}
+export {router as userRouter};
