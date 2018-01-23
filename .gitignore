@@ -5,3 +5,4 @@ node_modules/
 client/build/
 package-lock.json
 yarn-error.log
+*.swp
