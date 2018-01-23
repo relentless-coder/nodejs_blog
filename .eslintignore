@@ -1,0 +1,5 @@
+client/admin/build
+client/blog/build
+server/test
+server/dist
+dist/
