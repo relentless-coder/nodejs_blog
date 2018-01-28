@@ -2,7 +2,8 @@ dist/
 node_modules/
 .nyc_output/
 .idea/
-client/build/
+client/admin/build/
+client/blog/build/
 package-lock.json
 yarn-error.log
 *.swp
