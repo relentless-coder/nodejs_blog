@@ -3,15 +3,15 @@
 		"es6": true,
 		"node": true,
 		"browser": true
-						    
+
 	},
 	"extends": "eslint:recommended",
 	"parserOptions": {
-		"sourceType": "module"				    
+		"sourceType": "module"
 	},
 	"parser": "babel-eslint",
 	"rules": {
-		"indent": [2, "tab"],
+		"indent": [2, 4],
 		"no-console": 0,
 		"no-unused-vars": 0,
 		"no-useless-escape": 0,
