@@ -1,15 +1,18 @@
 import http from 'http';
-import router from './modules/module';
+import Router from 'router';
+import routerFactory from './modules/module';
+
+
 
 const server = http.createServer((req, res) => {
-	router(req, res, handleError);
+    routerFactory(req, res, handleError);
 });
 
 
 function handleError(data) {
-
+    console.log(data);
 }
 
 server.listen(5000, () => {
-	console.log('Server listening on port 5000');
+    console.log('Server listening on port 5000');
 });
