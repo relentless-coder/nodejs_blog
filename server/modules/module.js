@@ -7,12 +7,12 @@ const router = new Router();
 
 function routerFactory() {
 
-	router.use('/post', postRouter);
-	router.use('/user', userRouter);
+    router.use('/post', postRouter);
+    router.use('/user', userRouter);
 
-	router.get('*', serveStatic);
+    router.get('*', serveStatic);
 
-	return router;
+    return router;
 }
 
 export default routerFactory();

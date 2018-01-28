@@ -7,6 +7,4 @@ router.post('/signup', controller.signup);
 
 router.post('/signin', controller.signin);
 
-router.get('/', );
-
 export {router as userRouter};

@@ -1,13 +1,14 @@
 import Router from 'router';
 import * as controller from './post.controllers';
 import {
-	authHandler
+    authHandler
 } from '../../handlers/auth.handler';
 
 const router = new Router();
 
 router.get('/', controller.getAllPosts);
 
+router.get('/admin/new', controller.renderNewPost);
 
 router.get('/:url', controller.getOnePost);
 
@@ -18,5 +19,5 @@ router.delete('/:postId', authHandler, controller.removeOnePost);
 router.post('/:url/comment', controller.addOneComment);
 
 export {
-	router as postRouter
+    router as postRouter
 };
