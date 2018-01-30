@@ -6,12 +6,12 @@ const PROD = process.env.NODE_ENV === 'production';
 
 const adminConfiguration = {
     entry: {
-        app: './client/admin/app.js',
+        app: './client/admin/src/app.js',
         vendor: ['axios', 'prosemirror-model', 'prosemirror-schema-basic', 'prosemirror-state', 'prosemirror-view']
     },
     module: {
         loaders: [{
-            test: path.join(__dirname, '/client', '/admin'),
+            test: path.join(__dirname, '/client', '/admin', '/src'),
             loader: 'babel-loader'
         }]
     },
@@ -32,12 +32,12 @@ const adminConfiguration = {
 
 const blogConfiguration = {
     entry: {
-        app: './client/blog/index.js',
+        app: './client/blog/src/index.js',
         vendor: ['axios', 'prosemirror-model', 'prosemirror-schema-basic', 'prosemirror-state', 'prosemirror-view']
     },
     module: {
         loaders: [{
-            test: path.join(__dirname, '/client', '/blog'),
+            test: path.join(__dirname, '/client', '/blog', '/src'),
             loader: 'babel-loader'
         }]
     },
