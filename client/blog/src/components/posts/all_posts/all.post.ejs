@@ -1,0 +1,10 @@
+<% include ../../partials/header.ejs %>
+<% include ../../partials/navbar.ejs%>
+<div class="posts">
+    <% content.post.forEach((el)=>{ %>
+    <div class="post">
+        <a href="/post/<%= el.url %>" class="home-blog-post-title"><%= el.title %></a>
+    </div>
+    <% }) %>
+</div>
+<% include ../../partials/footer.ejs%>
