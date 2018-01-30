@@ -1,4 +1,6 @@
 import qs from 'querystring';
+import axios from 'axios';
+import {sidebar} from '../../config/sidebar.js';
 import ejs from 'ejs';
 import sanitize from 'sanitize-html';
 import mongo from '../../services/mongodb/mongodb.service';
@@ -258,26 +260,46 @@ export function addOneComment(req, res) {
 }
 
 export function renderNewPost(req, res){
-    return renderView('admin/components/posts/new_post/new.post.ejs', {content: {meta: {title: 'Ayush Bahuguna', keywords: 'admin,new post,ayush bahuguna', description: 'This is admin panel where Ayush bahuguna creates new post'}}})
-        .then((str)=>{
-            let options = {
-                data: str,
-                status: 200,
-                message: 'Serving new post template',
-                content: 'text/html'
-            };
 
-            return responseHandler(res, options);
-        }).catch((err)=>{
-            let options = {
-                status: 500,
-                message: 'Sorry, we are facing some issue right now. Please, try again later.',
-                data: err.error,
-                content: 'json/application'
-            };
+    const getView = ()=>{
+        let options = {
+            content: {
+                sidebar,
+                meta: {
+                    title: 'Ayush Bahuguna',
+                    keywords: 'admin,new post,ayush bahuguna',
+                    description: 'This is admin panel where Ayush bahuguna creates new post'
+                }
+            }
+        };
 
-            return responseHandler(res, options);
-        });
+        return renderView('admin/src/components/posts/new_post/new.post.ejs', options);
+
+    };
+
+    const sendResponse = (str)=>{
+        let options = {
+            data: str,
+            status: 200,
+            message: 'Serving new post template',
+            content: 'text/html'
+        };
+
+        return responseHandler(res, options);
+    };
+
+    return getView().then(sendResponse).catch((err)=>{
+        console.log(err);
+        let options = {
+            status: 500,
+            message: 'Sorry, we are facing some issue right now. Please, try again later.',
+            data: err.error,
+            content: 'json/application'
+        };
+
+        return responseHandler(res, options);
+
+    });
 }
 
 
