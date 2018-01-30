@@ -1,0 +1,26 @@
+<% include ../../../partials/header.ejs%>
+<% include ../../../common/sidebar/sidebar.ejs%>
+<div class="post_wrapper">
+    <div class="post_field">
+        <div class="post_meta_info">
+            <input type="text" id="post_title" class="new_title" placeholder="Post Title">
+            <input type="text" id="post_category" class="new_post_category" placeholder="Post Category">
+        </div>
+        <div id="editor" class="editor_wrapper">
+        </div>
+
+        <div style="display:none;" id="new_post">
+        </div>
+
+        <div class="seo_block">
+            <input type="text" id="meta_author" class="author_name" placeholder="Author">
+            <textarea cols="30" id="meta_desc" rows="5" placeholder="Write a short description"></textarea>
+            <input type="text" id="meta_keywords" class="keywords" placeholder="Enter keywords separated by a comma">
+        </div>
+        <div class="new_post_buttons">
+            <button>Draft</button>
+            <button>Publish</button>
+        </div>
+    </div>
+</div>
+<% include ../../../partials/footer.ejs%>

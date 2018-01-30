@@ -1,0 +1,9 @@
+<div class="sidebar_wrapper">
+    <div class="sidebar">
+        <ul class="sidebar_list">
+            <% content.sidebar.forEach((el)=>{ %>
+                <li><a href="<%=el.url%>"><%=el.title%></a></li>
+            <%})%>
+        </ul>
+    </div>
+</div>
