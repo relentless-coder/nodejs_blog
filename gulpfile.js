@@ -11,13 +11,13 @@ gulp.task('clean', ()=>{
 
 
 gulp.task('blog-sass', ['clean'], ()=>{
-    return gulp.src('./client/blog/styles/*.scss')
+    return gulp.src('./client/blog/src/styles/*.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest('./client/blog/build'));
 });
 
 gulp.task('admin-sass', ['blog-sass'], ()=>{
-    return gulp.src('./client/admin/styles/*.scss')
+    return gulp.src('./client/admin/src/styles/*.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest('./client/admin/build'));
 });
