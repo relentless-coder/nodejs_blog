@@ -1,16 +1,26 @@
 import commentFactory from './comment.factory';
+import {setupMenu, schema} from '../editor/menu.items.js';
 import {DOMParser} from 'prosemirror-model';
-import {schema} from 'prosemirror-schema-basic';
+import {EditorView} from 'prosemirror-view';
 import {EditorState} from 'prosemirror-state';
+import {baseKeymap} from 'prosemirror-commands';
+import {keymap} from 'prosemirror-keymap';
 
 function comment() {
 
     let content = document.getElementById('new_comment');
 
-    let state = EditorState.create({
-        doc: DOMParser.fromSchema(schema).parse(content)
-    });
 
+    const setupNewComment = ()=>{
+
+        window.view = new EditorView(document.querySelector('#editor'), {
+            state: EditorState.create({
+                doc: DOMParser.fromSchema(schema).parse(content),
+                plugins: [keymap(baseKeymap), setupMenu()]
+            })
+        });
+
+    };
     const postComment = (url) => {
         const data = {
             author: {
@@ -31,7 +41,7 @@ function comment() {
     };
 
     return {
-        postComment, replyComment
+        postComment, replyComment, setupNewComment
     };
 }
 
