@@ -39,7 +39,7 @@ export function getAllPosts(req, res) {
         };
     }
     return mongo.findAll('posts', query, getPost).then((data) => {
-        renderView('/blog/components/posts/all_posts/all.post.ejs', {content: {post: data.data, meta: {title: 'Ayush Bahuguna', description: 'Hello, I am Ayush Bahuguna', keywords: 'hello,world'}}}).then((str)=>{
+        renderView('blog/src/components/posts/all_posts/all.post.ejs', {content: {post: data.data, meta: {title: 'Ayush Bahuguna', description: 'Hello, I am Ayush Bahuguna', keywords: 'hello,world'}}}).then((str)=>{
             const options = {
                 status: data.status,
                 message: data.message,
@@ -59,8 +59,7 @@ export function getOnePost(req, res) {
         'url': req.params.url
     };
     return mongo.findSingle('posts', query, getPost).then((data) => {
-        data.data.meta.keywords = data.data.meta.keywords.join(',');
-        renderView('/blog/components/posts/single_post/single.post.ejs', {content: {post: data.data, meta: data.data.meta}})
+        renderView('blog/src/components/posts/single_post/single.post.ejs', {content: {post: data.data, meta: data.data.meta}})
             .then((clientData)=>{
                 let options = {
                     status: data.status,
