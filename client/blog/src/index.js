@@ -1,5 +1,3 @@
-import {comment} from './components/comments/comment.js';
-import {singlePostHandler} from './components/posts/single_post/single.post.js';
+import {app} from './components/components.js';
 
-singlePostHandler();
-window.commentWrapper = comment();
+app();
