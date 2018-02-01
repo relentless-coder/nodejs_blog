@@ -7,10 +7,11 @@
             <input type="text" class="new_email" id="comment_email" name="comment[author][email]" required
                    placeholder="Your email">
         </div>
-        <div id="new_comment">
+        <div id="editor" class="editor_wrapper"></div>
+        <div id="new_comment" style="display: none;">
 
         </div>
-        <button onclick="commentWrapper.postComment('<%= content.post.url %>')" class="comment_post">Submit</button>
+        <button onclick="commentWrapper.new('<%= content.post.url %>')" class="comment_post">Submit</button>
 
     </div>
 </div>
@@ -45,7 +46,7 @@
                 <textarea cols="10" rows="5" class="new_comment reply" name="reply[comment]"
                           required></textarea>
                 <div class="reply_buttons_wrapper">
-                    <button onclick="commentWrapper.replyComment(reply, el._id)" class="submit_reply">Submit</button>
+                    <button onclick="commentWrapper.reply(reply, el._id)" class="submit_reply">Submit</button>
                 </div>
             </div>
 
