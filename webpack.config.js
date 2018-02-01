@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const extractTextPlugin = require('extract-text-webpack-plugin');
 const PROD = process.env.NODE_ENV === 'production';
 
 
@@ -13,6 +14,12 @@ const adminConfiguration = {
         loaders: [{
             test: path.join(__dirname, '/client', '/admin', '/src'),
             loader: 'babel-loader'
+        },
+        {
+            test: /\.scss$/,
+            exclude: /node_modules/,
+            loader: extractTextPlugin.extract({ fallback: 'style-loader', use: [{ loader: 'css-loader' }, { loader: 'sass-loader' }] })
+
         }]
     },
     output: {
@@ -39,6 +46,12 @@ const blogConfiguration = {
         loaders: [{
             test: path.join(__dirname, '/client', '/blog', '/src'),
             loader: 'babel-loader'
+        },
+        {
+            test: /\.scss$/,
+            exclude: /node_modules/,
+            loader: extractTextPlugin.extract({ fallback: 'style-loader', use: [{ loader: 'css-loader' }, { loader: 'sass-loader' }] })
+
         }]
     },
     output: {
