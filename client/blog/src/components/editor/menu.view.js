@@ -6,7 +6,7 @@ export class MenuView {
 
         this.dom = document.createElement('div');
 
-        this.dom.className = 'admin_menubar';
+        this.dom.className = 'blog_menubar';
 
         items.forEach(({dom})=> this.dom.appendChild(dom));
 
