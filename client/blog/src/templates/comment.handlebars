@@ -1,7 +1,9 @@
 <div class="comment" id="{{_id}}">
     <div class="parent_comment_wrapper">
         <h3 class="comment_name">{{author.name}}</h3>
-        <p class="comment_content">{{comment}}</p>
+        <p class="comment_content">
+            {{{comment}}}
+        </p>
     </div>
     {{#each comments}}
     <div class="reply_comment">
