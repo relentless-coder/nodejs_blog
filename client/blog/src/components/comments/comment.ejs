@@ -16,22 +16,22 @@
     </div>
 </div>
 
-<% if(content.post.comments.length > 0){ %>
 
 <div class="comment_wrapper">
+<% if(content.post.comments.length > 0){ %>
     <h2 class="comment_header">Comments</h2>
     <% content.post.comments.forEach((el)=>{ %>
     <div class="comment" id="<%= el._id %>">
         <div class="parent_comment_wrapper">
             <h3 class="comment_name"><%= el.author.name %></h3>
-            <p class="comment_content"><%= el.comment %></p>
+            <p class="comment_content"><%- el.comment %></p>
         </div>
         <% if(el.comments) { %>
         <% el.comments.forEach((data)=>{ %>
         <div class="reply_comment">
             <h3 class="comment_name"><%= data.author.name %></h3>
 
-            <p class="comment_content"><%= data.comment %></p>
+            <p class="comment_content"><%- data.comment %></p>
         </div>
         <% }) %>
         <% } %>
@@ -53,6 +53,6 @@
         </div>
     </div>
     <% }) %>
+<% } %>
 </div>
 
-<% } %>
