@@ -22,12 +22,13 @@ function comment() {
 
     };
     const postComment = (url) => {
+        console.log(window.view.dom.innerHTML);
         const data = {
             author: {
                 name: document.getElementById('comment_name').value,
                 email: document.getElementById('comment_email').value
             },
-            comment: document.getElementById('author_new_comment').value
+            comment: window.view.dom.innerHTML
         };
         commentFactory.postComment(data, url).then((data)=>{
             const commentWrapper = document.querySelector('.comment_wrapper');
