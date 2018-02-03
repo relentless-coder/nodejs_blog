@@ -367,15 +367,18 @@ body {
     }
 }
 
+
 .editor_wrapper {
-    height: 500px;
+    height: 200px;
+    width: 80%;
+    white-space: pre-wrap;
     & .ProseMirror {
-        height: 90%;
+        height: 70%;
         border: 1px solid black;
     }
 }
 
-.admin_menubar {
+.blog_menubar {
     border: 1px solid rgb(0, 0, 0);
     line-height: 0.1;
     margin: 10px 0;
@@ -385,7 +388,7 @@ body {
     display: inline-block;
     border-right: 1px solid rgba(0, 0, 0, 0.2);
     color: #888;
-    line-height: 1;
+    line-height: 2;
     padding: 0 7px;
     margin: 1px;
     cursor: pointer;
