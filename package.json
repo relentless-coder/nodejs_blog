@@ -26,7 +26,8 @@
     "sanitize-html": "^1.16.3"
   },
   "scripts": {
-    "start": "npm run build && node ./server/dist/app.js",
+    "start": "npm run setup_file && npm run build && node ./server/dist/app.js",
+    "setup_file": "cp ./node_modules/handlebars/lib/handlebars.runtime.js client/blog/build/lib/",
     "test": "node ./node_modules/nyc/bin/nyc.js node ./node_modules/mocha/bin/mocha dist/test/unit/**/**/**.spec.js --timeout=5000",
     "build": "gulp && webpack && handlebars client/blog/src/templates > client/blog/build/templates.js && node ./node_modules/babel-cli/bin/babel.js ./server --out-dir ./server/dist --ignore node_modules/,.nyc_output/,./server/dist/,package.json,npm-debug.log,package-lock.json,yarn.lock,.gitignore --presets=babel-preset-env --plugins=babel-plugin-transform-class-properties,babel-plugin-transform-runtime"
   },
