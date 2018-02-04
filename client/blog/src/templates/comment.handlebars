@@ -1,15 +1,15 @@
 <div class="comment" id="{{_id}}">
     <div class="parent_comment_wrapper">
         <h3 class="comment_name">{{author.name}}</h3>
-        <p class="comment_content">
+        <div class="comment_content">
             {{{comment}}}
-        </p>
+        </div>
     </div>
     {{#each comments}}
     <div class="reply_comment">
         <h3 class="comment_name"> {{author.name}} </h3>
 
-        <p class="comment_content"> {{data.comment}} </p>
+        <div class="comment_content"> {{data.comment}} </div>
     </div>
     {{/each}}
 
