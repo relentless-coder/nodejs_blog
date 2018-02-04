@@ -4,6 +4,7 @@ node_modules/
 .idea/
 client/admin/build/
 client/blog/build/
+client/blog/build/templates.js
 package-lock.json
 yarn-error.log
 *.swp
