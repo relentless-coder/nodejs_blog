@@ -1,0 +1,27 @@
+<div class="profile">
+    <div class="name_profession">
+        <div class="name">
+            <input type="text"  value="" id="name">
+        </div>
+        <div class="profession">
+            <input type="text"  id="profession">
+        </div>
+    </div>
+    <div class="profile_image">
+        <input ngf-select  type="file" name="profile_image"  placeholder="Profile Image"/>
+    </div>
+    <div class="about_you">
+        <div id="editor" class=".profile_editor_wrapper"></div>
+    </div>
+    <div class="social_profiles">
+        <div class="github">
+            <label for="git">Github Username</label>
+            <input type="text" id="git">
+        </div>
+        <button class="add_social_profile" onclick="profile.addSocialProfile()">Add</button>
+    </div>
+    <div class="save_profile">
+        <button ng-click="ctrl.editUser()">Save</button>
+    </div>
+</div>
+
