@@ -9,6 +9,8 @@ export const app = ()=>{
             newPostHandler().setupNewPost();
         } else if(document.querySelector('#edit_post')){
             editPostHandler().setupEditPost();
+        } else if(document.querySelector('.about_you')){
+            profileHandler().setupUpdateProfile();
         }
     };
 
@@ -21,7 +23,7 @@ export const app = ()=>{
         addSocialProfile: profileHandler().addSocialProfile,
         setupUpdateProfile: profileHandler().setupUpdateProfile,
         updateProfile: profileHandler().updateProfile
-    }
+    };
 
     return {post, profile};
 };
