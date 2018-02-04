@@ -1,3 +1,4 @@
+@import "./_colors";
 * {
     box-sizing: border-box;
 }
@@ -73,3 +74,114 @@ body {
 
 .em { font-style: italic; }
 
+.profile {
+  display: flex;
+  flex-direction: column;
+  margin-left: 25%;
+  .name_profession {
+    display: flex;
+    margin: 0.5rem 0;
+    justify-content: space-between;
+    .name, .profession {
+      display: flex;
+      flex-direction: column;
+      label {
+        color: $third_color;
+        font: {
+          size: 2rem;
+          weight: 700;
+        }
+      }
+      input[type="text"] {
+        margin-top: 0.5rem;
+        padding: 0.2rem 0.1rem;
+        font: {
+          size: 1.5rem;
+        }
+      }
+
+    }
+  }
+
+  .profile_image {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1.5rem;
+    justify-content: center;
+    label {
+      color: $third_color;
+      font: {
+        size: 2rem;
+        weight: 700;
+      }
+    }
+    input[type="file"] {
+      padding: 1rem 0.5rem;
+      margin-top: 0.5rem;
+      background: $third_color;
+      font: {
+        size: 1.2rem;
+      }
+    }
+  }
+
+  .about_you {
+    display: flex;
+    flex-direction: column;
+    margin: 3rem 0rem;
+    label {
+      color: $third_color;
+      font: {
+        size: 2rem;
+        weight: 700;
+      }
+    }
+    & .profile_editor_wrapper {
+      height: 300px;
+      & .ProseMirror {
+        border: 1px solid black;
+      }
+    }
+  }
+
+  .social_profiles_wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1.5rem;
+    .social_profiles {
+      display: flex;
+      input[type="text"] {
+        margin-top: 0.5rem;
+        padding: 0.2rem 0.1rem;
+        font: {
+          size: 1.2rem;
+        }
+      }
+    }
+  }
+
+  .save_profile {
+    display: flex;
+    margin-top: 5rem;
+    justify-content: center;
+    button {
+      padding: 1rem 0.5rem;
+      cursor: pointer;
+      width: 15rem;
+      border: 4px solid black;
+      background: $first_color;
+      transition: all 1s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+      border-radius: 10px;
+      color: $second_color;
+      font: {
+        size: 1.5rem;
+        weight: 700;
+      }
+
+      &:hover {
+        background: $second_color;
+        color: black;
+      }
+    }
+  }
+}
