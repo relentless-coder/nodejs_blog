@@ -1,5 +1,6 @@
 import {editPostHandler} from './posts/edit_post/edit.post.js';
 import {newPostHandler} from './posts/new_post/new.post.js';
+import {profileHandler} from './user/user';
 
 export const app = ()=>{
 
@@ -16,5 +17,11 @@ export const app = ()=>{
         new: newPostHandler().createNewPost
     };
 
-    return {post};
+    const profile = {
+        addSocialProfile: profileHandler().addSocialProfile,
+        setupUpdateProfile: profileHandler().setupUpdateProfile,
+        updateProfile: profileHandler().updateProfile
+    }
+
+    return {post, profile};
 };
