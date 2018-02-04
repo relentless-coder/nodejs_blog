@@ -1,14 +1,12 @@
-<% include ../partials/header.ejs%>
+<% include ../../partials/header.ejs%>
 <div class="home_wrapper">
     <div class="intro_wrapper"><img src="../../build/images/ayush.jpg" alt="Ayush Bahuguna | Full Stack Developer" >
         <div class="intro_text_wrapper">
             <h1 class="intro_name">Ayush Bahuguna</h1>
-            <p class="intro_description">A full stack developer from India, who drools over efficient code, Bob Dylan's
-                lyrics, and cleverly offensive jokes that are worth a laugh long enough to not cause a revolution</p>
         </div>
     </div>
     <div class="About">
-
+        <%- content.user %>
     </div>
 </div>
-<% include ../partials/footer.ejs%>
+<% include ../../partials/footer.ejs%>
