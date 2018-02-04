@@ -20,14 +20,13 @@ export const newPostHandler = ()=> {
                 plugins: [keymap(baseKeymap), setupMenu()]
             })
         });
-
     };
 
     const createNewPost = ()=>{
 
         const post = {
             title: document.getElementById('post_title').value,
-            content: DOMParser.fromSchema(schema).parse(content),
+            content: window.view.DOM.outerHTML,
             meta: {
                 description: document.getElementById('meta_desc'),
                 author: document.getElementById('meta_author'),
