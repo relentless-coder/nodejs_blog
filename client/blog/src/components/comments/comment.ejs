@@ -7,7 +7,9 @@
             <input type="text" class="new_email" id="comment_email" name="comment[author][email]" required
                    placeholder="Your email">
         </div>
-        <div id="editor" class="editor_wrapper"></div>
+        <div id="editor" class="editor_wrapper">
+            Type your comment here: Use ctrl+ENTER to exit code mode
+        </div>
         <div id="new_comment" style="display: none;">
 
         </div>
@@ -24,14 +26,14 @@
     <div class="comment" id="<%= el._id %>">
         <div class="parent_comment_wrapper">
             <h3 class="comment_name"><%= el.author.name %></h3>
-            <p class="comment_content"><%- el.comment %></p>
+            <div class="comment_content"><%- el.comment %></div>
         </div>
         <% if(el.comments) { %>
         <% el.comments.forEach((data)=>{ %>
         <div class="reply_comment">
             <h3 class="comment_name"><%= data.author.name %></h3>
 
-            <p class="comment_content"><%- data.comment %></p>
+            <div class="comment_content"><%- data.comment %></div>
         </div>
         <% }) %>
         <% } %>
