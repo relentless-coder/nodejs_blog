@@ -8,7 +8,7 @@ import {addPost, getPost, updatePost} from '../../services/layers/post.layer';
 import {ObjectID} from 'mongodb';
 import {ErrorWithStatusCode} from '../../handlers/errorhandler';
 import {responseHandler} from '../../handlers/response.handler';
-import fileUpload from '../../handlers/upload.handler';
+import {uploadHandler} from '../../handlers/upload.handler';
 import {addComment, getComment} from '../../services/layers/comment.layer';
 import {renderView} from '../../handlers/render.view.js';
 
