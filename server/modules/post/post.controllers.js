@@ -10,23 +10,13 @@ import {ErrorWithStatusCode} from '../../handlers/errorhandler';
 import {responseHandler} from '../../handlers/response.handler';
 import fileUpload from '../../handlers/upload.handler';
 import {addComment, getComment} from '../../services/layers/comment.layer';
+import {renderView} from '../../handlers/render.view.js';
 
 const sanitizeOpt = {
     allowedTags: ['img', 'p', 'pre', 'code'],
     allowedSchemes: ['data', 'http']
 };
 
-const renderView = (path, data)=>{
-    const viewDirectory = './client/';
-    return new Promise((resolve, reject) => {
-        ejs.renderFile(`${viewDirectory}${path}`, data, (err, str)=>{
-            if(err) {
-                reject(err);
-            } else
-                resolve(str);
-        });
-    });
-};
 
 export function getAllPosts(req, res) {
     let query = {};
