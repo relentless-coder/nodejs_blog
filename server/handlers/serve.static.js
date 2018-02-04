@@ -15,7 +15,7 @@ export const serveStatic = (req, res)=> {
         '.jpg': 'image/jpeg',
     };
 
-    if(ext === '.css' || ext === '.js') {
+    if(ext === '.css' || ext === '.js' || ext === '.png' || ext === '.jpg' || ext === '.jpeg') {
         let existInAdmin = fs.existsSync(pathnameAdmin);
         let existInBlog = fs.existsSync(pathnameBlog);
         if (!existInAdmin && !existInBlog) {
@@ -23,13 +23,11 @@ export const serveStatic = (req, res)=> {
             res.end('File not found!');
         } else if(existInAdmin) {
             const data = fs.readFileSync(pathnameAdmin);
-            res.status = 200;
-            res.setHeader('Content-type', map[ext] || 'text/plain');
+            res.writeHead(200, {'Content-type': map[ext] || 'text/plain'});
             res.end(data);
         } else {
             const data = fs.readFileSync(pathnameBlog);
-            res.status = 200;
-            res.setHeader('Content-type', map[ext] || 'text/plain');
+            res.writeHead(200, {'Content-type': map[ext] || 'text/plain'});
             res.end(data);
         }
     }
