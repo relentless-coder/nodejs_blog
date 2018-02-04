@@ -5,6 +5,9 @@ import {connectMongo} from '../../config/mongo.config';
 import {ObjectID} from 'mongodb';
 import mongodb from '../../services/mongodb/mongodb.service';
 import {getUser} from '../../services/layers/user.layer';
+import {renderView} from '../../handlers/render.view';
+import {sidebar} from '../../config/sidebar';
+import {uploadHandler} from '../../handlers/upload.handler';
 
 let userInput = {};
 
@@ -113,6 +116,49 @@ export function signup(req, res) {
 
     return getReqBody().then(checkIfUserExists).then(createUser).catch(err => responseHandler(res, err.code, err.message, err.error));
 
+}
+
+export function renderProfile(req, res) {
+    return renderView('admin/src/components/user/user.ejs', {content: {sidebar}}).then((str)=>{
+        let options = {
+            status: 200,
+            data: str,
+            message: 'Success',
+            content: 'text/html'
+        };
+
+        console.log(options);
+
+        return responseHandler(res, options);
+    }).catch((err)=>{
+        console.log(err);
+        let options = {
+            status: 500,
+            data: 'Sorry, we are facing some issue right now. Please, try again later.',
+            message: 'Sorry, we are facing some issue right now. Please, try again later.',
+            content: 'text/plain'
+        };
+
+        return responseHandler(res, options);
+    });
+}
+
+export function updateUser(req, res, next) {
+    const getData = ()=>{
+        if(req.body){
+            return Promise.resolve(req);
+        } else {
+            return uploadHandler(req, res, 'profileImage');
+        }
+    };
+
+    const updateUser = (data)=>{
+        console.log(req.body);
+    };
+
+    return Promise.resolve().then(getData).then(updateUser).catch((err)=>{
+        console.log(err);
+    });
 }
 
 export function getAuthor(req, res) {
