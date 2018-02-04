@@ -10,11 +10,10 @@ function singlePostHandler() {
                 post_header.classList.remove('hide');
         }
 
-        const codeBlocks = document.querySelectorAll('pre code');
-        codeBlocks.forEach((el)=>{
-            hljs.highlightBlock(el);
-        });
-
+    });
+    const codeBlocks = document.querySelectorAll('pre code');
+    codeBlocks.forEach((el)=>{
+        hljs.highlightBlock(el);
     });
 }
 
