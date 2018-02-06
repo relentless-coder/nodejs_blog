@@ -1,10 +1,10 @@
-import {setJwt, hashPassword, parseUser} from '../../services/layers/user.layer';
+import {setJwt, hashPassword, parseUser, getUser} from '../../services/layers/user.layer';
 import {responseHandler} from '../../handlers/response.handler';
 import {ErrorWithStatusCode} from '../../handlers/errorhandler';
 import {connectMongo} from '../../config/mongo.config';
 import {ObjectID} from 'mongodb';
 import mongodb from '../../services/mongodb/mongodb.service';
-import {getUser} from '../../services/layers/user.layer';
+import {getUser, updateUserLayer} from '../../services/layers/user.layer';
 import {renderView} from '../../handlers/render.view';
 import {sidebar} from '../../config/sidebar';
 import {uploadHandler} from '../../handlers/upload.handler';
@@ -144,7 +144,18 @@ export function renderProfile(req, res) {
 }
 
 export function updateUser(req, res, next) {
-    const getData = ()=>{
+
+    let foundUser;
+    const getUser = ()=>{
+        const query = {
+            _id: ObjectID(res.payload)
+        }
+
+        return mongodb.findSingle('users',query, getUser)
+    }
+
+    const getData = (user)=>{
+        foundUser = user;
         if(req.body){
             return Promise.resolve(req);
         } else {
@@ -152,12 +163,36 @@ export function updateUser(req, res, next) {
         }
     };
 
-    const updateUser = (data)=>{
-        console.log(req.body);
+    const updateDocument = ({password, salt})=>{
+        req.body.password = password;
+        req.body.salt = salt;
+        const query = {
+            _id: ObjectID(res.payload)
+        }
+        return mongodb.update('users', query, getUser, getUser)
     };
 
-    return Promise.resolve().then(getData).then(updateUser).catch((err)=>{
-        console.log(err);
+    const sendResponse = (data)=>{
+        delete data.password;
+        delete data.salt;
+        const options = {
+            status: 200,
+            message: 'User updated successfully',
+            data,
+            content: 'application/json'
+        }
+        return responseHandler(res, options);
+    }
+
+    return Promise.resolve().then(getUser).then(getData).then(updateDocument).then(sendResponse).catch((err)=>{
+        const options = {
+            status: err.status ? err.status : 500,
+            message: err.message ? err.message : 'Sorry, we are facing some issue right now. Please, try again later.',
+            data: utils.format(err),
+            content: 'application/json'
+        }
+
+        return responseHandler(res, options);
     });
 }
 
