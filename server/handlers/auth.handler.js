@@ -20,7 +20,7 @@ function authHandler(req, res, next) {
                 _id: ObjectID(payload._id)
             };
 
-            findSingle('users', query, parseUser).then((data) => {
+            return findSingle('users', query, parseUser).then((data) => {
                 if (data) {
                     res.payload = data._id;
                     return next();
