@@ -53,15 +53,25 @@ class hashPassword {
 }
 
 class getUser {
-    constructor({_id, name, email, about, intro, projects, social}){
+    constructor({_id, name, testimonials, about, pitch, projects, social, salt, password}){
         this._id = _id;
         this.name = name;
-        this.email = email;
         this.about = about;
-        this.intro = intro;
         this.projects = projects;
         this.social = social;
+        this.pitch = pitch;
+        this.salt = salt;
+        this.password = password;
+        this.testimonials = testimonials;
     }
 }
 
-export {setJwt, hashPassword, parseUser, getUser};
+class updateUserLayer extends getUser {
+    constructor({data, password, salt}){
+        super(data);
+        this.password = password;
+        this.salt = salt;
+    }
+}
+
+export {setJwt, hashPassword, parseUser, getUser, updateUserLayer};
