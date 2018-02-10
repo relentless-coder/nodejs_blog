@@ -1,26 +1,26 @@
-import {setJwt, hashPassword, parseUser, getUser} from '../../services/layers/user.layer';
+import {setJwt, hashPassword, parseUser, getUser, updateUserLayer} from '../../services/layers/user.layer';
 import {responseHandler} from '../../handlers/response.handler';
 import {ErrorWithStatusCode} from '../../handlers/errorhandler';
 import {connectMongo} from '../../config/mongo.config';
 import {ObjectID} from 'mongodb';
 import mongodb from '../../services/mongodb/mongodb.service';
-import {getUser, updateUserLayer} from '../../services/layers/user.layer';
 import {renderView} from '../../handlers/render.view';
 import {sidebar} from '../../config/sidebar';
 import {uploadHandler} from '../../handlers/upload.handler';
+import util from 'util'
 
 let userInput = {};
 
-const checkIfUserExists = (body)=>{
+const checkIfUserExists = (body) => {
     userInput = body;
     let query = {
         email: userInput.email ? userInput.email : userInput.userEmail
     };
-    const queryUser = (db)=>{
+    const queryUser = (db) => {
         let localCollection = db.collection('users');
-        return new Promise((resolve, reject)=>{
-            localCollection.findOne(query, (err, done)=>{
-                if(err){
+        return new Promise((resolve, reject) => {
+            localCollection.findOne(query, (err, done) => {
+                if (err) {
                     db.close();
                     reject(err);
                 } else {
@@ -39,7 +39,7 @@ export function signin(req, res) {
     const getReqBody = () => {
         let body = [];
         return new Promise((resolve, reject) => {
-            if(req.body){
+            if (req.body) {
                 resolve(req.body);
             } else {
                 req.on('error', (err) => {
@@ -54,7 +54,7 @@ export function signin(req, res) {
     };
 
     const getUserJwt = (user) => {
-        if(!user){
+        if (!user) {
             throw new ErrorWithStatusCode(404, 'Email isn\'t registered', 'This email isn\'t registered, kindly signup.');
         } else {
             let query = {
@@ -62,11 +62,21 @@ export function signin(req, res) {
             };
 
             return mongodb.findSingle('users', query, setJwt, userInput).then((data) => {
-                return responseHandler(res, data.status, data.message, data.data.token);
+                const options = {
+                    status: data.status,
+                    message: data.message,
+                    data: {
+                        token: data.data.token
+                    }
+                }
+
+                const headers = [{name: 'Content-Type', value: 'application/json'}, {name: 'Set-Cookie', value: `authorization=${data.data.token};path=/`}];
+
+                return responseHandler(res, options, headers);
             }).catch((err) => {
-                if(err.error){
+                if (err.error) {
                     throw new ErrorWithStatusCode(err.code, err.message, err.error);
-                } else{
+                } else {
                     throw new ErrorWithStatusCode(500, 'Sorry, we are facing some issue right now. Please, try agaiin later.', err);
                 }
             });
@@ -74,7 +84,13 @@ export function signin(req, res) {
     };
 
     return getReqBody().then(checkIfUserExists).then(getUserJwt).catch((err) => {
-        return responseHandler(res, err.code, err.message, err.error, true);
+        const options = {
+            status: err.status ? err.status : 500,
+            data: util.format(err.error ? err.error : err),
+            message: 'Sorry, we are facing some issue right now. Please, try again later.'
+        };
+        const headers = [{name: 'Content-Type', value: 'application/json'}]
+        return responseHandler(res, options, headers);
     });
 
 
@@ -84,7 +100,7 @@ export function signup(req, res) {
     const getReqBody = () => {
         let body = [];
         return new Promise((resolve, reject) => {
-            if(req.body){
+            if (req.body) {
                 resolve(req.body);
             } else {
                 req.on('error', (err) => {
@@ -99,11 +115,18 @@ export function signup(req, res) {
     };
 
     const createUser = (data) => {
-        if(data){
+        if (data) {
             throw new ErrorWithStatusCode(422, 'Email already exists.', 'The email provided by the client already exists, kindly login with the same.');
         } else {
             return mongodb.insert('users', userInput, hashPassword, parseUser).then((data) => {
-                return responseHandler(res, data.status, data.message, data.data);
+                const options = {
+                    status: data.status,
+                    data: data.data,
+                    message: data.message
+                }
+                const headers = [{name: 'Content-Type', value: 'application/json'}];
+
+                return responseHandler(res, options, headers);
             }).catch((err) => {
                 if (err.error) {
                     throw new ErrorWithStatusCode(err.code, err.message, err.error);
@@ -114,12 +137,93 @@ export function signup(req, res) {
         }
     };
 
-    return getReqBody().then(checkIfUserExists).then(createUser).catch(err => responseHandler(res, err.code, err.message, err.error));
+    return getReqBody().then(checkIfUserExists).then(createUser).catch(err => {
+        const options = {
+            status: err.status ? err.status : 500,
+            message: 'Sorry, we are facing some issue right now. Please, try again later.',
+            data: util.format(err.error)
+        };
 
+        const headers = [{name: 'Content-Type', value: 'application/json'}];
+
+        return responseHandler(res, options, headers);
+
+    })
 }
 
 export function renderProfile(req, res) {
-    return renderView('admin/src/components/user/user.ejs', {content: {sidebar}}).then((str)=>{
+
+    const findUser = () => {
+        const query = {
+            _id: ObjectID(res.payload)
+        }
+
+        console.log("query is", query);
+
+        return mongodb.findSingle('users', query, getUser)
+    }
+
+    const getView = (user) => {
+        console.log("user is ", user);
+        return renderView('admin/src/components/user/update/user.ejs', {content: {sidebar, user}})
+    }
+
+    const sendResponse = (str) => {
+        let options = {
+            status: 200,
+            data: str,
+            message: 'Success'
+        };
+
+        const headers = [{name: 'Content-Type', value: 'text/html'}];
+
+        return responseHandler(res, options, headers);
+    }
+
+    return findUser().then(getView).then(sendResponse).catch((err) => {
+        console.log(err);
+        let options = {
+            status: 500,
+            data: 'Sorry, we are facing some issue right now. Please, try again later.',
+            message: 'Sorry, we are facing some issue right now. Please, try again later.',
+            content: 'text/plain'
+        };
+
+        const headers = [{name: 'Content-Type', value: 'text/html'}];
+
+        return responseHandler(res, options, headers);
+    });
+}
+
+export function renderSignin(req, res) {
+    return renderView('admin/src/components/user/signin/signin.ejs', {}).then((str) => {
+        let options = {
+            status: 200,
+            data: str,
+            message: 'Success'
+        };
+
+        const headers = [{name: 'Content-Type', value: 'text/html'}]
+
+        console.log(options);
+
+        return responseHandler(res, options, headers);
+    }).catch((err) => {
+        console.log(err);
+        let options = {
+            status: 500,
+            data: 'Sorry, we are facing some issue right now. Please, try again later.',
+            message: 'Sorry, we are facing some issue right now. Please, try again later.'
+        };
+
+        const headers = [{name: 'Content-Type', value:  'text/plain'}];
+
+        return responseHandler(res, options, headers);
+    });
+}
+
+export function renderSignup(req, res) {
+    return renderView('admin/src/components/user/signup/signup.ejs', {}).then((str) => {
         let options = {
             status: 200,
             data: str,
@@ -130,7 +234,7 @@ export function renderProfile(req, res) {
         console.log(options);
 
         return responseHandler(res, options);
-    }).catch((err)=>{
+    }).catch((err) => {
         console.log(err);
         let options = {
             status: 500,
@@ -143,54 +247,60 @@ export function renderProfile(req, res) {
     });
 }
 
-export function updateUser(req, res, next) {
+export function updateUser(req, res) {
 
     let foundUser;
-    const getUser = ()=>{
+    const findUser = () => {
         const query = {
             _id: ObjectID(res.payload)
-        }
+        };
 
-        return mongodb.findSingle('users',query, getUser)
-    }
+        return mongodb.findSingle('users', query, getUser);
+    };
 
-    const getData = (user)=>{
+    const getData = (user) => {
         foundUser = user;
-        if(req.body){
+        if (req.body) {
             return Promise.resolve(req);
         } else {
             return uploadHandler(req, res, 'profileImage');
         }
     };
 
-    const updateDocument = ({password, salt})=>{
-        req.body.password = password;
-        req.body.salt = salt;
+    const updateDocument = () => {
         const query = {
             _id: ObjectID(res.payload)
+        };
+        if (req.file) {
+            console.log(req.file);
+            req.body.profileImage = req.file.filename;
         }
-        return mongodb.update('users', query, getUser, getUser)
+        return mongodb.update('users', query, req.body, getUser, getUser);
     };
 
-    const sendResponse = (data)=>{
+    const sendResponse = (data) => {
         delete data.password;
         delete data.salt;
+        console.log("data is ", data);
         const options = {
             status: 200,
             message: 'User updated successfully',
-            data,
-            content: 'application/json'
-        }
-        return responseHandler(res, options);
-    }
+            data
+        };
 
-    return Promise.resolve().then(getUser).then(getData).then(updateDocument).then(sendResponse).catch((err)=>{
+        const headers = [{name: 'Content-Type', value: 'application/json'}];
+        return responseHandler(res, options, headers);
+    };
+
+    return Promise.resolve().then(findUser).then(getData).then(updateDocument).then(sendResponse).catch((err) => {
+        console.log("err is ", err)
         const options = {
             status: err.status ? err.status : 500,
             message: err.message ? err.message : 'Sorry, we are facing some issue right now. Please, try again later.',
-            data: utils.format(err),
-            content: 'application/json'
-        }
+            data: util.format(err)
+        };
+
+        const headers = [{name: 'Content-Type', value: 'application/json'}];
 
         return responseHandler(res, options);
     });
@@ -201,23 +311,25 @@ export function getAuthor(req, res) {
         _id: ObjectID(res.payload)
     };
 
-    return mongodb.findSingle('users', query, getUser).then((data)=>{
+    return mongodb.findSingle('users', query, getUser).then((data) => {
         let options = {
             status: data.status,
             message: data.message,
-            data: data.data,
-            content: 'application/json'
+            data: data.data
         };
-        return responseHandler(res, options);
-    }).catch((err)=>{
+
+        const headers = [{name: 'Content-Type', value: 'application/json'}]
+        return responseHandler(res, options, headers);
+    }).catch((err) => {
 
         const options = {
             status: err.status ? err.status : 500,
             message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
-            data: err,
-            content: 'application/json'
+            data: err
         };
 
-        return responseHandler(res, options);
+        const headers = [{name: 'Content-Type', value: 'application/json'}]
+
+        return responseHandler(res, options, headers);
     });
 }
