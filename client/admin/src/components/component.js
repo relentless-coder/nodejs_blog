@@ -1,6 +1,8 @@
 import {editPostHandler} from './posts/edit_post/edit.post.js';
 import {newPostHandler} from './posts/new_post/new.post.js';
-import {profileHandler} from './user/user';
+import {profileHandler} from './user/update/user';
+import {signinHandler} from './user/signin/signin';
+import {signupHandler} from './user/signup/signup';
 
 export const app = ()=>{
 
@@ -19,11 +21,17 @@ export const app = ()=>{
         new: newPostHandler().createNewPost
     };
 
+    const user = {
+        signin: signinHandler().signin,
+        signup: signupHandler().signup
+    }
+
     const profile = {
         addSocialProfile: profileHandler().addSocialProfile,
         setupUpdateProfile: profileHandler().setupUpdateProfile,
         updateProfile: profileHandler().updateProfile
     };
 
-    return {post, profile};
+
+    return {post, profile, user};
 };
