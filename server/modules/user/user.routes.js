@@ -6,7 +6,10 @@ let router = new Router();
 
 router.post('/signup', controller.signup);
 
-router.get('/admin/profile', controller.renderProfile);
+router.get('/admin/profile', authHandler, controller.renderProfile);
+
+router.get('/admin/signin', controller.renderSignin)
+router.get('/admin/signup', controller.renderSignup)
 
 router.put('/', authHandler, controller.updateUser);
 
