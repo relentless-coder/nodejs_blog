@@ -1,8 +1,9 @@
 export const authHandler = (()=>{
     let localToken;
 
-    const setToken = ({token})=>{
-        localToken = token;
+    const setToken = ({data})=>{
+        console.log("token is", data)
+        localToken = data.token;
         window.localStorage.token = localToken;
     };
 
