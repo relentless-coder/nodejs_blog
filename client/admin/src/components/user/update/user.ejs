@@ -1,16 +1,18 @@
-<% include ../../partials/header.ejs %>
-<% include ../../common/sidebar/sidebar.ejs%>
+<% include ../../../partials/header.ejs %>
+<% include ../../../common/sidebar/sidebar.ejs%>
 <div class="profile">
     <div class="name_profession">
         <div class="name">
-            <input type="text"  name="name" id="profile_name" placeholder="Your Name">
+            <input type="text"  name="name" id="profile_name" placeholder="Your Name" value="<%= content.user.name || ""%>">
         </div>
     </div>
     <div class="profile_image">
         <input type="file" name="profileImage" id="profile_image" placeholder="Profile Image"/>
     </div>
     <div class="about_you">
-        <div id="profile_editor" class="profile_editor_wrapper"></div>
+        <div id="profile_editor" class="profile_editor_wrapper">
+            <%= content.user.about%>
+        </div>
         <div id="profile_about" style="display: none;"></div>
     </div>
     <div class="social_profiles_wrapper">
@@ -24,4 +26,4 @@
         <button onclick="profile.updateProfile()">Save</button>
     </div>
 </div>
-<% include ../../partials/footer.ejs%>
+<% include ../../../partials/footer.ejs%>

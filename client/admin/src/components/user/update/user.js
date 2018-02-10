@@ -1,10 +1,10 @@
-import {setupMenu,schema} from '../editor/menu.items.js';
+import {setupMenu,schema} from '../../editor/menu.items.js';
 import {EditorView} from 'prosemirror-view';
 import {EditorState} from 'prosemirror-state';
 import {keymap} from 'prosemirror-keymap';
 import {DOMParser} from 'prosemirror-model';
 import {baseKeymap} from 'prosemirror-commands';
-import {apiHandler} from '../../handlers/api.handler';
+import {apiHandler} from '../../../handlers/api.handler';
 export const profileHandler = ()=>{
 
     let content = document.querySelector('#profile_about');
@@ -71,7 +71,7 @@ export const profileHandler = ()=>{
             method: 'put',
             data: form,
             url: '/user',
-            config: false
+            config: true
         };
 
         return apiHandler.callAPi(options).then(data => console.log(data)).catch(err => console.log(err));
