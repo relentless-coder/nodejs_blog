@@ -8,7 +8,7 @@ const router = new Router();
 
 router.get('/', controller.getAllPosts);
 
-router.get('/admin/new', controller.renderNewPost);
+router.get('/admin/new', authHandler, controller.renderNewPost);
 
 router.get('/:url', controller.getOnePost);
 
