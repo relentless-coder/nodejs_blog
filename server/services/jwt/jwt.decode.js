@@ -3,10 +3,11 @@ import {cryptoConfig} from '../../config/crypto.config';
 import {ErrorWithStatusCode} from '../../handlers/errorhandler';
 
 function decode(req) {
-    if(!req.headers.authorization){
+    if(!req.headers.cookie){
         throw new ErrorWithStatusCode(403, 'Access not allowed', 'There was no authorization header found. The format is: "Authorization: Bearer [token]"');
     } else {
-        const token = req.headers.authorization.split(' ')[1];
+        const token = req.headers.cookie.split('authorization=')[1];
+        console.log(token);
         const segments = token.split('.');
         if (segments.length !== 3) {
             throw new ErrorWithStatusCode(400, 'Invalid token format', 'The token found didn\'t match up to the standard jwt format.');
