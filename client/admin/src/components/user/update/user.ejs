@@ -1,21 +1,36 @@
 <% include ../../../partials/header.ejs %>
-<% include ../../../common/sidebar/sidebar.ejs%>
+<% include ../../../common/sidebar/sidebar.ejs %>
 <div class="profile">
     <div class="name_profession">
         <div class="name">
-            <input type="text"  name="name" id="profile_name" placeholder="Your Name" value="<%= content.user.name || ""%>">
+            <input type="text" name="name" id="profile_name" placeholder="Your Name"
+                   value="<%= content.user.name || "" %>">
         </div>
     </div>
     <div class="profile_image">
         <input type="file" name="profileImage" id="profile_image" placeholder="Profile Image"/>
+        <div class="show_profile_image" style="max-width: 100%;">
+            <% if(content.user.profileImage){ %>
+            <img src="/<%=content.user.profileImage%>" alt="">
+            <% } %>
+        </div>
     </div>
     <div class="about_you">
         <div id="profile_editor" class="profile_editor_wrapper">
-            <%= content.user.about%>
+
         </div>
-        <div id="profile_about" style="display: none;"></div>
+        <div id="profile_about" style="display: none;">
+            <%- content.user.about || "" %>
+        </div>
     </div>
     <div class="social_profiles_wrapper">
+        <% content.user.social.forEach((el)=>{ %>
+        <div class="social_profiles">
+            <input type="text" id="social_profile_name" value="<%= el.name %>"
+                   placeholder="Social Profile, eg: github, twitter">
+            <input type="text" id="social_profile_link" value="<%= el.link %>" placeholder="Link to the profile">
+        </div>
+        <% }) %>
         <div class="social_profiles">
             <input type="text" id="social_profile_name" placeholder="Social Profile, eg: github, twitter">
             <input type="text" id="social_profile_link" placeholder="Link to the profile">
@@ -26,4 +41,4 @@
         <button onclick="profile.updateProfile()">Save</button>
     </div>
 </div>
-<% include ../../../partials/footer.ejs%>
+<% include ../../../partials/footer.ejs %>
