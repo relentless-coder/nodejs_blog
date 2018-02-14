@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
         if (!file) {
             return;
         }
-        let ext = path.extname(file.originalname);
+        let ext = path.extname(file.originalname).toLowerCase();
         cb(null, file.fieldname + '-' + Date.now() + ext);
     }
 });
