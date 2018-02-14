@@ -1,19 +1,16 @@
 import qs from 'querystring';
-import axios from 'axios';
 import {sidebar} from '../../config/sidebar.js';
-import ejs from 'ejs';
 import sanitize from 'sanitize-html';
 import mongo from '../../services/mongodb/mongodb.service';
 import {addPost, getPost, updatePost} from '../../services/layers/post.layer';
 import {ObjectID} from 'mongodb';
 import {ErrorWithStatusCode} from '../../handlers/errorhandler';
 import {responseHandler} from '../../handlers/response.handler';
-import {uploadHandler} from '../../handlers/upload.handler';
 import {addComment, getComment} from '../../services/layers/comment.layer';
 import {renderView} from '../../handlers/render.view.js';
 
 const sanitizeOpt = {
-    allowedTags: ['img', 'p', 'pre', 'code'],
+    allowedTags: ['img', 'p', 'pre', 'code', 'strong', 'em'],
     allowedSchemes: ['data', 'http']
 };
 
