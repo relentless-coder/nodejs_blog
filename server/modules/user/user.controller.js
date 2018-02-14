@@ -1,3 +1,4 @@
+import sanitize from 'sanitize-html';
 import {setJwt, hashPassword, parseUser, getUser, updateUserLayer} from '../../services/layers/user.layer';
 import {responseHandler} from '../../handlers/response.handler';
 import {ErrorWithStatusCode} from '../../handlers/errorhandler';
@@ -8,6 +9,11 @@ import {renderView} from '../../handlers/render.view';
 import {sidebar} from '../../config/sidebar';
 import {uploadHandler} from '../../handlers/upload.handler';
 import util from 'util'
+
+const sanitizeOpt = {
+    allowedTags: ['img', 'p', 'pre', 'code', 'strong', 'em'],
+    allowedSchemes: ['data', 'http']
+};
 
 let userInput = {};
 
@@ -158,14 +164,12 @@ export function renderProfile(req, res) {
             _id: ObjectID(res.payload)
         }
 
-        console.log("query is", query);
-
         return mongodb.findSingle('users', query, getUser)
     }
 
     const getView = (user) => {
-        console.log("user is ", user);
-        return renderView('admin/src/components/user/update/user.ejs', {content: {sidebar, user}})
+        user.data.social = JSON.parse(user.data.social);
+        return renderView('admin/src/components/user/update/user.ejs', {content: {sidebar, user: user.data}})
     }
 
     const sendResponse = (str) => {
@@ -181,10 +185,9 @@ export function renderProfile(req, res) {
     }
 
     return findUser().then(getView).then(sendResponse).catch((err) => {
-        console.log(err);
         let options = {
             status: 500,
-            data: 'Sorry, we are facing some issue right now. Please, try again later.',
+            data: err.error,
             message: 'Sorry, we are facing some issue right now. Please, try again later.',
             content: 'text/plain'
         };
@@ -205,11 +208,9 @@ export function renderSignin(req, res) {
 
         const headers = [{name: 'Content-Type', value: 'text/html'}]
 
-        console.log(options);
 
         return responseHandler(res, options, headers);
     }).catch((err) => {
-        console.log(err);
         let options = {
             status: 500,
             data: 'Sorry, we are facing some issue right now. Please, try again later.',
@@ -231,11 +232,9 @@ export function renderSignup(req, res) {
             content: 'text/html'
         };
 
-        console.log(options);
 
         return responseHandler(res, options);
     }).catch((err) => {
-        console.log(err);
         let options = {
             status: 500,
             data: 'Sorry, we are facing some issue right now. Please, try again later.',
@@ -259,7 +258,7 @@ export function updateUser(req, res) {
     };
 
     const getData = (user) => {
-        foundUser = user;
+        foundUser = user.data;
         if (req.body) {
             return Promise.resolve(req);
         } else {
@@ -268,12 +267,13 @@ export function updateUser(req, res) {
     };
 
     const updateDocument = () => {
+        req.body.about = sanitize(req.body.about, sanitizeOpt);
+        req.body._id = foundUser._id;
         const query = {
             _id: ObjectID(res.payload)
         };
         if (req.file) {
-            console.log(req.file);
-            req.body.profileImage = req.file.filename;
+            req.body.profileImage = `uploads/${req.file.filename}`;
         }
         return mongodb.update('users', query, req.body, getUser, getUser);
     };
@@ -281,7 +281,6 @@ export function updateUser(req, res) {
     const sendResponse = (data) => {
         delete data.password;
         delete data.salt;
-        console.log("data is ", data);
         const options = {
             status: 200,
             message: 'User updated successfully',
@@ -293,7 +292,6 @@ export function updateUser(req, res) {
     };
 
     return Promise.resolve().then(findUser).then(getData).then(updateDocument).then(sendResponse).catch((err) => {
-        console.log("err is ", err)
         const options = {
             status: err.status ? err.status : 500,
             message: err.message ? err.message : 'Sorry, we are facing some issue right now. Please, try again later.',
@@ -302,7 +300,7 @@ export function updateUser(req, res) {
 
         const headers = [{name: 'Content-Type', value: 'application/json'}];
 
-        return responseHandler(res, options);
+        return responseHandler(res, options, headers);
     });
 }
 
