@@ -7,6 +7,7 @@ export const serveStatic = (req, res)=> {
     const ext = path.parse(parsedUrl.pathname).ext;
     let pathnameBlog = `./client/blog${parsedUrl.pathname}`;
     let pathnameAdmin = `./client/admin${parsedUrl.pathname}`;
+    let pathnameUpload = `.${parsedUrl.pathname}`;
     const map = {
         '.html': 'text/html',
         '.js': 'text/javascript',
@@ -18,15 +19,20 @@ export const serveStatic = (req, res)=> {
     if(ext === '.css' || ext === '.js' || ext === '.png' || ext === '.jpg' || ext === '.jpeg') {
         let existInAdmin = fs.existsSync(pathnameAdmin);
         let existInBlog = fs.existsSync(pathnameBlog);
-        if (!existInAdmin && !existInBlog) {
+        let existInUploads = fs.existsSync(pathnameUpload);
+        if (!existInAdmin && !existInBlog && !existInUploads) {
             res.statusCode = 404;
             res.end('File not found!');
         } else if(existInAdmin) {
             const data = fs.readFileSync(pathnameAdmin);
             res.writeHead(200, {'Content-type': map[ext] || 'text/plain'});
             res.end(data);
-        } else {
+        } else if(existInBlog) {
             const data = fs.readFileSync(pathnameBlog);
+            res.writeHead(200, {'Content-type': map[ext] || 'text/plain'});
+            res.end(data);
+        } else {
+            const data = fs.readFileSync(pathnameUpload);
             res.writeHead(200, {'Content-type': map[ext] || 'text/plain'});
             res.end(data);
         }
