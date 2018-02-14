@@ -7,7 +7,6 @@ function decode(req) {
         throw new ErrorWithStatusCode(403, 'Access not allowed', 'There was no authorization header found. The format is: "Authorization: Bearer [token]"');
     } else {
         const token = req.headers.cookie.split('authorization=')[1];
-        console.log(token);
         const segments = token.split('.');
         if (segments.length !== 3) {
             throw new ErrorWithStatusCode(400, 'Invalid token format', 'The token found didn\'t match up to the standard jwt format.');
