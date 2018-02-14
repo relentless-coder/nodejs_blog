@@ -1,16 +1,17 @@
-import {setupMenu,schema} from '../../editor/menu.items.js';
+import {setupMenu, schema} from '../../editor/menu.items.js';
 import {EditorView} from 'prosemirror-view';
 import {EditorState} from 'prosemirror-state';
 import {keymap} from 'prosemirror-keymap';
 import {DOMParser} from 'prosemirror-model';
 import {baseKeymap} from 'prosemirror-commands';
 import {apiHandler} from '../../../handlers/api.handler';
-export const profileHandler = ()=>{
+
+export const profileHandler = () => {
 
     let content = document.querySelector('#profile_about');
 
 
-    const setupUpdateProfile = ()=>{
+    const setupUpdateProfile = () => {
 
         window.view = new EditorView(document.querySelector('#profile_editor'), {
             state: EditorState.create({
@@ -20,7 +21,7 @@ export const profileHandler = ()=>{
         });
     };
 
-    const addSocialProfile = ()=>{
+    const addSocialProfile = () => {
         const button = document.querySelector('.add_social_profile');
         const div = document.createElement('div');
         div.setAttribute('class', 'social_profiles');
@@ -35,7 +36,7 @@ export const profileHandler = ()=>{
         document.querySelector('.social_profiles_wrapper').insertBefore(div, button);
     };
 
-    const updateProfile = ()=>{
+    const updateProfile = () => {
         const form = new FormData();
         form.append('name', document.getElementById('profile_name').value);
         form.append('profileImage', document.getElementById('profile_image').files[0]);
@@ -49,13 +50,15 @@ export const profileHandler = ()=>{
 
         let profiles = [];
 
-        socialProfiles.forEach((el, i)=>{
+        socialProfiles.forEach((el, i) => {
             console.log(el);
-            if(el.nodeName !== 'BUTTON'){
-                profiles[i] = {
-                    name: el.children[0].value,
-                    link: el.children[1].value
-                };
+            if (el.nodeName !== 'BUTTON') {
+                if (el.children[0].value && el.children[1].value) {
+                    profiles[i] = {
+                        name: el.children[0].value,
+                        link: el.children[1].value
+                    };
+                }
             }
         });
 
@@ -63,7 +66,7 @@ export const profileHandler = ()=>{
 
         form.append('social', JSON.stringify(profiles));
 
-        for(let pair of form){
+        for (let pair of form) {
             console.log(pair[0], pair[1]);
         }
 
