@@ -5,8 +5,12 @@ function responseHandler(res, options, headers) {
         throw TypeError('The first argument must be an object with methods writeHead and end');
     } else {
         const localHeaders = {};
-        console.log(headers);
-        headers.forEach(el => localHeaders[el.name] = el.value)
+
+        if(headers)
+            headers.forEach(el => localHeaders[el.name] = el.value)
+        else
+            localHeaders['Content-Type'] = 'application/json'
+
         res.writeHead(options.status, localHeaders);
         let data;
         if(typeof options.data === 'object')
