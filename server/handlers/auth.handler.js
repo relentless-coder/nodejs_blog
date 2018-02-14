@@ -10,7 +10,6 @@ function authHandler(req, res, next) {
     let payload;
     try {
         payload = decode(req);
-        console.log('payload is ', payload);
         let expTime = moment.tz(payload.exp, 'GMT').toDate();
         let currentTIme = moment.tz('GMT').toDate();
 
@@ -30,7 +29,6 @@ function authHandler(req, res, next) {
             return mongodb.findSingle('users', query, parseUser).then((data) => {
                 if (data) {
                     res.payload = data.data._id;
-                    console.log("res.payload is ", res.payload);
                     return next();
                 } else {
                     const options = {
@@ -42,7 +40,6 @@ function authHandler(req, res, next) {
                     return responseHandler(res, options);
                 }
             }).catch((err) => {
-                console.log('auth handler is ', err);
                 const options = {
                     status: 500,
                     message: 'Sorry, we seem to be facing some issue right now. Please, try again later.',
@@ -53,7 +50,6 @@ function authHandler(req, res, next) {
             });
         }
     } catch (err) {
-        console.log('catch error is ', err)
         const options = {
             status: err.status ? err.status : 500,
             message: err.message,
