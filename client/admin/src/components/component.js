@@ -29,7 +29,8 @@ export const app = ()=>{
     const profile = {
         addSocialProfile: profileHandler().addSocialProfile,
         setupUpdateProfile: profileHandler().setupUpdateProfile,
-        updateProfile: profileHandler().updateProfile
+        updateProfile: profileHandler().updateProfile,
+        addHelpfulLinks: profileHandler().addHelpfulLinks
     };
 
 
