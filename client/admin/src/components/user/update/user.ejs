@@ -24,19 +24,30 @@
         </div>
     </div>
     <div class="social_profiles_wrapper">
-        <% content.user.social.forEach((el)=>{ %>
+        <% content.user.social ? content.user.social.forEach((el)=>{ %>
         <div class="social_profiles">
             <input type="text" id="social_profile_name" value="<%= el.name %>"
                    placeholder="Social Profile, eg: github, twitter">
             <input type="text" id="social_profile_link" value="<%= el.link %>" placeholder="Link to the profile">
         </div>
-        <% }) %>
+        <% }) : '' %>
         <div class="social_profiles">
             <input type="text" id="social_profile_name" placeholder="Social Profile, eg: github, twitter">
             <input type="text" id="social_profile_link" placeholder="Link to the profile">
         </div>
         <button class="add_social_profile" onclick="profile.addSocialProfile()">Add</button>
     </div>
+    <div class="helpful_links_wrapper">
+        <% content.user.projects ? content.user.projects.forEach((el)=>{ %>
+          <div class="helpful_link">
+              <input type="text" value="<%= el.title%>">
+              <textarea id="" cols="30" rows="10"><%=el.about%></textarea>
+              <input type="text" value="<% el.link%>">
+          </div>
+        <%}) : ''%>
+        <button class="add_helpful_links" onclick="profile.addHelpfulLinks()">Add A Helpful Link</button>
+    </div>
+
     <div class="save_profile">
         <button onclick="profile.updateProfile()">Save</button>
     </div>
