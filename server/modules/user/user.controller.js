@@ -168,7 +168,10 @@ export function renderProfile(req, res) {
     }
 
     const getView = (user) => {
-        user.data.social = JSON.parse(user.data.social);
+        if(user.data.social)
+            user.data.social = JSON.parse(user.data.social);
+        if(user.data.projects)
+            user.data.projects = JSON.parse(user.data.projects);
         return renderView('admin/src/components/user/update/user.ejs', {content: {sidebar, user: user.data}})
     }
 
@@ -185,6 +188,7 @@ export function renderProfile(req, res) {
     }
 
     return findUser().then(getView).then(sendResponse).catch((err) => {
+        console.log('error is ', err);
         let options = {
             status: 500,
             data: err.error,
@@ -228,12 +232,13 @@ export function renderSignup(req, res) {
         let options = {
             status: 200,
             data: str,
-            message: 'Success',
-            content: 'text/html'
+            message: 'Success'
         };
 
+        const headers = [{name: 'Content-Type', value: 'text/html'}];
 
-        return responseHandler(res, options);
+
+        return responseHandler(res, options, headers);
     }).catch((err) => {
         let options = {
             status: 500,
@@ -241,8 +246,9 @@ export function renderSignup(req, res) {
             message: 'Sorry, we are facing some issue right now. Please, try again later.',
             content: 'text/plain'
         };
+        const headers = [{name: 'Content-Type', value: 'text/plain'}];
 
-        return responseHandler(res, options);
+        return responseHandler(res, options, headers);
     });
 }
 
