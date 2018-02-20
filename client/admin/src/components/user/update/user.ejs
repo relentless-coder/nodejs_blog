@@ -41,8 +41,8 @@
         <% content.user.projects ? content.user.projects.forEach((el)=>{ %>
           <div class="helpful_link">
               <input type="text" value="<%= el.title%>">
-              <textarea id="" cols="30" rows="10"><%=el.about%></textarea>
-              <input type="text" value="<% el.link%>">
+              <input type="text" value="<%= el.about%>">
+              <input type="text" value="<%= el.link%>">
           </div>
         <%}) : ''%>
         <button class="add_helpful_links" onclick="profile.addHelpfulLinks()">Add A Helpful Link</button>
