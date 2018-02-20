@@ -26,18 +26,18 @@ export function getAllPosts(req, res) {
         };
     }
     return mongo.findAll('posts', query, getPost).then((data) => {
-        renderView('blog/src/components/posts/all_posts/all.post.ejs', {content: {post: data.data, meta: {title: 'Ayush Bahuguna', description: 'Hello, I am Ayush Bahuguna', keywords: 'hello,world'}}}).then((str)=>{
+       return renderView('blog/src/components/posts/all_posts/all.post.ejs', {content: {post: data.data, meta: {title: 'Posts | Ayush Bahuguna', description: 'Here you can find tutorials on web development topics that are much more relevant to your professional career', keywords: 'nodejs tutorials, mongodb tutorials, javascript tutorials'}}}).then((str)=>{
             const options = {
                 status: data.status,
                 message: data.message,
-                data: str,
-                content: 'text/html'
+                data: str
             };
-            return responseHandler(res, options);
+            const headers = [{name: 'Content-Type', value: 'text/html'}];
+            return responseHandler(res, options, headers);
         });
 
     }).catch((err) => {
-        return responseHandler(res, {status: err.status, message: err.message, data: err.error, content: 'application/json'});
+        return responseHandler(res, {status: err.status, message: err.message, data: err.error}, [{name: 'Content-Type', value: 'application/json'}]);
     });
 }
 
@@ -51,19 +51,18 @@ export function getOnePost(req, res) {
                 let options = {
                     status: data.status,
                     message: data.message,
-                    data: clientData,
-                    content: 'text/html'
+                    data: clientData
                 };
-                return responseHandler(res, options);
+                const headers = [{name: 'Content-Type', value: 'text/html'}];
+                return responseHandler(res, options, headers);
             }).catch((err)=>{
                 let options = {
                     status: err.status ? err.status : 500,
                     message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
-                    data: err,
-                    content: 'application/json'
+                    data: err
                 };
-
-                return responseHandler(res, options);
+                const headers = [{name: 'Content-Type', value: 'application/json'}];
+                return responseHandler(res, options, headers);
             });
     });
 }
