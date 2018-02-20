@@ -53,8 +53,9 @@ class hashPassword {
 }
 
 class getUser {
-    constructor({_id, name, testimonials, about, pitch, projects, social, salt, password, profileImage}){
+    constructor({_id, name, email, testimonials, about, pitch, projects, social, salt, password, profileImage}){
         this._id = _id;
+        this.email = email;
         this.name = name;
         this.about = about;
         this.projects = projects;
