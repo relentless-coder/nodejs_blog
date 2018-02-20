@@ -274,14 +274,17 @@ export function updateUser(req, res) {
 
     const updateDocument = () => {
         req.body.about = sanitize(req.body.about, sanitizeOpt);
-        req.body._id = foundUser._id;
-        const query = {
-            _id: ObjectID(res.payload)
-        };
         if (req.file) {
             req.body.profileImage = `uploads/${req.file.filename}`;
         }
-        return mongodb.update('users', query, req.body, getUser, getUser);
+        for(let key in req.body){
+            foundUser[key] = req.body[key]
+        }
+        const query = {
+            _id: ObjectID(res.payload)
+        };
+
+        return mongodb.update('users', query, foundUser, getUser, getUser);
     };
 
     const sendResponse = (data) => {
