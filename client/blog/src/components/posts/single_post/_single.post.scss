@@ -1,0 +1,57 @@
+@import "../../../styles/_base.scss";
+.single_post_wrapper {
+    & .single_post {
+        display: flex;
+        max-width: 100%;
+        flex-direction: column;
+        align-items: center;
+        & .heading_wrapper {
+            width: 100%;
+            background: $second-color;
+            z-index: 0;
+            position: fixed;
+            padding: 0 10px;
+            height: 540px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            & .single_post_heading {
+                color: $first-color;
+                font-size: 4rem;
+                background: $second-color;
+                padding: 0 5px;
+                margin: 10% 0 0;
+                max-height: 100%;
+                text-align: center;
+            }
+        }
+        & .single_post_content_wrapper {
+            max-width: 100%;
+            position: relative;
+            z-index: 20;
+            margin-top: 800px;
+            background: $fourth-color;
+            & .single_post_content {
+                width: 75%;
+                font-size: 1.32rem;
+                color: $second-color;
+                line-height: 1.73rem;
+                background: $first-color;
+                padding: 1rem;
+                position: relative;
+                border-radius: 3px;
+                filter: $drop-shadow;
+                margin: 0 auto;
+                transform: translate3d(0px, -120px, 0);
+                transform-style: preserve-3d;
+                & pre>code {
+                    font-size: 1rem;
+                }
+                & a {
+                    color: $second-color;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}

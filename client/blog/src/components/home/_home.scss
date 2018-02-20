@@ -1,0 +1,88 @@
+@import "../../styles/_base.scss";
+
+.home_wrapper {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    & .intro_wrapper {
+        position: relative;
+        max-width: 100%;
+        height: 100vh;
+        overflow-y: hidden;
+        & img {
+            max-width: 100%;
+        }
+        & .intro_text_wrapper {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 60%;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            & h1 {
+                font-size: 3rem;
+                margin-bottom: 0;
+            }
+            & .social_profiles {
+                color: white;
+                & a {
+                    color: inherit;
+                    margin-right: 1rem;
+                }
+            }
+        }
+    }
+    & .about_wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #f9f9f9;
+        & .about {
+            display: flex;
+            width: 75%;
+            margin-top: 4rem;
+            max-width: 100%;
+            flex-direction: column;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            background: #fff;
+            filter: $drop-shadow;
+            padding: 1rem;
+            & p {
+                font-size: 1.1rem;
+                line-height: 1.3;
+            }
+        }
+    }
+    & .projects_wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 2rem 0;
+        & .projects {
+            width: 85%;
+            max-width: 100%;
+            display: flex;
+            justify-content: space-between;
+            & .project {
+                display: flex;
+                width: 33%;
+                padding: 1rem;
+                background: #fff;
+                filter: $drop-shadow;
+                flex-direction: column;
+                justify-content: space-around;
+                & h3 {
+                    margin-top: 0;
+                    border-bottom: 2px solid black;
+                }
+            }
+        }
+    }
+
+}

@@ -1,0 +1,29 @@
+@import "../../../styles/_base.scss";
+
+.posts {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 75%;
+    margin: 6rem auto 2rem;
+    background: $first-color;
+    filter: $drop-shadow;
+    border-radius: 5px;
+    padding: 1rem;
+    & .post {
+        display: flex;
+        flex-direction: column;
+        margin: 1.5rem auto;
+        border-bottom: 1px solid $third-color;
+        & a {
+            color: $second-color;
+            font-size: 1.57rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        & h1 {
+            color: black;
+        }
+    }
+}
