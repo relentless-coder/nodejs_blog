@@ -24,6 +24,7 @@ export const profileHandler = () => {
 
 
     const setupUpdateProfile = () => {
+        console.log('content user is ', content.user);
 
         window.view = new EditorView(document.querySelector('#profile_editor'), {
             state: EditorState.create({
@@ -67,15 +68,24 @@ export const profileHandler = () => {
         const linkName = createDomElement('input', [{name: 'type', value: 'text'}, {
             name: 'placeholder',
             value: 'Enter the title of the link'
+        }, {
+            name: 'name',
+            value: 'resource_name'
         }]);
         const link = createDomElement('input', [{name: 'type', value: 'text'}, {
             name: 'placeholder',
             value: 'Enter the link to the resource'
+        }, {
+            name: 'name',
+            value: 'resource_link'
         }]);
-        const about = createDomElement('textarea', [{name: 'row', value: '5'}, {
-            name: 'col',
-            value: '10'
-        }, {name: 'class', value: 'helpful_link_about'}]);
+        const about = createDomElement('input', [{name: 'type', value: 'text'}, {
+            name: 'placeholder',
+            value: 'Enter the link to the resource'
+        }, {name: 'class', value: 'helpful_link_about'}, {
+            name: 'name',
+            value: 'resource_about'
+        }]);
 
         div.appendChild(linkName);
         div.appendChild(about);
@@ -87,28 +97,30 @@ export const profileHandler = () => {
     const updateProfile = () => {
         const form = new FormData();
         form.append('name', document.getElementById('profile_name').value);
-        form.append('profileImage', document.getElementById('profile_image').files[0]);
+
+        if(document.getElementById('profile_image').files[0])
+            form.append('profileImage', document.getElementById('profile_image').files[0]);
+
         form.append('about', window.view.dom.innerHTML);
 
         const profileWrapper = document.querySelector('.social_profiles_wrapper');
         const socialProfiles = [...profileWrapper.children];
 
-        const helpFullLinksWrapper = document.querySelector('.helpful_links_wrapper');;
+        const helpFullLinksWrapper = document.querySelector('.helpful_links_wrapper');
+        console.log(helpFullLinksWrapper)
         const helpFullLinks = [...helpFullLinksWrapper.children];
 
         let links = [];
 
-        helpFullLinks.forEach((el, i)=>{
-            if(el.nodeName !== 'BUTTON') {
-                if (el.children[0].value && el.children[1].value) {
-                    links[i] = {
-                        title: el.children[0].value,
-                        about: el.children[1].value,
-                        link: el.children[2].value
-                    };
-                }
+        helpFullLinks.forEach((el, i) => {
+            if (el.nodeName !== 'BUTTON') {
+                links[i] = {
+                    title: el.children[0].value,
+                    about: el.children[1].value,
+                    link: el.children[2].value
+                };
             }
-        })
+        });
 
         let profiles = [];
 
