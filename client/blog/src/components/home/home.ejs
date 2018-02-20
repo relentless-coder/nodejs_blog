@@ -1,12 +1,32 @@
-<% include ../../partials/header.ejs%>
+<% include ../../partials/header.ejs %>
 <div class="home_wrapper">
-    <div class="intro_wrapper"><img src="../../build/images/ayush.jpg" alt="Ayush Bahuguna | Full Stack Developer" >
+    <div class="intro_wrapper"><img src="<%= content.user.profileImage %>" alt="Ayush Bahuguna | Full Stack Developer">
         <div class="intro_text_wrapper">
             <h1 class="intro_name">Ayush Bahuguna</h1>
+            <p class="social_profiles">
+                <% content.user.social.forEach((el)=>{ %>
+                <a href="<%= el.link %>"><i class="fab fa-<%= el.name.toLowerCase() %> fa-2x"></i></a>
+                <% }) %>
+            </p>
         </div>
     </div>
-    <div class="About">
-        <%- content.user %>
+    <div class="about_wrapper">
+        <h1>About Me</h1>
+        <div class="about">
+            <%- content.user.about %>
+        </div>
+    </div>
+    <div class="projects_wrapper">
+        <h1>Helpful Resources</h1>
+        <div class="projects">
+            <% content.user.projects.forEach((el)=>{ %>
+            <div class="project">
+                <h3><%= el.title %></h3>
+                <p><%= el.about %></p>
+                <a href="<%= el.link %>">Link</a>
+            </div>
+            <% }) %>
+        </div>
     </div>
 </div>
-<% include ../../partials/footer.ejs%>
+<% include ../../partials/footer.ejs %>
