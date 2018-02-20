@@ -4,6 +4,8 @@ import {postRouter} from './post/post.routes';
 import {serveStatic} from '../handlers/serve.static';
 import {renderView} from '../handlers/render.view.js';
 import {responseHandler} from '../handlers/response.handler.js';
+import mongodb from '../services/mongodb/mongodb.service';
+import {getUser} from '../services/layers/user.layer';
 
 const router = new Router();
 
@@ -28,23 +30,44 @@ function routerFactory() {
     };
 
     router.get('/', (req, res)=>{
-        return  renderView('blog/src/components/home/home.ejs', options).then((str)=>{
+
+        const findUser = ()=>{
+            return mongodb.findAll('users', {}, getUser)
+        };
+        const setupRender = ({data})=>{
+            let user = data[0];
+            user.social = JSON.parse(user.social);
+            user.projects = JSON.parse(user.projects);
+            const options = {
+                content: {
+                    user,
+                    meta: {
+                        title: 'Ayush Bahuguna | Fullstack Developer',
+                        keywords: 'ayush bahuguna,fullstack developer new delhi,javascript developer new delhi,fullstack development tutorials,nodejs tutorials,mongodb tutorials,aws tutorials,freelance developer new delhi',
+                        description: 'Official page of Ayush Bahuguna, who is working as fullstack developer in New Delhi, and is looking forward to exciting freelance opportunities. This website also provides helpful tutorials that may help fellow developers at work.'
+                    }
+                }
+            }
+            return  renderView('blog/src/components/home/home.ejs', options)
+        }
+        findUser().then(setupRender).then((str)=>{
             let options = {
                 status: 200,
                 message: 'Success',
                 data: str,
-                content: 'text/html'
             };
-            return responseHandler(res, options);
+            const headers = [{name: 'Content-Type', value: 'text/html'}];
+            return responseHandler(res, options, headers);
         }).catch((err)=>{
             console.log(err);
             let options = {
                 status: err.status ? err.status : 500,
                 message: err.message ? err.message : 'Sorry, we are facing some issue right now. Please, try again later.',
-                data: 'We are facing some issue.',
-                content: 'text/plain'
+                data: 'We are facing some issue.'
             };
-            return responseHandler(res, options);
+            const headers = [{name: 'Content-Type', value: 'text/plain'}];
+
+            return responseHandler(res, options, headers);
         });
     });
 
