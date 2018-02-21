@@ -6,6 +6,10 @@
             <input type="text" name="name" id="profile_name" placeholder="Your Name"
                    value="<%= content.user.name || "" %>">
         </div>
+        <div class="name">
+            <input type="text" name="title" id="profile_title" placeholder="Your Job Title"
+                   value="<%= content.user.title || "" %>">
+        </div>
     </div>
     <div class="profile_image">
         <input type="file" name="profileImage" id="profile_image" placeholder="Profile Image"/>

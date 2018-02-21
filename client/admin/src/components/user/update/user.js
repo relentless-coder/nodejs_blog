@@ -97,6 +97,7 @@ export const profileHandler = () => {
     const updateProfile = () => {
         const form = new FormData();
         form.append('name', document.getElementById('profile_name').value);
+        form.append('title', document.getElementById('profile_title').value);
 
         if(document.getElementById('profile_image').files[0])
             form.append('profileImage', document.getElementById('profile_image').files[0]);
