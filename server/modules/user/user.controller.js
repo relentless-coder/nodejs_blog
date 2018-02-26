@@ -9,6 +9,7 @@ import {renderView} from '../../handlers/render.view';
 import {sidebar} from '../../config/sidebar';
 import {uploadHandler} from '../../handlers/upload.handler';
 import util from 'util'
+import {getReqBody} from '../../handlers/parse.request';
 
 const sanitizeOpt = {
     allowedTags: ['img', 'p', 'pre', 'code', 'strong', 'em'],
@@ -42,22 +43,7 @@ const checkIfUserExists = (body) => {
 };
 
 export function signin(req, res) {
-    const getReqBody = () => {
-        let body = [];
-        return new Promise((resolve, reject) => {
-            if (req.body) {
-                resolve(req.body);
-            } else {
-                req.on('error', (err) => {
-                    reject(err);
-                }).on('data', (data) => {
-                    body.push(data);
-                }).on('end', () => {
-                    resolve(JSON.parse(Buffer.concat(body).toString()));
-                });
-            }
-        });
-    };
+
 
     const getUserJwt = (user) => {
         if (!user) {
@@ -89,7 +75,7 @@ export function signin(req, res) {
         }
     };
 
-    return getReqBody().then(checkIfUserExists).then(getUserJwt).catch((err) => {
+    return getReqBody(req).then(checkIfUserExists).then(getUserJwt).catch((err) => {
         const options = {
             status: err.status ? err.status : 500,
             data: util.format(err.error ? err.error : err),
@@ -103,22 +89,6 @@ export function signin(req, res) {
 }
 
 export function signup(req, res) {
-    const getReqBody = () => {
-        let body = [];
-        return new Promise((resolve, reject) => {
-            if (req.body) {
-                resolve(req.body);
-            } else {
-                req.on('error', (err) => {
-                    reject(err);
-                }).on('data', (data) => {
-                    body.push(data);
-                }).on('end', () => {
-                    resolve(JSON.parse(Buffer.concat(body).toString()));
-                });
-            }
-        });
-    };
 
     const createUser = (data) => {
         if (data) {
@@ -143,7 +113,7 @@ export function signup(req, res) {
         }
     };
 
-    return getReqBody().then(checkIfUserExists).then(createUser).catch(err => {
+    return getReqBody(req).then(checkIfUserExists).then(createUser).catch(err => {
         const options = {
             status: err.status ? err.status : 500,
             message: 'Sorry, we are facing some issue right now. Please, try again later.',
