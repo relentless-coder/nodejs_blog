@@ -6,6 +6,7 @@ import {renderView} from '../handlers/render.view.js';
 import {responseHandler} from '../handlers/response.handler.js';
 import mongodb from '../services/mongodb/mongodb.service';
 import {getUser} from '../services/layers/user.layer';
+import {subsciberRouter} from './subscriber/subscriber.routes';
 
 const router = new Router();
 
@@ -13,6 +14,7 @@ function routerFactory() {
 
     router.use('/post', postRouter);
     router.use('/user', userRouter);
+    router.use('/subscriber', subsciberRouter);
 
     const options = {
         content: {
