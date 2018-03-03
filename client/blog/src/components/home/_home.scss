@@ -82,17 +82,69 @@
             justify-content: space-between;
             & .project {
                 display: flex;
-                width: 33%;
+                width: 30%;
+                padding: 1rem;
+                background: #fff;
+                filter: $drop-shadow;
+                flex-direction: column;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                border-radius: 5px;
+                justify-content: space-around;
+                align-items: flex-start;
+                & h3 {
+                    margin: 0;
+                    padding-bottom: 0.5rem;
+                    border-bottom: 1px solid #e2e2e2;
+                    & a {
+                        text-decoration: none;
+                        color: inherit;
+                    }
+                }
+            }
+        }
+    }
+
+    & .home_posts_wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 4rem;
+        & h1 {
+            border-bottom: 4px solid #e2e2e2;
+        }
+        & .home_posts {
+            width: 85%;
+            max-width: 100%;
+            display: flex;
+            margin-top: 2rem;
+            flex-direction: column;
+            align-items: center;
+            & .home_post {
+                display: flex;
+                width: 85%;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                border-radius: 5px;
                 padding: 1rem;
                 background: #fff;
                 filter: $drop-shadow;
                 flex-direction: column;
                 justify-content: space-around;
+                align-items: flex-start;
+                margin: 1rem;
                 & h3 {
                     margin: 0;
-                    text-align: center;
+                    border-bottom: 1px solid #e2e2e2;
                     padding-bottom: 0.5rem;
-                    border-bottom: 1px solid black;
+                    & a {
+                        text-decoration: none;
+                        color: inherit;
+                    }
+                }
+                & a {
+                    color: black;
+                    text-decoration: #e2e2e2;
                 }
             }
         }
