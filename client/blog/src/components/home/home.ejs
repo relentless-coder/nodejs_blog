@@ -22,9 +22,21 @@
         <div class="projects">
             <% content.user.projects.forEach((el)=>{ %>
             <div class="project">
-                <h3><%= el.title %></h3>
+                <h3><a href="<%= el.link %>"><%= el.title %></a></h3>
                 <p><%= el.about %></p>
                 <a href="<%= el.link %>">Link</a>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+    <div class="home_posts_wrapper">
+        <h1>Latest from the blog</h1>
+        <div class="home_posts">
+            <% content.posts.forEach((el)=>{ %>
+            <div class="home_post">
+                <h3><a href="/post/<%= el.url %>"><%= el.title %></a></h3>
+                <p><%= el.description %></p>
+                <a href="/post/<%= el.url %>">Read more</a>
             </div>
             <% }) %>
         </div>
