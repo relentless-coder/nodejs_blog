@@ -1,0 +1,107 @@
+@import "../../styles/_base.scss";
+
+.contact_wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 6rem;
+    padding: 1rem;
+
+    & .new_comment_header {
+        font-size: 2rem;
+        padding: 1rem;
+    }
+    & .contact_form {
+        display: flex;
+        margin-top: 1.5rem;
+        flex-direction: column;
+        align-items: center;
+        width: 50%;
+        max-width: 100%;
+        transition: all 1s cubic-bezier(.25,.8,.25,1);
+        background: $first-color;
+        filter: $drop-shadow;
+        color: $second-color;
+        line-height: 1.6rem;
+        padding: 1rem 1.5rem;
+
+        & .contact_name_email_wrapper {
+            width: 90%;
+            margin: 1.5rem auto;
+            display: flex;
+            justify-content: space-between;
+            & .contact_name, & .contact_email {
+                border: none;
+                color: black;
+                width: 48%;
+                padding: 1rem;
+                background: $fifth-color;
+                transition: all 0.5s cubic-bezier(0.895, 0.03, 0.685, 0.22);
+                font-size: 1.32rem;
+            }
+        }
+
+        & .contact_post {
+            width: 40%;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: $third-color;
+            filter: $drop-shadow;
+            transition: all 1s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+            border-radius: 2px;
+            color: $second-color;
+            font: {
+                size: 1.5rem;
+                weight: 700;
+            }
+
+            &:hover {
+                background: $sixth-color;
+            }
+        }
+
+
+        & .contact_message {
+            padding: 1rem;
+            resize: none;
+            margin-bottom: 1.5rem;
+            color: black;
+            width: 90%;
+            max-width: 100%;
+            transition: all 0.5s cubic-bezier(0.895, 0.03, 0.685, 0.22);
+            margin-bottom: 1.5rem;
+            background: $fifth-color;
+            border: none;
+            font: {
+                size: 1.32rem;
+                family: inherit;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 960px) {
+    .contact_wrapper {
+        & .contact_form {
+            width: 65%;
+        }
+    }
+}
+
+@media only screen and (max-width: 720px) {
+    .contact_wrapper {
+        & .contact_form {
+            width: 80%;
+        }
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .contact_wrapper {
+        & .contact_form {
+            width: 95%;
+        }
+    }
+}

@@ -1,0 +1,15 @@
+<% include ../../partials/header.ejs %>
+<% include ../../partials/navbar.ejs%>
+
+<div class="contact_wrapper">
+    <h2 class="contact_header">Feel free to ask your question or if you just want to say hi</h2>
+    <div class="contact_form">
+        <div class="contact_name_email_wrapper">
+            <input type="text" id="contactName" class="contact_name" required placeholder="Your name">
+            <input type="text" id="contactEmail" class="contact_email" required placeholder="Your Email">
+        </div>
+        <textarea name="" id="contactMessage" cols="8" rows="5" class="contact_message" placeholder="Your message" required></textarea>
+        <button type="button" name="button" onclick="contact.sendMessage()" class="contact_post">Submit</button>
+    </div>
+</div>
+<% include ../../partials/footer.ejs %>
