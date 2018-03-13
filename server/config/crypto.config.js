@@ -1,5 +1,5 @@
 const cryptoConfig = {
-    secret: '3amchicken',
+    secret: process.env.SECRET,
     iterations: 1000,
     digest: 'sha512',
     jwtValid: '1d'
