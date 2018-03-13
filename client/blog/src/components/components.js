@@ -1,6 +1,7 @@
 import {comment} from './comments/comment.js';
 import {singlePostHandler} from './posts/single_post/single.post.js';
 import {subscribeHandler} from './common/subscribe/subscribe';
+import {contactHandler} from './contact/contact';
 
 export const app = ()=>{
     window.onload = ()=>{
@@ -17,7 +18,8 @@ export const app = ()=>{
         reply: comment().replyComment
     };
 
-    window.subscribe = subscribeHandler()
+    window.subscribe = subscribeHandler();
+    window.contact = contactHandler();
 
 };
 
