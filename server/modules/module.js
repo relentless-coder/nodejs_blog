@@ -8,6 +8,7 @@ import mongodb from '../services/mongodb/mongodb.service';
 import {getUser} from '../services/layers/user.layer';
 import {subsciberRouter} from './subscriber/subscriber.routes';
 import {getPost} from '../services/layers/post.layer';
+import {contactRouter} from './contact/contact.routes';
 
 const router = new Router();
 
@@ -16,21 +17,7 @@ function routerFactory() {
     router.use('/post', postRouter);
     router.use('/user', userRouter);
     router.use('/subscribe', subsciberRouter);
-
-    const options = {
-        content: {
-            meta: {
-                title: 'Ayush Bahuguna | Fullstack Developer',
-                description: `Ayush Bahuguna is a fullstack javascript developer, from New Delhi India.
-                He understands the startup culture, and so if you are a startup or an individual,
-                who wants to bring their idea to life, then Ayush Bahuguna can help you achieve you goal,
-                in the most efficient way possible.
-                `,
-                keywords: 'ayush bahuguna,fullstack javascript developer,freelance javascript developer,freelance web developer,freelance javascript developer in india,freelance web developer in india,freelance javascript developer New Delhi,freelance web developer New Delhi',
-                image: '../../client/blog/build/images/ayush.jpg'
-            }
-        }
-    };
+    router.use('/contact', contactRouter);
 
     router.get('/', (req, res)=>{
         let user, posts;
@@ -57,7 +44,7 @@ function routerFactory() {
                 }
             };
             return  renderView('blog/src/components/home/home.ejs', options)
-        }
+        };
         findUser().then(findPosts).then(setupRender).then((str)=>{
             let options = {
                 status: 200,
