@@ -9,6 +9,9 @@ export const contactHandler = ()=>{
         };
 
         return axios.post('/contact', data).then((data)=>{
+            document.getElementById('contactEmail').value = '';
+            document.getElementById('contactName').value = '';
+            document.getElementById('contactMessage').value = '';
             alert('Sorry, for the lazy alert, but your message has been submitted. I\'ll get back to you soon.')
         })
     };
