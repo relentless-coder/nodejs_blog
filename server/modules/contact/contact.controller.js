@@ -33,10 +33,11 @@ export function renderContact(req, res) {
 export function postContact(req, res) {
     const sendMessage = (data)=>{
         const options = {
-            from: data.email,
+            from: `"${data.name}"<${data.email}>`,
             to: 'contact@ayushbahuguna.com',
-            subject: 'New Message',
-            message: data.message
+            subject: `New Message: ${data.name}`,
+            replyTo: data.email,
+            text: data.message
         };
         transport.sendMail(options, (err, done)=>{
             console.log('done');
