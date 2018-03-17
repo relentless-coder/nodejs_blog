@@ -275,9 +275,6 @@ function removeOne(collection, query, dummy) {
     });
 }
 
-connectMongo().then(createIndex).catch((err)=>{
-    throw err;
-});
 
 function exposeMongoServices() {
     return {findAll, findSingle, removeOne, update, insert};
