@@ -9,3 +9,4 @@ client/blog/build/templates.js
 package-lock.json
 yarn-error.log
 *.swp
+*.swo
