@@ -1,17 +1,21 @@
-<div class="comment" id="{{_id}}">
+export const commentTemp = () => {
+    return `
+        <div class="comment" id="<%= comment._id %>">
     <div class="parent_comment_wrapper">
-        <h3 class="comment_name">{{author.name}}</h3>
+        <h3 class="comment_name"><%= comment.author.name %></h3>
         <div class="comment_content">
-            {{{comment}}}
+            <%- comment.comment %>
         </div>
     </div>
-    {{#each comments}}
+    <% if(comment.comments){ %>
+    <% comment.comments.forEach((el)=>{ %>
     <div class="reply_comment">
-        <h3 class="comment_name"> {{author.name}} </h3>
+        <h3 class="comment_name"> <%= el.author.name %> </h3>
 
-        <div class="comment_content"> {{data.comment}} </div>
+        <div class="comment_content"> <%- el.comment %></div>
     </div>
-    {{/each}}
+    <% }) %>
+    <% } %>
 
     <div class="reply_comment_wrapper">
         <div class="comment_form_wrapper reply">
@@ -30,3 +34,6 @@
 
     </div>
 </div>
+
+    `
+}
