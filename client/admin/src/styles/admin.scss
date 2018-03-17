@@ -40,10 +40,14 @@ body {
             justify-content: space-between;
         }
         & .editor_wrapper {
-            height: 500px;
+            min-height: 300px;
+            width: 80%;
+            margin: 1rem 0;
+            white-space: pre-wrap;
             & .ProseMirror {
-                height: 90%;
+                min-height: 70%;
                 border: 1px solid black;
+                overflow-wrap: normal;
             }
         }
         & .seo_block {
@@ -66,8 +70,8 @@ body {
 .menu_icon {
     display: inline-block;
     border-right: 1px solid rgba(0, 0, 0, 0.2);
-    color: #888;
-    line-height: 1;
+    color: #000;
+    line-height: 2;
     padding: 0 7px;
     margin: 1px;
     cursor: pointer;
@@ -75,12 +79,21 @@ body {
     min-width: 1.4em;
 }
 
-.strong, .heading {
+.strong,
+.heading {
     font-weight: bold;
 }
 
 .em {
     font-style: italic;
+}
+
+.all_post_wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-left: 25%;
+    width: 60%;
+    max-width: 100%;
 }
 
 .profile {
