@@ -14,7 +14,7 @@ export class getPost {
 }
 
 export class addPost {
-    constructor({title, category, meta, gallery, content}) {
+    constructor({title, category, meta, gallery, content, url}) {
         if(!title || !category || !meta || !content){
             throw new ErrorWithStatusCode(422, 'Sorry, can\'t process request without complete data.', 'The data received from the client is incomplete. Required are title, description, category, price, gallery, stock.');
         } else {
@@ -22,6 +22,7 @@ export class addPost {
             this.category = category;
             this.meta = meta;
             this.content = content;
+            this.url = url;
         }
     }
 }
