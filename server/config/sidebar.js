@@ -1,13 +1,13 @@
 export const sidebar = [
     {
         'title': 'New Post',
-        'url': '/admin/new'
+        'url': '/post/admin/new'
     },{
         'title': 'Home',
-        'url': '/admin'
+        'url': '/user/admin'
     },{
         'title': 'All Posts',
-        'url': '/admin/all'
+        'url': '/post/admin/all'
     },{
         'title': 'Newsletter',
         'url': '/admin/newsletter'
