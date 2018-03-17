@@ -26,19 +26,19 @@ export const newPostHandler = ()=> {
 
         const post = {
             title: document.getElementById('post_title').value,
-            content: window.view.DOM.outerHTML,
+            content: window.view.dom.innerHTML,
             meta: {
-                description: document.getElementById('meta_desc'),
-                author: document.getElementById('meta_author'),
-                keywords: document.getElementById('meta_keywords')
+                description: document.getElementById('meta_desc').value,
+                author: document.getElementById('meta_author').value,
+                keywords: document.getElementById('meta_keywords').value
             },
-            category: document.getElementById('post_category')
+            category: document.getElementById('post_category').value
         };
 
         const options = {
             method: 'post',
-            url: '/api/v1/post',
-            date: post,
+            url: '/post',
+            data: post,
             config: true
         };
 
