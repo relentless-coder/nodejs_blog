@@ -7,8 +7,10 @@ import {
 const router = new Router();
 
 router.get('/', controller.getAllPosts);
+router.post('/', authHandler, controller.addOnePost);
 
 router.get('/admin/new', authHandler, controller.renderNewPost);
+router.get('/admin/all', authHandler, controller.renderAdminPosts);
 
 router.get('/:url', controller.getOnePost);
 
