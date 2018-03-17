@@ -9,6 +9,7 @@ import {responseHandler} from '../../handlers/response.handler';
 import {addComment, getComment} from '../../services/layers/comment.layer';
 import {renderView} from '../../handlers/render.view.js';
 import {uploadHandler} from '../../handlers/upload.handler.js';
+import {getReqBody} from '../../handlers/parse.request';
 
 const sanitizeOpt = {
     allowedTags: ['img', 'p', 'pre', 'code', 'strong', 'em'],
@@ -28,6 +29,25 @@ export function getAllPosts(req, res) {
     }
     return mongo.findAll('posts', query, getPost).then((data) => {
         return renderView('blog/src/components/posts/all_posts/all.post.ejs', {content: {post: data.data, meta: {title: 'Posts | Ayush Bahuguna', description: 'Here you can find tutorials on web development topics that are much more relevant to your professional career', keywords: 'nodejs tutorials, mongodb tutorials, javascript tutorials'}}}).then((str)=>{
+            const options = {
+                status: data.status,
+                message: data.message,
+                data: str
+            };
+            const headers = [{name: 'Content-Type', value: 'text/html'}];
+            return responseHandler(res, options, headers);
+        });
+
+    }).catch((err) => {
+        return responseHandler(res, {status: err.status, message: err.message, data: err.error}, [{name: 'Content-Type', value: 'application/json'}]);
+    });
+}
+
+export function renderAdminPosts(req, res) {
+    let query = {};
+
+    return mongo.findAll('posts', query, getPost).then((data) => {
+        return renderView('admin/src/components/posts/all_posts/all.post.ejs', {content: {post: data.data, sidebar}}).then((str)=>{
             const options = {
                 status: data.status,
                 message: data.message,
@@ -70,15 +90,9 @@ export function getOnePost(req, res) {
 
 export function addOnePost(req, res) {
 
-    const getData = () => {
-        if (req.body) {
-            return Promise.resolve(req);
-        } else {
-            return uploadHandler(req, res, 'image');
-        }
-    };
-
-    const addToDatabase = () => {
+    const addToDatabase = (data) => {
+        req.body = data;
+        req.body.url = req.body.title.toLowerCase().split(' ').join('-');
         req.body.content = sanitize(req.body.content, sanitizeOpt);
         return mongo.insert('posts', req.body, addPost, getPost).then((data) => {
             let options = {
@@ -95,7 +109,8 @@ export function addOnePost(req, res) {
         });
     };
 
-    return getData().then(addToDatabase).catch((err) => {
+    return getReqBody(req).then(addToDatabase).catch((err) => {
+        console.log("error is ", err);
         let options = {
             status: err.status ? err.status : 500,
             message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
