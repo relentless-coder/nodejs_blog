@@ -5,13 +5,27 @@ import {EditorView} from 'prosemirror-view';
 import {EditorState} from 'prosemirror-state';
 import {baseKeymap} from 'prosemirror-commands';
 import {keymap} from 'prosemirror-keymap';
+import {commentTemp} from '../../templates/comment_temp';
+
+const renderView = (path, data) => {
+    console.log("path is ", path);
+    return new Promise((resolve, reject) => {
+        ejs.render(path, data, (err, str) => {
+            if (err) {
+                console.log("error is ", err);
+                reject(err);
+            } else
+                resolve(str);
+        });
+    });
+};
 
 function comment() {
 
     let content = document.getElementById('new_comment');
 
 
-    const setupNewComment = ()=>{
+    const setupNewComment = () => {
 
         window.view = new EditorView(document.querySelector('#editor'), {
             state: EditorState.create({
@@ -30,9 +44,13 @@ function comment() {
             },
             comment: window.view.dom.innerHTML
         };
-        commentFactory.postComment(data, url).then((data)=>{
+        commentFactory.postComment(data, url).then((data) => {
             const commentWrapper = document.querySelector('.comment_wrapper');
-            const result = Handlebars.templates['comment'](data.data);
+
+            const result = ejs.render(commentTemp(), {comment: data.data});
+
+            console.log("result is ", result);
+
             commentWrapper.insertAdjacentHTML('beforeend', result);
         });
     };
