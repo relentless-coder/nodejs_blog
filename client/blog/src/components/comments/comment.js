@@ -6,6 +6,7 @@ import {EditorState} from 'prosemirror-state';
 import {baseKeymap} from 'prosemirror-commands';
 import {keymap} from 'prosemirror-keymap';
 import {commentTemp} from '../../templates/comment_temp';
+import {replyTemp} from '../../templates/reply_temp';
 
 const renderView = (path, data) => {
     console.log("path is ", path);
@@ -44,19 +45,31 @@ function comment() {
             },
             comment: window.view.dom.innerHTML
         };
-        commentFactory.postComment(data, url).then((data) => {
+        commentFactory.postComment(data, url).then(({data}) => {
             const commentWrapper = document.querySelector('.comment_wrapper');
 
-            const result = ejs.render(commentTemp(), {comment: data.data});
-
-            console.log("result is ", result);
+            const result = ejs.render(commentTemp(), {comment: data});
 
             commentWrapper.insertAdjacentHTML('beforeend', result);
         });
     };
 
-    const replyComment = (comment, id) => {
-        commentFactory.replyComment(comment, id);
+    const replyComment = (commentId, postId) => {
+        const body = {
+            author: {
+                name: document.getElementById(`${commentId}_reply_name`).value,
+                email: document.getElementById(`${commentId}_reply_email`).value
+            },
+            comment: document.getElementById(`${commentId}_reply_comment`).value
+        };
+        commentFactory.replyComment(body, postId, commentId).then(({data})=>{
+            console.log("data is ", data);
+            const commentWrapper = document.getElementById(`${commentId}_reply_wrapper`);
+
+            const result = ejs.render(replyTemp(), {comment: data});
+
+            commentWrapper.insertAdjacentHTML('beforebegin', result);
+        });
     };
 
     return {
