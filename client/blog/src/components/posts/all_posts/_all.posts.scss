@@ -4,7 +4,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     width: 75%;
     margin: 6rem auto 2rem;
     background: $first-color;
@@ -14,7 +14,7 @@
     & .post {
         display: flex;
         flex-direction: column;
-        margin: 1.5rem auto;
+        margin: 1.5rem 0;
         border-bottom: 1px solid $third-color;
         & a {
             color: $second-color;
