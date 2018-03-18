@@ -7,13 +7,12 @@
             <input type="text" class="new_email" id="comment_email" name="comment[author][email]" required
                    placeholder="Your email">
         </div>
+        <p style="margin-bottom: 0">Type your comment here: Use ctrl+ENTER to exit code mode</p>
         <div id="editor" class="editor_wrapper">
-            Type your comment here: Use ctrl+ENTER to exit code mode
         </div>
         <div id="new_comment" style="display: none;">
-
         </div>
-        <button onclick="commentWrapper.new('<%= content.post.url %>')" class="comment_post">Submit</button>
+        <button onclick="commentWrapper.new('<%= content.post._id %>')" class="comment_post">Submit</button>
 
     </div>
 </div>
@@ -37,18 +36,18 @@
         </div>
         <% }) %>
         <% } %>
-        <div class="reply_comment_wrapper">
+        <div class="reply_comment_wrapper" id="<%=el._id%>_reply_wrapper">
             <div class="comment_form_wrapper reply">
                 <div class="name_email_wrapper reply">
-                    <input type="text" id="reply_name" class="new_name" placeholder="Your name"
+                    <input type="text" id="<%=el._id%>_reply_name" class="new_name" placeholder="Your name"
                            name="reply[author][name]" required>
-                    <input type="text" id="reply_email" class="new_email" placeholder="Your email"
+                    <input type="text" id="<%=el._id%>_reply_email" class="new_email" placeholder="Your email"
                            name="reply[author][email]" required>
                 </div>
-                <textarea cols="10" rows="5" class="new_comment reply" name="reply[comment]"
+                <textarea cols="10" rows="5" class="new_comment reply" id="<%=el._id%>_reply_comment" name="reply[comment]"
                           required></textarea>
                 <div class="reply_buttons_wrapper">
-                    <button onclick="commentWrapper.reply(reply, el._id)" class="submit_reply">Submit</button>
+                    <button onclick="commentWrapper.reply('<%=el._id%>', '<%=content.post._id%>')" class="submit_reply">Submit</button>
                 </div>
             </div>
 
