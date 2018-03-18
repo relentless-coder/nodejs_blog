@@ -107,6 +107,9 @@
                 font: {
                     size: 1rem;
                 }
+                max-width: 100%;
+                width: 100%;
+                word-wrap: break-word;
                 color: $second-color;
             }
         }
@@ -181,15 +184,15 @@
             justify-content: center;
             background: $first-color;
             width: 100%;
-            padding: 0.5rem;
+            padding: 1rem;
             border-radius: 5px;
             filter: $drop-shadow;
             align-items: flex-start;
             & .comment_name {
                 font: {
                     size: 1.48rem;
-                    color: black;
                 }
+                border-bottom: 4px solid black;
                 margin: 0;
             }
             & .comment_email {
@@ -200,10 +203,12 @@
             }
             & .comment_content {
                 font: {
-                    size: 1.28rem;
-                    weight: 600;
+                    size: 1rem;
                 }
-                color: $third-color;
+                max-width: 100%;
+                width: 100%;
+                word-wrap: break-word;
+                color: $second-color;
             }
         }
         & .s_reply {
