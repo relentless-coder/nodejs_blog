@@ -1,0 +1,9 @@
+version: 0.0
+os: linux
+files:
+ - source: /
+   destination: /home/ubuntu/nodejs_blog
+hooks:
+ AfterInstall:
+  - location: build.sh
+    timeout: 60
