@@ -28,7 +28,16 @@ export function getAllPosts(req, res) {
         };
     }
     return mongo.findAll('posts', query, getPost).then((data) => {
-        return renderView('blog/src/components/posts/all_posts/all.post.ejs', {content: {post: data.data, meta: {title: 'Posts | Ayush Bahuguna', description: 'Here you can find tutorials on web development topics that are much more relevant to your professional career', keywords: 'nodejs tutorials, mongodb tutorials, javascript tutorials'}}}).then((str)=>{
+        return renderView('blog/src/components/posts/all_posts/all.post.ejs', {
+            content: {
+                post: data.data,
+                meta: {
+                    title: 'Posts | Ayush Bahuguna',
+                    description: 'Here you can find tutorials on web development topics that are much more relevant to your professional career',
+                    keywords: 'nodejs tutorials, mongodb tutorials, javascript tutorials'
+                }
+            }
+        }).then((str) => {
             const options = {
                 status: data.status,
                 message: data.message,
@@ -39,7 +48,10 @@ export function getAllPosts(req, res) {
         });
 
     }).catch((err) => {
-        return responseHandler(res, {status: err.status, message: err.message, data: err.error}, [{name: 'Content-Type', value: 'application/json'}]);
+        return responseHandler(res, {status: err.status, message: err.message, data: err.error}, [{
+            name: 'Content-Type',
+            value: 'application/json'
+        }]);
     });
 }
 
@@ -47,7 +59,12 @@ export function renderAdminPosts(req, res) {
     let query = {};
 
     return mongo.findAll('posts', query, getPost).then((data) => {
-        return renderView('admin/src/components/posts/all_posts/all.post.ejs', {content: {post: data.data, sidebar}}).then((str)=>{
+        return renderView('admin/src/components/posts/all_posts/all.post.ejs', {
+            content: {
+                post: data.data,
+                sidebar
+            }
+        }).then((str) => {
             const options = {
                 status: data.status,
                 message: data.message,
@@ -58,7 +75,10 @@ export function renderAdminPosts(req, res) {
         });
 
     }).catch((err) => {
-        return responseHandler(res, {status: err.status, message: err.message, data: err.error}, [{name: 'Content-Type', value: 'application/json'}]);
+        return responseHandler(res, {status: err.status, message: err.message, data: err.error}, [{
+            name: 'Content-Type',
+            value: 'application/json'
+        }]);
     });
 }
 
@@ -67,8 +87,13 @@ export function getOnePost(req, res) {
         'url': req.params.url
     };
     return mongo.findSingle('posts', query, getPost).then((data) => {
-        renderView('blog/src/components/posts/single_post/single.post.ejs', {content: {post: data.data, meta: data.data.meta}})
-            .then((clientData)=>{
+        renderView('blog/src/components/posts/single_post/single.post.ejs', {
+            content: {
+                post: data.data,
+                meta: data.data.meta
+            }
+        })
+            .then((clientData) => {
                 let options = {
                     status: data.status,
                     message: data.message,
@@ -76,15 +101,15 @@ export function getOnePost(req, res) {
                 };
                 const headers = [{name: 'Content-Type', value: 'text/html'}];
                 return responseHandler(res, options, headers);
-            }).catch((err)=>{
-                let options = {
-                    status: err.status ? err.status : 500,
-                    message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
-                    data: err
-                };
-                const headers = [{name: 'Content-Type', value: 'application/json'}];
-                return responseHandler(res, options, headers);
-            });
+            }).catch((err) => {
+            let options = {
+                status: err.status ? err.status : 500,
+                message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
+                data: err
+            };
+            const headers = [{name: 'Content-Type', value: 'application/json'}];
+            return responseHandler(res, options, headers);
+        });
     });
 }
 
@@ -202,47 +227,45 @@ export function addOneComment(req, res) {
 
     let foundPost, createdComment;
 
-    const getRequestBody = ()=>{
+    const getRequestBody = () => {
         const body = [];
         return new Promise((resolve, reject) => {
-            req.on('error', err => reject(err)).on('data', (data)=>{
+            req.on('error', err => reject(err)).on('data', (data) => {
                 body.push(data);
-            }).on('end', ()=>{
+            }).on('end', () => {
                 resolve(JSON.parse(Buffer.concat(body).toString()));
             });
         });
     };
 
-    const findPost = (body)=>{
+    const findPost = (body) => {
         req.body = body;
         req.body.comment = sanitize(req.body.comment, sanitizeOpt);
         const query = {
-            url: req.params.url
+            _id: ObjectID(req.params.postId)
         };
 
         return mongo.findSingle('posts', query, getPost);
     };
 
-    const createComment = (data)=>{
+    const createComment = (data) => {
         foundPost = data.data;
 
         return mongo.insert('comments', req.body, addComment, getComment);
     };
 
-    const updatePostWithComment = (data)=>{
+    const updatePostWithComment = (data) => {
         createdComment = data.data;
         foundPost.comments.push(createdComment);
 
         const query = {
-            url: req.params.url
+            _id: ObjectID(req.params.postId)
         };
-
-        console.log(foundPost, updatePost);
 
         return mongo.update('posts', query, foundPost, updatePost, getPost);
     };
 
-    const sendResponse = (data)=>{
+    const sendResponse = (data) => {
         let options = {
             status: data.status,
             message: 'Comment posted successfully',
@@ -253,7 +276,8 @@ export function addOneComment(req, res) {
         return responseHandler(res, options, headers);
     };
 
-    return getRequestBody().then(findPost).then(createComment).then(updatePostWithComment).then(sendResponse).catch((err)=>{
+    return getRequestBody().then(findPost).then(createComment).then(updatePostWithComment).then(sendResponse).catch((err) => {
+        console.log("err is ", err);
         let options = {
             status: err.status ? err.status : 500,
             message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
@@ -262,12 +286,86 @@ export function addOneComment(req, res) {
         const headers = [{name: 'Content-Type', value: 'application/json'}];
         return responseHandler(res, options, headers);
     });
-
 }
 
-export function renderNewPost(req, res){
+export function replyComment(req, res) {
+    let foundPost, foundComment, createdReply;
 
-    const getView = ()=>{
+    const findPost = (body)=>{
+        req.body = body;
+        const query = {
+            _id: ObjectID(req.params.postId)
+        };
+        return mongo.findSingle('posts', query, getPost);
+    };
+    const findComment = ({data}) => {
+        foundPost = data;
+        const query = {
+            _id: ObjectID(req.params.commentId)
+        };
+
+        return mongo.findSingle('comments', query, getComment)
+    };
+
+    const addReply = ({data}) => {
+        foundComment = data;
+        req.body.comment = sanitize(req.body.comment, sanitizeOpt);
+        return mongo.insert('comments', req.body, addComment, getComment)
+    };
+
+    const updateCommentWithReply = ({data}) => {
+        createdReply = data;
+        foundComment.comments.push(createdReply);
+        const query = {
+            _id: ObjectID(req.params.commentId)
+        };
+        return mongo.update('comments', query, foundComment, getComment, getComment)
+    };
+
+    const updatePostWithComments = ()=>{
+
+        const query = {
+            _id: ObjectID(req.params.postId)
+        };
+
+        foundPost.comments.forEach((el, i)=>{
+            if(el._id.toString() === foundComment._id.toString()){
+                foundPost.comments[i] = foundComment
+            }
+        });
+
+        console.log(foundPost);
+
+        return mongo.update('posts', query, foundPost, updatePost, getPost)
+    };
+
+    const sendResponse = () => {
+        const options = {
+            status: 200,
+            data: createdReply,
+            message: 'Reply posted'
+        };
+
+        const headers = [{name: 'Content-Type', value: 'application/json'}];
+
+        return responseHandler(res, options, headers);
+    };
+
+    return getReqBody(req).then(findPost).then(findComment).then(addReply).then(updateCommentWithReply).then(updatePostWithComments).then(sendResponse).catch((err) => {
+        console.log("err is ", err);
+        const options = {
+            status: err.status ? err.status : 500,
+            data: err.error ? err.error : 'Internal server error',
+            message: 'Sorry, we are facing some issue right now. Please, try again later'
+        };
+        const headers = [{name: 'Content-Type', value: 'application/json'}];
+        return responseHandler(res, options, headers);
+    })
+}
+
+export function renderNewPost(req, res) {
+
+    const getView = () => {
         let options = {
             content: {
                 sidebar,
@@ -283,8 +381,8 @@ export function renderNewPost(req, res){
 
     };
 
-    const sendResponse = (str)=>{
-        
+    const sendResponse = (str) => {
+
         let options = {
             data: str,
             status: 200,
@@ -295,8 +393,8 @@ export function renderNewPost(req, res){
         return responseHandler(res, options, headers);
     };
 
-    return getView().then(sendResponse).catch((err)=>{
-        
+    return getView().then(sendResponse).catch((err) => {
+
         let options = {
             status: 500,
             message: 'Sorry, we are facing some issue right now. Please, try again later.',
