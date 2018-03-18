@@ -73,11 +73,14 @@ body {
 
 
 .editor_wrapper {
-    height: 200px;
+    min-height: 200px;
     width: 80%;
+    max-width: 100%;
+    margin: 0 0 2.5rem;
     white-space: pre-wrap;
     & .ProseMirror {
-        height: 70%;
+        min-height: 70%;
+        word-wrap: break-word;
         border: 1px solid black;
     }
 }
