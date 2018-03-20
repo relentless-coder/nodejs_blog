@@ -169,10 +169,12 @@ body {
             }
         }
         & .profile_editor_wrapper {
-            height: 300px;
+            min-height: 600px;
             & .ProseMirror {
                 white-space: pre-wrap;
                 border: 1px solid black;
+                min-height: 100%;
+                overflow-y: scroll;
             }
         }
     }
