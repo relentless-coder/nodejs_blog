@@ -4,6 +4,9 @@ files:
  - source: /
    destination: /home/ubuntu/nodejs_blog
 hooks:
+ BeforeInstall:
+  - location: before.sh
+    timeout: 5
  AfterInstall:
   - location: build.sh
     timeout: 60
