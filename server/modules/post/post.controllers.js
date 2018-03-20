@@ -102,14 +102,14 @@ export function getOnePost(req, res) {
                 const headers = [{name: 'Content-Type', value: 'text/html'}];
                 return responseHandler(res, options, headers);
             }).catch((err) => {
-            let options = {
-                status: err.status ? err.status : 500,
-                message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
-                data: err
-            };
-            const headers = [{name: 'Content-Type', value: 'application/json'}];
-            return responseHandler(res, options, headers);
-        });
+                let options = {
+                    status: err.status ? err.status : 500,
+                    message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
+                    data: err
+                };
+                const headers = [{name: 'Content-Type', value: 'application/json'}];
+                return responseHandler(res, options, headers);
+            });
     });
 }
 
@@ -135,7 +135,7 @@ export function addOnePost(req, res) {
     };
 
     return getReqBody(req).then(addToDatabase).catch((err) => {
-        console.log("error is ", err);
+        console.log('error is ', err);
         let options = {
             status: err.status ? err.status : 500,
             message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
@@ -277,7 +277,7 @@ export function addOneComment(req, res) {
     };
 
     return getRequestBody().then(findPost).then(createComment).then(updatePostWithComment).then(sendResponse).catch((err) => {
-        console.log("err is ", err);
+        console.log('err is ', err);
         let options = {
             status: err.status ? err.status : 500,
             message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
@@ -304,13 +304,13 @@ export function replyComment(req, res) {
             _id: ObjectID(req.params.commentId)
         };
 
-        return mongo.findSingle('comments', query, getComment)
+        return mongo.findSingle('comments', query, getComment);
     };
 
     const addReply = ({data}) => {
         foundComment = data;
         req.body.comment = sanitize(req.body.comment, sanitizeOpt);
-        return mongo.insert('comments', req.body, addComment, getComment)
+        return mongo.insert('comments', req.body, addComment, getComment);
     };
 
     const updateCommentWithReply = ({data}) => {
@@ -319,7 +319,7 @@ export function replyComment(req, res) {
         const query = {
             _id: ObjectID(req.params.commentId)
         };
-        return mongo.update('comments', query, foundComment, getComment, getComment)
+        return mongo.update('comments', query, foundComment, getComment, getComment);
     };
 
     const updatePostWithComments = ()=>{
@@ -330,13 +330,12 @@ export function replyComment(req, res) {
 
         foundPost.comments.forEach((el, i)=>{
             if(el._id.toString() === foundComment._id.toString()){
-                foundPost.comments[i] = foundComment
+                foundPost.comments[i] = foundComment;
             }
         });
 
-        console.log(foundPost);
 
-        return mongo.update('posts', query, foundPost, updatePost, getPost)
+        return mongo.update('posts', query, foundPost, updatePost, getPost);
     };
 
     const sendResponse = () => {
@@ -352,7 +351,7 @@ export function replyComment(req, res) {
     };
 
     return getReqBody(req).then(findPost).then(findComment).then(addReply).then(updateCommentWithReply).then(updatePostWithComments).then(sendResponse).catch((err) => {
-        console.log("err is ", err);
+        console.log('err is ', err);
         const options = {
             status: err.status ? err.status : 500,
             data: err.error ? err.error : 'Internal server error',
@@ -360,7 +359,7 @@ export function replyComment(req, res) {
         };
         const headers = [{name: 'Content-Type', value: 'application/json'}];
         return responseHandler(res, options, headers);
-    })
+    });
 }
 
 export function renderNewPost(req, res) {
@@ -407,21 +406,55 @@ export function renderNewPost(req, res) {
     });
 }
 
+export function renderEditPost (req, res){
+    const findPost = ()=>{
+        const query = {
+            _id: ObjectID(req.params.postId)
+        };
+        
+        return mongo.findSingle('posts', query, getPost);
+    };
 
+    const getView = ({data}) => {
+        let options = {
+            content: {
+                sidebar,
+                post: data,
+                meta: {
+                    title: 'Ayush Bahuguna',
+                    keywords: 'admin,new post,ayush bahuguna',
+                    description: 'This is admin panel where Ayush bahuguna creates new post'
+                }
+            }
+        };
 
+        return renderView('admin/src/components/posts/edit_post/edit.post.ejs', options);
 
+    };
 
+    const sendResponse = (str) => {
 
+        let options = {
+            data: str,
+            status: 200,
+            message: 'Serving new post template'
+        };
 
+        const headers = [{name: 'Content-Type', value: 'text/html'}];
+        return responseHandler(res, options, headers);
+    };
 
+    return findPost().then(getView).then(sendResponse).catch((err) => {
+        console.log(err);
+        let options = {
+            status: 500,
+            message: 'Sorry, we are facing some issue right now. Please, try again later.',
+            data: err.error
+        };
 
+        const headers = [{name: 'Content-Type', value: 'plain/text'}];
+        return responseHandler(res, options, headers);
 
+    });
 
-
-
-
-
-
-
-
-
+}

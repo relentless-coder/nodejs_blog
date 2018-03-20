@@ -23,7 +23,8 @@ export const setupMenu = ()=>{
         {command: toggleMark(schema.marks.em), dom: icon('i', 'em')},
         {command: setBlockType(schema.nodes.paragraph), dom: icon('p', 'paragraph')},
         {command: setBlockType(schema.nodes.code_block), dom: icon('<>', 'code')},
-        {command: toggleMark(schema.marks.code), dom: icon('``', 'inline_code')}
+        {command: toggleMark(schema.marks.code), dom: icon('``', 'inline_code')},
+        {command: toggleMark(schema.marks.link), dom: icon('link', 'link')}
     ]);
 };
 

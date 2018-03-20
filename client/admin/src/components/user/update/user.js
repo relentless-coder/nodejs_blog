@@ -2,20 +2,22 @@ import {setupMenu, schema} from '../../editor/menu.items.js';
 import {EditorView} from 'prosemirror-view';
 import {EditorState} from 'prosemirror-state';
 import {keymap} from 'prosemirror-keymap';
-import {DOMParser} from 'prosemirror-model';
+import {DOMParser, Schema} from 'prosemirror-model';
 import {baseKeymap} from 'prosemirror-commands';
+import {exampleSetup} from 'prosemirror-example-setup';
+import {addListNodes} from  'prosemirror-schema-list';
 import {apiHandler} from '../../../handlers/api.handler';
 
 const createDomElement = (type, attributes) => {
     const el = document.createElement(type);
     if (Array.isArray(attributes)) {
         attributes.forEach((attr) => {
-            el.setAttribute(attr.name, attr.value)
+            el.setAttribute(attr.name, attr.value);
         });
-        return el
+        return el;
     }
     el.setAttribute(attributes.name, attributes.value);
-    return el
+    return el;
 };
 
 export const profileHandler = () => {
@@ -23,20 +25,25 @@ export const profileHandler = () => {
     let content = document.querySelector('#profile_about');
 
 
+    const mySchema = new Schema({
+        nodes: addListNodes(schema.spec.nodes, 'paragraph block*', 'block'),
+        marks: schema.spec.marks
+    });
     const setupUpdateProfile = () => {
         console.log('content user is ', content.user);
 
         window.view = new EditorView(document.querySelector('#profile_editor'), {
             state: EditorState.create({
                 doc: DOMParser.fromSchema(schema).parse(content),
-                plugins: [keymap(baseKeymap), setupMenu()]
+                plugins: exampleSetup({schema: mySchema})
+
             })
         });
     };
 
     const addSocialProfile = () => {
         const button = document.querySelector('.add_social_profile');
-        const div = createDomElement('div', {name: 'class', value: 'social_profiles'})
+        const div = createDomElement('div', {name: 'class', value: 'social_profiles'});
 
         const inputName = createDomElement('input', [{name: 'type', value: 'text'}, {
             name: 'placeholder',
@@ -92,7 +99,7 @@ export const profileHandler = () => {
         div.appendChild(link);
 
         helpful_links_wrapper.insertBefore(div, button);
-    }
+    };
 
     const updateProfile = () => {
         const form = new FormData();
@@ -108,7 +115,7 @@ export const profileHandler = () => {
         const socialProfiles = [...profileWrapper.children];
 
         const helpFullLinksWrapper = document.querySelector('.helpful_links_wrapper');
-        console.log(helpFullLinksWrapper)
+        console.log(helpFullLinksWrapper);
         const helpFullLinks = [...helpFullLinksWrapper.children];
 
         let links = [];

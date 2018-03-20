@@ -11,6 +11,7 @@ router.post('/', authHandler, controller.addOnePost);
 
 router.get('/admin/new', authHandler, controller.renderNewPost);
 router.get('/admin/all', authHandler, controller.renderAdminPosts);
+router.get('/admin/:postId', authHandler, controller.renderEditPost);
 
 router.get('/:url', controller.getOnePost);
 

@@ -3,7 +3,7 @@
 <div class="all_post_wrapper">
 	<ul class="all_post_list">
 	<% content.post.forEach((el)=>{%>
-		<li class="all_post_item"><a href="/post/<%= el.url%>"><%= el.title%></a></li>
+		<li class="all_post_item"><a href="/post/admin/<%= el._id%>"><%= el.title%></a></li>
 	<%	})%>
 	</ul>
 </div>

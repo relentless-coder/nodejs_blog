@@ -8,11 +8,14 @@ import mongodb from '../../services/mongodb/mongodb.service';
 import {renderView} from '../../handlers/render.view';
 import {sidebar} from '../../config/sidebar';
 import {uploadHandler} from '../../handlers/upload.handler';
-import util from 'util'
+import util from 'util';
 import {getReqBody} from '../../handlers/parse.request';
 
 const sanitizeOpt = {
-    allowedTags: ['img', 'p', 'pre', 'code', 'strong', 'em'],
+    allowedTags: ['img', 'p', 'pre', 'code', 'strong', 'em', 'a'],
+    allowedAttributes: {
+        a: [ 'href', 'title'] 
+    },
     allowedSchemes: ['data', 'http']
 };
 
@@ -60,7 +63,7 @@ export function signin(req, res) {
                     data: {
                         token: data.data.token
                     }
-                }
+                };
 
                 const headers = [{name: 'Content-Type', value: 'application/json'}, {name: 'Set-Cookie', value: `authorization=${data.data.token};path=/`}];
 
@@ -81,7 +84,7 @@ export function signin(req, res) {
             data: util.format(err.error ? err.error : err),
             message: 'Sorry, we are facing some issue right now. Please, try again later.'
         };
-        const headers = [{name: 'Content-Type', value: 'application/json'}]
+        const headers = [{name: 'Content-Type', value: 'application/json'}];
         return responseHandler(res, options, headers);
     });
 
@@ -99,7 +102,7 @@ export function signup(req, res) {
                     status: data.status,
                     data: data.data,
                     message: data.message
-                }
+                };
                 const headers = [{name: 'Content-Type', value: 'application/json'}];
 
                 return responseHandler(res, options, headers);
@@ -124,7 +127,7 @@ export function signup(req, res) {
 
         return responseHandler(res, options, headers);
 
-    })
+    });
 }
 
 export function renderProfile(req, res) {
@@ -132,18 +135,19 @@ export function renderProfile(req, res) {
     const findUser = () => {
         const query = {
             _id: ObjectID(res.payload)
-        }
+        };
 
-        return mongodb.findSingle('users', query, getUser)
-    }
+        return mongodb.findSingle('users', query, getUser);
+    };
+
 
     const getView = (user) => {
         if(user.data.social)
             user.data.social = JSON.parse(user.data.social);
         if(user.data.projects)
             user.data.projects = JSON.parse(user.data.projects);
-        return renderView('admin/src/components/user/update/user.ejs', {content: {sidebar, user: user.data}})
-    }
+        return renderView('admin/src/components/user/update/user.ejs', {content: {sidebar, user: user.data}});
+    };
 
     const sendResponse = (str) => {
         let options = {
@@ -155,7 +159,7 @@ export function renderProfile(req, res) {
         const headers = [{name: 'Content-Type', value: 'text/html'}];
 
         return responseHandler(res, options, headers);
-    }
+    };
 
     return findUser().then(getView).then(sendResponse).catch((err) => {
         console.log('error is ', err);
@@ -180,7 +184,7 @@ export function renderSignin(req, res) {
             message: 'Success'
         };
 
-        const headers = [{name: 'Content-Type', value: 'text/html'}]
+        const headers = [{name: 'Content-Type', value: 'text/html'}];
 
 
         return responseHandler(res, options, headers);
@@ -243,12 +247,11 @@ export function updateUser(req, res) {
     };
 
     const updateDocument = () => {
-        req.body.about = sanitize(req.body.about, sanitizeOpt);
         if (req.file) {
             req.body.profileImage = `uploads/${req.file.filename}`;
         }
         for(let key in req.body){
-            foundUser[key] = req.body[key]
+            foundUser[key] = req.body[key];
         }
         const query = {
             _id: ObjectID(res.payload)
@@ -295,7 +298,7 @@ export function getAuthor(req, res) {
             data: data.data
         };
 
-        const headers = [{name: 'Content-Type', value: 'application/json'}]
+        const headers = [{name: 'Content-Type', value: 'application/json'}];
         return responseHandler(res, options, headers);
     }).catch((err) => {
 
@@ -305,7 +308,7 @@ export function getAuthor(req, res) {
             data: err
         };
 
-        const headers = [{name: 'Content-Type', value: 'application/json'}]
+        const headers = [{name: 'Content-Type', value: 'application/json'}];
 
         return responseHandler(res, options, headers);
     });

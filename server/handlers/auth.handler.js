@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
 import {decode} from '../services/jwt/jwt.decode';
 import mongodb from '../services/mongodb/mongodb.service';
+import util from 'util';
 import {ObjectID} from 'mongodb';
 import {parseUser} from '../services/layers/user.layer';
 import {responseHandler} from './response.handler';
@@ -19,7 +20,7 @@ function authHandler(req, res, next) {
                 message: 'Unauthorized request',
                 data: 'The jwt token provided by the client has expired. Kindly, login again.',
                 content: 'application/json'
-            }
+            };
             return responseHandler(res, options);
         } else {
             let query = {
@@ -36,7 +37,7 @@ function authHandler(req, res, next) {
                         message: 'Unauthorized request',
                         data: 'User doesn\'t exist',
                         content: 'application/json'
-                    }
+                    };
                     return responseHandler(res, options);
                 }
             }).catch((err) => {
@@ -44,7 +45,7 @@ function authHandler(req, res, next) {
                     status: 500,
                     message: 'Sorry, we seem to be facing some issue right now. Please, try again later.',
                     data: util.format(err)
-                }
+                };
                 const headers = [{name: 'Content-Type', value: 'application/json'}];
                 return responseHandler(res, options, headers);
             });
@@ -54,7 +55,7 @@ function authHandler(req, res, next) {
             status: err.status ? err.status : 500,
             message: err.message,
             data: err.error
-        }
+        };
         const headers = [{name: 'Content-Type', value: 'application/json'}];
         return responseHandler(res, options, headers);
     }

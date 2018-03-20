@@ -17,16 +17,12 @@ export function editPostHandler(){
     let content = document.querySelector('#edit_post');
 
     const setupEditPost = ()=>{
-
-        console.log(content);
-
-        let postContent = EditorState.create({
-            doc: DOMParser.fromSchema(mySchema).parse(content),
-            plugins: exampleSetup({schema: mySchema})
-        });
-
         window.view = new EditorView(document.querySelector('#editor'), {
-            state: postContent
+            state: EditorState.create({
+                doc: DOMParser.fromSchema(schema).parse(content),
+                plugins: exampleSetup({schema: mySchema})
+
+            })
         });
     };
 
@@ -34,17 +30,16 @@ export function editPostHandler(){
     const editPost = (id)=>{
         const post = {
             title: document.getElementById('edit_title').value,
-            content: DOMParser.fromSchema(mySchema).parse(content),
+            content: window.view.dom.innerHTML,
             meta: {
-                description: document.getElementById('meta_desc'),
-                keywords: document.getElementById('meta_keywords'),
-            },
-            category: document.getElementById('edit_post_category')
+                description: document.getElementById('meta_desc').value,
+                keywords: document.getElementById('meta_keywords').value,
+            }
         };
 
         const options = {
             method: 'put',
-            url: `/api/v1/post/${id}`,
+            url: `/post/${id}`,
             data: post,
             config: true
         };
