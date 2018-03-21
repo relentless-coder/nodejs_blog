@@ -4,6 +4,8 @@ import {EditorState} from 'prosemirror-state';
 import {baseKeymap} from 'prosemirror-commands';
 import {keymap} from 'prosemirror-keymap';
 import {setupMenu, schema} from '../../editor/menu.items.js';
+import {exampleSetup} from 'prosemirror-example-setup';
+import {addListNodes} from  'prosemirror-schema-list';
 import {apiHandler} from '../../../handlers/api.handler.js';
 import {errorHandler} from '../../../handlers/error.handler.js';
 
@@ -12,12 +14,17 @@ export const newPostHandler = ()=> {
     let content = document.querySelector('#new_post');
 
 
+    const mySchema = new Schema({
+        nodes: addListNodes(schema.spec.nodes, 'paragraph block*', 'block'),
+        marks: schema.spec.marks
+    });
+    
     const setupNewPost = ()=>{
 
         window.view = new EditorView(document.querySelector('#editor'), {
             state: EditorState.create({
                 doc: DOMParser.fromSchema(schema).parse(content),
-                plugins: [keymap(baseKeymap), setupMenu()]
+                plugins: exampleSetup({schema: mySchema})
             })
         });
     };

@@ -10,5 +10,6 @@
     <textarea col="30" row="10" id="meta_desc"><%= content.post.meta.description%></textarea>
     <input type="text" id="meta_keywords" class="seo_keywords" value="<%= content.post.meta.keywords%>">
   </div>
+  <button onClick="post.edit('<%=content.post._id%>')">Update</button>
 </div>
 <% include ../../../partials/footer.ejs%>

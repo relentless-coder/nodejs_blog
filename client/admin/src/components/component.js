@@ -24,7 +24,7 @@ export const app = ()=>{
     const user = {
         signin: signinHandler().signin,
         signup: signupHandler().signup
-    }
+    };
 
     const profile = {
         addSocialProfile: profileHandler().addSocialProfile,
