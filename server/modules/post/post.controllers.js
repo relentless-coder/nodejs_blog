@@ -12,7 +12,11 @@ import {uploadHandler} from '../../handlers/upload.handler.js';
 import {getReqBody} from '../../handlers/parse.request';
 
 const sanitizeOpt = {
-    allowedTags: ['img', 'p', 'pre', 'code', 'strong', 'em'],
+    allowedTags: ['img', 'p', 'pre', 'code', 'strong', 'em', 'a'],
+    allowedAttributes: {
+        'a': [ 'href', 'title']
+          
+    },
     allowedSchemes: ['data', 'http']
 };
 
@@ -118,7 +122,9 @@ export function addOnePost(req, res) {
     const addToDatabase = (data) => {
         req.body = data;
         req.body.url = req.body.title.toLowerCase().split(' ').join('-');
+        console.log(req.body.content);
         req.body.content = sanitize(req.body.content, sanitizeOpt);
+        console.log(req.body.content);
         return mongo.insert('posts', req.body, addPost, getPost).then((data) => {
             let options = {
                 status: data.status,
@@ -146,57 +152,50 @@ export function addOnePost(req, res) {
     });
 }
 
-export function updateOnePost(req, res) {
+export async function updateOnePost(req, res) {
 
-    const getData = () => {
-        if (req.body) {
-            return Promise.resolve(req);
-        } else {
-            return new Promise((resolve, reject) => {
-                uploadHandler(req, res, (err) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        if (req.files) {
-                            req.files.forEach((file) => {
-                                req.body.gallery.push(file.path);
-                            });
-                        }
-                        resolve(req);
-                    }
+    try {
 
-                });
-            });
+        const body = await getReqBody(req);
+
+        const query = {
+            _id: ObjectID(req.params.postId)
+        };
+
+        const pData = await mongo.findSingle('posts', query, getPost);
+        
+
+        const post = pData.data;
+
+        for(let key in body){
+            post[key] = body[key];
         }
 
-    };
+        post._id = ObjectID(req.params.postId);
 
-    const addToDatabase = () => {
-        req.body._id = ObjectID(req.params.postId);
-        return mongo.update('posts', {
-            _id: ObjectID(req.params.postId)
-        }, req.body, updatePost, getPost).then((data) => {
-            let options = {
-                status: data.status,
-                message: data.message,
-                data: data.data
-            };
-            const headers = [{name: 'Content-Type', value: 'text/html'}];
-            return responseHandler(res, options, headers);
-        }).catch((err) => {
-            throw new ErrorWithStatusCode(err.status, err.message, err.error);
-        });
-    };
+        const data = await mongo.update('posts', query, post, updatePost, getPost);
 
-    return getData().then(addToDatabase).catch((err) => {
+        let options = {
+            status: data.status,
+            message: data.message,
+            data: data.data
+        };
+
+        const headers = [{name: 'Content-Type', value: 'text/html'}];
+
+        return responseHandler(res, options, headers);
+
+    } catch (err){
+        console.log(err);
         let options = {
             status: err.status ? err.status : 500,
             message: err.message ? err.message : 'Sorry, we are facing some issue right now.',
             data: err
         };
-        const headers = [{name: 'Content-Type', value: 'application/json'}];
+        const headers = [{name: 'Content-Type', value: 'text/plain'}];
         return responseHandler(res, options, headers);
-    });
+    }
+
 }
 
 export function removeOnePost(req, res) {
