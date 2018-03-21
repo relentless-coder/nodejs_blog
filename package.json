@@ -24,7 +24,7 @@
     "prosemirror-transform": "^1.0.1",
     "prosemirror-view": "^1.0.10",
     "router": "^1.3.2",
-    "sanitize-html": "^1.16.3"
+    "sanitize-html": "^1.14.1"
   },
   "scripts": {
     "lint": "eslint ./",
@@ -32,15 +32,15 @@
     "start": "npm run setup_file && npm run build && node ./server/dist/app.js",
     "setup_file": "mkdir -p client/blog/build/lib && cp ./node_modules/handlebars/lib/handlebars.runtime.js client/blog/build/",
     "test": "node ./node_modules/nyc/bin/nyc.js node ./node_modules/mocha/bin/mocha dist/test/unit/**/**/**.spec.js --timeout=5000",
-    "build": "gulp && webpack && node ./node_modules/babel-cli/bin/babel.js ./server --out-dir ./server/dist --ignore node_modules/,.nyc_output/,./server/dist/,package.json,npm-debug.log,package-lock.json,yarn.lock,.gitignore --presets=babel-preset-env --plugins=babel-plugin-transform-class-properties,babel-plugin-transform-runtime"
+    "build": "gulp && webpack && node ./node_modules/babel-cli/bin/babel.js ./server --out-dir ./server/dist --ignore node_modules/,.nyc_output/,./server/dist/,package.json,npm-debug.log,package-lock.json,yarn.lock,.gitignore --plugins=babel-plugin-transform-class-properties,babel-plugin-transform-es2015-modules-commonjs,babel-plugin-add-module-exports"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.1.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "chai": "^4.1.2",
     "extract-text-webpack-plugin": "^3.0.2",
     "gulp": "^3.9.1",
