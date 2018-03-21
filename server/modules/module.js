@@ -30,8 +30,12 @@ function routerFactory() {
         };
         const setupRender = ({data})=>{
             posts = data.splice(0, 5);
-            user.social = JSON.parse(user.social);
-            user.projects = JSON.parse(user.projects);
+            try {
+                user.social = JSON.parse(user.social);
+                user.projects = JSON.parse(user.projects);
+            } catch (err){
+                console.log(err);
+            }
             const options = {
                 content: {
                     user,
@@ -43,7 +47,7 @@ function routerFactory() {
                     }
                 }
             };
-            return  renderView('blog/src/components/home/home.ejs', options)
+            return  renderView('blog/src/components/home/home.ejs', options);
         };
         findUser().then(findPosts).then(setupRender).then((str)=>{
             let options = {
