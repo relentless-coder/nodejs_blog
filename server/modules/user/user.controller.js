@@ -14,9 +14,9 @@ import {getReqBody} from '../../handlers/parse.request';
 const sanitizeOpt = {
     allowedTags: ['img', 'p', 'pre', 'code', 'strong', 'em', 'a'],
     allowedAttributes: {
-        a: [ 'href', 'title'] 
+        'a': [ 'href', 'title']
     },
-    allowedSchemes: ['data', 'http']
+    allowedSchemes: ['data', 'http', 'https']
 };
 
 let userInput = {};

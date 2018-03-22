@@ -17,7 +17,7 @@ const sanitizeOpt = {
         'a': [ 'href', 'title']
           
     },
-    allowedSchemes: ['data', 'http']
+    allowedSchemes: ['data', 'http', 'https']
 };
 
 
