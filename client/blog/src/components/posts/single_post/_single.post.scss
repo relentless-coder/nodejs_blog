@@ -26,10 +26,10 @@
             }
         }
         & .single_post_content_wrapper {
+            width: 100%;
             max-width: 100%;
             position: relative;
             margin-top: 800px;
-            background: $fourth-color;
             & .single_post_content {
                 width: 75%;
                 font-size: 1.28rem;

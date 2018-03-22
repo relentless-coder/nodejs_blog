@@ -6,6 +6,8 @@
     margin: 1rem auto;
     max-width: 100%;
     align-items: center;
+    background: $fourth-color;
+    position: relative;
     & .new_comment_header {
         font-size: 2rem;
     }
@@ -19,6 +21,7 @@
         width: 100%;
         max-width: 100%;
         justify-content: center;
+        position: relative;
         & .name_email_wrapper {
             width: 80%;
             margin: 1.5rem 0rem;
@@ -75,6 +78,8 @@
     flex-direction: column;
     align-items: center;
     margin-top: 2rem;
+    position: relative;
+    background: $fourth-color;
     & .comment_header {
         font-size: 2rem;
         color: black;
