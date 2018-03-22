@@ -84,8 +84,24 @@
     }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 540px) {
     .optin_wrapper {
         width: 95%;
+        .intro_wrapper {
+            p {
+                font-size: 1.1rem;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 420px) {
+    .optin_wrapper {
+        width: 98%;
+        .intro_wrapper {
+            p {
+                font-size: 0.8rem;
+            }
+        }
     }
 }

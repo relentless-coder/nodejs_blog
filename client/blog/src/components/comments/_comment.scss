@@ -227,3 +227,39 @@
         }
     }
 }
+
+@media only screen and (max-width: 960px) {
+    .new_comment_wrapper {
+        width: 75%;
+    }
+    .comment_wrapper .comment {
+        width: 65%;
+    }
+}
+
+@media only screen and (max-width: 720px) {
+    .new_comment_wrapper {
+        width: 85%;
+    }
+    .comment_wrapper .comment {
+        width: 75%;
+    }
+}
+
+@media only screen and (max-width: 540px) {
+    .new_comment_wrapper {
+        width: 95%;
+    }
+    .comment_wrapper .comment {
+        width: 95%;
+    }
+}
+
+@media only screen and (max-width: 420px) {
+    .new_comment_wrapper {
+        width: 98%;
+    }
+    .comment_wrapper .comment {
+        width: 98%;
+    }
+}

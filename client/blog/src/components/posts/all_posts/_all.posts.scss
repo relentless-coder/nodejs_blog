@@ -27,3 +27,39 @@
         }
     }
 }
+
+@media only screen and (max-width: 960px) {
+    .posts {
+        width: 85%;
+    }
+}
+
+@media only screen and (max-width: 720px) {
+    .posts {
+        width: 95%;
+        & .post {
+            & a {
+                font-size: 1.35rem;
+            }
+        }
+    }
+}
+@media only screen and (max-width: 640px) {
+    .posts {
+        & .post {
+            & a {
+                font-size: 1.2rem;
+            }
+        }
+    }
+}
+@media only screen and (max-width: 420px) {
+    .posts {
+        width: 98%;
+        & .post {
+            & a {
+                font-size: 1rem;
+            }
+        }
+    }
+}
