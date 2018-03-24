@@ -7,9 +7,9 @@ function responseHandler(res, options, headers) {
         const localHeaders = {};
 
         if(headers)
-            headers.forEach(el => localHeaders[el.name] = el.value)
+            headers.forEach(el => localHeaders[el.name] = el.value);
         else
-            localHeaders['Content-Type'] = 'application/json'
+            localHeaders['Content-Type'] = 'application/json';
 
         res.writeHead(options.status, localHeaders);
         let data;
