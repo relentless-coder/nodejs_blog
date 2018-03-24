@@ -29,10 +29,9 @@
   "scripts": {
     "lint": "eslint ./",
     "fix_lint": "eslint --fix ./",
-    "start": "npm run setup_file && npm run build && node ./server/dist/app.js",
-    "setup_file": "mkdir -p client/blog/build/lib && cp ./node_modules/handlebars/lib/handlebars.runtime.js client/blog/build/",
+    "start": "npm run build && node ./server/dist/app.js",
     "test": "node ./node_modules/nyc/bin/nyc.js node ./node_modules/mocha/bin/mocha dist/test/unit/**/**/**.spec.js --timeout=5000",
-    "build": "gulp && webpack && node ./node_modules/babel-cli/bin/babel.js ./server --out-dir ./server/dist --ignore node_modules/,.nyc_output/,./server/dist/,package.json,npm-debug.log,package-lock.json,yarn.lock,.gitignore --plugins=babel-plugin-transform-class-properties,babel-plugin-transform-es2015-modules-commonjs,babel-plugin-add-module-exports"
+    "build": "gulp && webpack && node ./node_modules/babel-cli/bin/babel.js ./server --out-dir ./server/dist --ignore node_modules/,.nyc_output/,./server/dist/,package.json,npm-debug.log,package-lock.json,yarn.lock,.gitignore --plugins=babel-plugin-transform-class-properties,babel-plugin-transform-es2015-modules-commonjs"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
