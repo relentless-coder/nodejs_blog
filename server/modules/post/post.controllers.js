@@ -21,18 +21,23 @@ const sanitizeOpt = {
 };
 
 
-export function getAllPosts(req, res) {
-    let query = {};
-    if (req._parsedUrl.query) {
-        let parsedQuery = qs.parse(req._parsedUrl.query);
-        query = {
-            '$text': {
-                '$search': parsedQuery.search
-            }
-        };
-    }
-    return mongo.findAll('posts', query, getPost).then((data) => {
-        return renderView('blog/src/components/posts/all_posts/all.post.ejs', {
+export async function getAllPosts(req, res) {
+    try {
+        
+        let query = {};
+
+        if (req._parsedUrl.query) {
+            let parsedQuery = qs.parse(req._parsedUrl.query);
+            query = {
+                '$text': {
+                    '$search': parsedQuery.search
+                }
+            };
+        }
+
+        const data =  await mongo.findAll('posts', query, getPost);
+
+        const str = await renderView('blog/src/components/posts/all_posts/all.post.ejs', {
             content: {
                 post: data.data,
                 meta: {
@@ -41,22 +46,27 @@ export function getAllPosts(req, res) {
                     keywords: 'nodejs tutorials, mongodb tutorials, javascript tutorials'
                 }
             }
-        }).then((str) => {
-            const options = {
-                status: data.status,
-                message: data.message,
-                data: str
-            };
-            const headers = [{name: 'Content-Type', value: 'text/html'}];
-            return responseHandler(res, options, headers);
         });
 
-    }).catch((err) => {
+        const options = {
+            status: data.status,
+            message: data.message,
+            data: str
+        };
+        
+        const headers = [{name: 'Content-Type', value: 'text/html'}];
+        
+        return responseHandler(res, options, headers);
+    
+    } catch (err) {
+        
         return responseHandler(res, {status: err.status, message: err.message, data: err.error}, [{
             name: 'Content-Type',
             value: 'application/json'
         }]);
-    });
+    
+    }
+
 }
 
 export function renderAdminPosts(req, res) {
