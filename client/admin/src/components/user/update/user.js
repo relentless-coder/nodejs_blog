@@ -34,7 +34,7 @@ export const profileHandler = () => {
 
         window.view = new EditorView(document.querySelector('#profile_editor'), {
             state: EditorState.create({
-                doc: DOMParser.fromSchema(schema).parse(content),
+                doc: DOMParser.fromSchema(mySchema).parse(content),
                 plugins: exampleSetup({schema: mySchema})
 
             })

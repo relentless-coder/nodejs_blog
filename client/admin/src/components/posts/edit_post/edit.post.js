@@ -19,7 +19,7 @@ export function editPostHandler(){
     const setupEditPost = ()=>{
         window.view = new EditorView(document.querySelector('#editor'), {
             state: EditorState.create({
-                doc: DOMParser.fromSchema(schema).parse(content),
+                doc: DOMParser.fromSchema(mySchema).parse(content),
                 plugins: exampleSetup({schema: mySchema})
 
             })

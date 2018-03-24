@@ -23,17 +23,18 @@ export const newPostHandler = ()=> {
 
         window.view = new EditorView(document.querySelector('#editor'), {
             state: EditorState.create({
-                doc: DOMParser.fromSchema(schema).parse(content),
+                doc: DOMParser.fromSchema(mySchema).parse(content),
                 plugins: exampleSetup({schema: mySchema})
             })
         });
     };
 
     const createNewPost = ()=>{
-
+        
         const post = {
             title: document.getElementById('post_title').value,
             content: window.view.dom.innerHTML,
+            description: document.getElementById('meta_desc').value,
             meta: {
                 description: document.getElementById('meta_desc').value,
                 author: document.getElementById('meta_author').value,
